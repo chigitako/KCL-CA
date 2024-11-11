@@ -6,8 +6,9 @@ import Link from 'next/link';
 type ButtonProps = {
   label: string;
   path: string;
+  illustrationSrc: string;
 };
-export default function BasicButtons({ label, path }: ButtonProps) {
+export default function BasicButtons({ label, path, illustrationSrc}: ButtonProps) {
   return (
     <Link href={path}>
     <Stack spacing={2} direction="row">
@@ -20,6 +21,12 @@ export default function BasicButtons({ label, path }: ButtonProps) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
+        allignItems: 'center',
+        background: `url(${illustrationSrc})`,
+        backgroundSize: 'cover',
+        color: '#000000',
+        fontWeight: 'bold',
+        fontSize: '16px',
       }}
       >
         {label}
