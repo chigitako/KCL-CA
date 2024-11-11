@@ -1,7 +1,10 @@
 import * as React from 'react';
 import Button from './Button';
 
-const buttonLabels = [{label: '集卵 count', path: '/count'}, {label: 'サイズ size', path: '/size'}, {label: '鶏 chicken', path: '/chicken'}];
+const buttonLabels = [
+    {label: '集卵 count', path: '/count', illustrationSrc: '/images/count-egg.jpg'}, 
+    {label: 'サイズ size', path: '/size', illustrationSrc: '/images/size-egg.jpg'}, 
+    {label: '鶏 chicken', path: '/chicken', illustrationSrc: '/images/chicken.jpg'}];
 
 const TopButtonGrid: React.FC = () => {
     return (
@@ -16,7 +19,10 @@ const TopButtonGrid: React.FC = () => {
                 <div
                 key={index}
                 style={{ margin: '10px'}}>
-                    <Button label={label.label} path={label.path} />
+                    <Button 
+                    label={label.label} 
+                    path={label.path} 
+                    illustrationSrc={label.illustrationSrc}/>
                 </div>
             ))}
         </div>

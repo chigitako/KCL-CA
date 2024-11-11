@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import BasicButtons from "../components/Button"; // Buttonのインポートを修正
+import BasicButtons from "../components/BasicButton"; // Buttonのインポートを修正
 import AppBar from "../components/AppBar";
 
 const CoopSelectionPage: React.FC = () => {

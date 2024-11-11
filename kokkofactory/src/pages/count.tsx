@@ -1,10 +1,12 @@
+import AppBar from '../components/AppBar';
 import React from 'react';
+import Grid from '@mui/material';
 
 const CountPage: React.FC = () => {
-  return (
+  return  (
     <div>
-        <h1>Count Page</h1>
-        <p>This is Count Page</p>
+        <AppBar />
+        
     </div>
   );
 };
