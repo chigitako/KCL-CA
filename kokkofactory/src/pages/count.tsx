@@ -22,6 +22,7 @@ const CountPage: React.FC = () => {
     calculateTotal();
   }, [carton, egg]);
 
+
   const handleSave = async () => {
     try {
       const response = await fetch("/api/eggs", {
@@ -72,7 +73,7 @@ const CountPage: React.FC = () => {
         >
           <div style={{ fontSize: "2rem", fontWeight: "bold" }}>5</div>
           <Image
-            src="/images/egg_white.jpg"
+            src="/images/egg_transparent.PNG"
             alt="Egg carton"
             width={100}
             height={100}
@@ -83,6 +84,7 @@ const CountPage: React.FC = () => {
             type="number"
             value={carton}
             onChange={(e) => setCarton(Number(e.target.value))}
+
           />
           <span>個</span>
           <Image
