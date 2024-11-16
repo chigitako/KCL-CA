@@ -109,7 +109,7 @@ const CountPage: React.FC = () => {
             Total {total} 個
           </div>
           <Image
-            src="/images/hakari.png"
+            src="/images/scale.png"
             alt="Scale"
             width={100}
             height={100}
