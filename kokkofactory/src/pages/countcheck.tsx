@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react";
 
+// データの型を定義
+interface EggCount {
+  id: number;
+  coop_id: string;
+  count: number;
+  recorded_at: string;
+}
+
 export default function CountCheck() {
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
+  const [data, setData] = useState<EggCount[]>([]); // EggCount型の配列
+  const [error, setError] = useState<string | null>(null); // エラーは文字列かnull
 
   useEffect(() => {
     // APIからデータを取得
@@ -12,10 +20,10 @@ export default function CountCheck() {
         if (!response.ok) {
           throw new Error("データ取得に失敗しました");
         }
-        const result = await response.json();
+        const result: EggCount[] = await response.json(); // 結果をEggCount型で推論
         setData(result); // データをセット
       } catch (error) {
-        setError(error.message); // エラーメッセージをセット
+        setError((error as Error).message); // エラーメッセージをセット
       }
     };
 
@@ -47,7 +55,7 @@ export default function CountCheck() {
             ))
           ) : (
             <tr>
-              <td colSpan="3">データがありません</td>
+              <td colSpan={3}>データがありません</td>
             </tr>
           )}
         </tbody>
