@@ -51,7 +51,7 @@ const CountPage: React.FC = () => {
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <AppBar title="集卵　count" />
-      {/*メインコンテンツ*/}
+      {/* メインコンテンツ */}
       <div
         style={{
           flex: 1,
@@ -122,7 +122,7 @@ const CountPage: React.FC = () => {
             variant="contained"
             color="primary"
             style={{ width: "100px", height: "50px" }}
-            onClick={handleSave} // onClickイベントを追加
+            onClick={handleSave}
           >
             Save
           </Button>

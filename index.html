@@ -1,0 +1,26 @@
+<!DOCTYPE html> <!-- 文書型宣言 文書がHTML5で書かれていることをブラウザに伝える 最新バージョンを使えるように-->
+<html lang="ja"><!-- htmlタグにlang属性を設定 文書が日本語で書かれていることを示す 検索のときとか役立つ-->
+
+<head><!-- HTML文書の開始を示す、すべてのHTML要素を包含する-->
+    <meta charset="UTF-8">  <!--文字化けを防ぐ、多言語サポート-->
+    <meta name = "viewport" content = "width=device-width, inital-scale=1.0">
+    <!-- 異なるデバイスで適切に表示されるように、ビューポート(画面領域)の設定を指定するためのメタタグ
+    <ビューポート(ブラウザ画面領域)設定するよ ビューポートの幅をデバイスの幅にあわせる　ズームレベル(1.0は100%)-->
+    <title>こっこふぁくとりー</title>
+    <link rel="stylesheet" href="styles.css"><!--HTMLファイルに外部のCSSスタイルシートをリンク-->
+</head>
+<body>
+    <div id="app"><!--グループ化みたいなイメージ-->
+        <button id="number5"> 5</button>
+        <button id="number6"> 6</button>
+        <button id="number7"> 7</button>
+        <button id="number8"> 8</button>
+        <button id="number9"> 9</button>
+        <button id="number10"> 10</button>
+        <button id="number11"> 11</button>
+        <button id="number12"> 12</button>
+        <button id="number13"> 13</button>
+    </div>
+    <script src="app.js"></script><!--TypeScriptでコンパイルしたJavaScript(TypeScriptのままではブラウザが理解できないからJavaScriptにコンパイルする必要あり)-->
+</body>
+</html>
