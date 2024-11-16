@@ -29,6 +29,7 @@ const CountPage: React.FC = () => {
       {/* 上部の数字とアイコン部分 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>5</div>
+          <div>
           <Image src="/images/egg_white.jpg" alt="Egg carton" width={100} height={100} />
           <TextField 
           variant="outlined" 
@@ -38,6 +39,8 @@ const CountPage: React.FC = () => {
           onChange={(e) => setCarton(Number(e.target.value))}
           />
           <span>個</span>
+          </div>
+          <div>
           <Image src="/images/egg_kari.jpg" alt="Egg" width={100} height={100} />
           <TextField variant="outlined" 
           style={{ width: '80px' }} 
@@ -46,6 +49,7 @@ const CountPage: React.FC = () => {
           onChange={(e) => setEgg(Number(e.target.value))}
           />
           <span>個</span>
+          </div>
         </div>
 
         {/* 合計と重量部分 */}
