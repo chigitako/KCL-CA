@@ -1,4 +1,4 @@
-import BackButton from "@/components/BackButton";
+import BackButton from "../components/BackButton";
 import AppBar from "../components/AppBar";
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
