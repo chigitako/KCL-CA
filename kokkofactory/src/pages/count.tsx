@@ -22,6 +22,7 @@ const CountPage: React.FC = () => {
     calculateTotal();
   }, [carton, egg]);
 
+
   const handleSave = async () => {
     try {
       const response = await fetch("/api/eggs", {
@@ -51,7 +52,7 @@ const CountPage: React.FC = () => {
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <AppBar title="集卵　count" />
-      {/*メインコンテンツ*/}
+      {/* メインコンテンツ */}
       <div
         style={{
           flex: 1,
@@ -72,7 +73,7 @@ const CountPage: React.FC = () => {
         >
           <div style={{ fontSize: "2rem", fontWeight: "bold" }}>5</div>
           <Image
-            src="/images/egg_white.jpg"
+            src="/images/egg_transparent.PNG"
             alt="Egg carton"
             width={100}
             height={100}
@@ -83,6 +84,7 @@ const CountPage: React.FC = () => {
             type="number"
             value={carton}
             onChange={(e) => setCarton(Number(e.target.value))}
+
           />
           <span>個</span>
           <Image
@@ -122,7 +124,7 @@ const CountPage: React.FC = () => {
             variant="contained"
             color="primary"
             style={{ width: "100px", height: "50px" }}
-            onClick={handleSave} // onClickイベントを追加
+            onClick={handleSave}
           >
             Save
           </Button>
