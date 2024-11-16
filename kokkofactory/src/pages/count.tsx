@@ -73,7 +73,7 @@ const CountPage: React.FC = () => {
         >
           <div style={{ fontSize: "2rem", fontWeight: "bold" }}>5</div>
           <Image
-            src="/images/egg_white.jpg"
+            src="/images/egg_transparent.PNG"
             alt="Egg carton"
             width={100}
             height={100}
