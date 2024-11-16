@@ -1,6 +1,17 @@
-import { pool } from "../../../lib/db"; // db.jsの場所を確認してインポート
+import { NextApiRequest, NextApiResponse } from "next";
+import { pool } from "../../../lib/db"; // db.tsの場所を確認してインポート
 
-export default async function handler(req, res) {
+interface EggCount {
+  id: number;
+  coop_id: number;
+  count: number;
+  recorded_at: string;
+}
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "GET") {
     try {
       // egg_countsテーブルからデータを取得
@@ -9,7 +20,8 @@ export default async function handler(req, res) {
       );
 
       // 成功した場合のレスポンス
-      res.status(200).json(result.rows);
+      const eggCounts: EggCount[] = result.rows; // 型を指定してレスポンスを整形
+      res.status(200).json(eggCounts);
     } catch (error) {
       console.error("データ取得エラー:", error);
       res
