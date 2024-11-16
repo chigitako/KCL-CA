@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from './Button';
 
 const buttonLabels = [
-    {label: '集卵 count', path: '/count', illustrationSrc: '/images/count-egg.jpg'}, 
+    {label: '集卵 count', path: '/keisha', illustrationSrc: '/images/count-egg.jpg'}, 
     {label: 'サイズ size', path: '/size', illustrationSrc: '/images/size-egg.jpg'}, 
     {label: '鶏 chicken', path: '/chicken', illustrationSrc: '/images/chicken.jpg'}];
 

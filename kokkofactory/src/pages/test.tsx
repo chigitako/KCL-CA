@@ -9,7 +9,7 @@ const TestPage: React.FC = () => {
     <div>
       <h1>テストページ</h1>
       <BackButton />
-      <AppBar />
+      <AppBar title="test"/>
       <TextBox />
     </div>
   );
