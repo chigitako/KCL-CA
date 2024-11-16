@@ -29,7 +29,7 @@ const CountPage: React.FC = () => {
       {/* 上部の数字とアイコン部分 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>5</div>
-          <Image src="/images/egg_white.jpg" alt="Egg carton" width={100} height={100} />
+          <Image src="/images/egg_transparent.PNG" alt="Egg carton" width={100} height={100} />
           <TextField 
           variant="outlined" 
           style={{ width: '80px' }} 
