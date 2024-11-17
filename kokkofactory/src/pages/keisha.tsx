@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import AppBar from "../components/AppBar";
 import BackButton from "../components/BackButton";
 
-
 const CoopSelectionPage: React.FC = () => {
   // ボタンコンポーネント（BasicButtons を内包）
   const BasicButtons: React.FC<{
@@ -61,10 +60,14 @@ const CoopSelectionPage: React.FC = () => {
 
   return (
     <div>
+
+      <AppBar title="集卵　count" />
+
       {/* アプリのヘッダー */}
       <AppBar title="集卵　count" />
 
       {/* グリッドレイアウト */}
+
       <Grid container spacing={2} style={{ padding: "20px" }}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((coopId) => (
           <Grid
@@ -92,11 +95,15 @@ const CoopSelectionPage: React.FC = () => {
         ))}
       </Grid>
 
+      <BackButton />
+
+
       {/* 戻るボタン */}
       <div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
       >
       <BackButton />
       </div>
+
     </div>
   );
 };
