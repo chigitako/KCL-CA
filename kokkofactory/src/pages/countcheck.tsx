@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import AppBar from "../components/AppBar";
 
 type CountData = {
   id: number;
   coop_id: number;
   count: number;
   recorded_at: string;
-  average_weight: number | string; // 文字列または数値で返ってくる可能性があるため、型を変更
+  average_weight: number | string;
 };
 
 const CountCheck = () => {
@@ -39,15 +40,16 @@ const CountCheck = () => {
 
   return (
     <div>
-      <h1>Count Results</h1>
-      <table border={1}>
+      <AppBar title="集卵　count" />
+      <h1>集卵</h1>
+      <table style={{ borderCollapse: "collapse", width: "100%" }} border={1}>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Coop ID</th>
-            <th>Count</th>
-            <th>Recorded At</th>
-            <th>Average Weight</th>
+            <th style={{ padding: "8px" }}>ID</th>
+            <th style={{ padding: "8px" }}>鶏舎番号</th>
+            <th style={{ padding: "8px" }}>数</th>
+            <th style={{ padding: "8px" }}>時間</th>
+            <th style={{ padding: "8px" }}>卵重</th>
           </tr>
         </thead>
         <tbody>
@@ -57,11 +59,13 @@ const CountCheck = () => {
 
             return (
               <tr key={row.id}>
-                <td>{row.id}</td>
-                <td>{row.coop_id}</td>
-                <td>{row.count}</td>
-                <td>{new Date(row.recorded_at).toLocaleString()}</td>
-                <td>
+                <td style={{ padding: "8px" }}>{row.id}</td>
+                <td style={{ padding: "8px" }}>{row.coop_id}</td>
+                <td style={{ padding: "8px" }}>{row.count}</td>
+                <td style={{ padding: "8px" }}>
+                  {new Date(row.recorded_at).toLocaleString()}
+                </td>
+                <td style={{ padding: "8px" }}>
                   {/* averageWeight が有効な数値か確認し、必要に応じて表示 */}
                   {typeof averageWeight === "number" && !isNaN(averageWeight)
                     ? `${averageWeight.toFixed(2)} g`
