@@ -28,7 +28,7 @@ const CoopSelectionPage: React.FC = () => {
         height: "100%",
         borderRadius: "8px",
         boxSizing: "border-box",
-    }} // スタイルを直接渡す
+      }} // スタイルを直接渡す
     >
       <img
         src="/images/keisha.png"
@@ -40,30 +40,27 @@ const CoopSelectionPage: React.FC = () => {
           borderRadius: "8px",
         }}
       />
-    <span
-      style={{
-        position: "absolute",
-        top: "8px",
-        left: "3px",
-        color: "#000",
-        fontFamily: "Comic Sans MS, cursive, sans-serif",
-        fontSize: "25px",
-        zIndex: 1,
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
-        padding: "2px 8px",
-        borderRadius: "8px",
-      }}>
-      {label}
-    </span>
+      <span
+        style={{
+          position: "absolute",
+          top: "8px",
+          left: "3px",
+          color: "#000",
+          fontFamily: "Comic Sans MS, cursive, sans-serif",
+          fontSize: "25px",
+          zIndex: 1,
+          backgroundColor: "rgba(255, 255, 255, 0.5)",
+          padding: "2px 8px",
+          borderRadius: "8px",
+        }}
+      >
+        {label}
+      </span>
     </Button>
   );
 
   return (
     <div>
-
-      <AppBar title="集卵　count" />
-
-      {/* アプリのヘッダー */}
       <AppBar title="集卵　count" />
 
       {/* グリッドレイアウト */}
@@ -82,34 +79,29 @@ const CoopSelectionPage: React.FC = () => {
               position: "relative",
             }}
           >
-              {/* ボタンの配置 */}
-              <BasicButtons
-                label={`鶏舎 ${coopId}`}
-                path={`/count/${coopId}`} // 遷移先のパス
-                style={{
-                  width: "90%", // ボタンの幅
-                  height: "90%", // ボタンの高さ
-                }}
-              />
+            {/* ボタンの配置 */}
+            <BasicButtons
+              label={`鶏舎 ${coopId}`}
+              path={`/count/${coopId}`} // 遷移先のパス
+              style={{
+                width: "90%", // ボタンの幅
+                height: "90%", // ボタンの高さ
+              }}
+            />
           </Grid>
         ))}
       </Grid>
 
       <BackButton />
 
-
       {/* 戻るボタン */}
-      <div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
       >
-      <BackButton />
+        <BackButton />
       </div>
-
     </div>
   );
 };
 
 export default CoopSelectionPage;
-
-
-
-
