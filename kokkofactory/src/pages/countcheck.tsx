@@ -1,31 +1,36 @@
 import { useEffect, useState } from "react";
 
-// データの型を定義
-interface EggCount {
+type CountData = {
   id: number;
-  coop_id: number; // coop_idをnumber型で定義
-  coop_name: string; // 鶏舎名を追加
+  coop_id: number;
   count: number;
-  weight: number; // 重さを追加
   recorded_at: string;
-}
+  average_weight: number | string; // 文字列または数値で返ってくる可能性があるため、型を変更
+};
 
-export default function CountCheck() {
-  const [data, setData] = useState<EggCount[]>([]); // EggCount型の配列
-  const [error, setError] = useState<string | null>(null); // エラーは文字列かnull
+const CountCheck = () => {
+  const [data, setData] = useState<CountData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   useEffect(() => {
-    // APIからデータを取得
     const fetchData = async () => {
       try {
         const response = await fetch("/api/countcheck");
         if (!response.ok) {
-          throw new Error("データ取得に失敗しました");
+          const errorData = await response.json();
+          setError(errorData.message || "Error fetching data");
+          return;
         }
-        const result: EggCount[] = await response.json(); // 結果をEggCount型で推論
-        setData(result); // データをセット
-      } catch (error) {
-        setError((error as Error).message); // エラーメッセージをセット
+        const result: CountData[] = await response.json();
+        console.log(result); // データを確認
+        setData(result);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to fetch count data.");
       }
     };
 
@@ -33,65 +38,42 @@ export default function CountCheck() {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>卵のカウント確認</h1>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-        }}
-      >
+    <div>
+      <h1>Count Results</h1>
+      <table border={1}>
         <thead>
           <tr>
-            <th style={{ border: "1px solid black", padding: "8px" }}>
-              鶏舎ID
-            </th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>
-              鶏舎名 {/* 鶏舎名を追加 */}
-            </th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>
-              カウント
-            </th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>重さ</th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>
-              記録日時
-            </th>
+            <th>ID</th>
+            <th>Coop ID</th>
+            <th>Count</th>
+            <th>Recorded At</th>
+            <th>Average Weight</th>
           </tr>
         </thead>
         <tbody>
-          {data.length > 0 ? (
-            data.map((row) => (
+          {data.map((row) => {
+            // average_weight を数値に変換
+            const averageWeight = Number(row.average_weight); // 文字列から数値に変換
+
+            return (
               <tr key={row.id}>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {row.coop_id}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {row.coop_name} {/* 鶏舎名を表示 */}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {row.count}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {row.weight} kg
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {new Date(row.recorded_at).toLocaleString()}
+                <td>{row.id}</td>
+                <td>{row.coop_id}</td>
+                <td>{row.count}</td>
+                <td>{new Date(row.recorded_at).toLocaleString()}</td>
+                <td>
+                  {/* averageWeight が有効な数値か確認し、必要に応じて表示 */}
+                  {typeof averageWeight === "number" && !isNaN(averageWeight)
+                    ? `${averageWeight.toFixed(2)} g`
+                    : "N/A"}
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} style={{ textAlign: "center", padding: "8px" }}>
-                データがありません
-              </td>
-            </tr>
-          )}
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
-}
+};
+
+export default CountCheck;
