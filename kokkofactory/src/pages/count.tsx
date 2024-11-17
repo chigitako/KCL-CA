@@ -1,4 +1,3 @@
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Pool } from "pg"; // PostgreSQL用のパッケージをインポート
 
@@ -22,32 +21,6 @@ export default async function handler(
     if (!coopId || count === undefined || weight === undefined) {
       return res.status(400).json({ message: "必要なデータが不足しています" });
     }
-
-import BackButton from "../components/BackButton";
-import AppBar from "../components/AppBar";
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Image from "next/image";
-
-const CountPage: React.FC = () => {
-  const [carton, setCarton] = useState<number>(0); // カートンの個数
-  const [egg, setEgg] = useState<number>(0); // 卵の個数
-  const [total, setTotal] = useState<number>(0); // 合計の卵の個数
-  const [weight, setWeight] = useState<number>(0); // 重さの入力フィールド
-  const [coopId, setCoopId] = useState<number>(1); // 仮で鶏舎IDを設定
-
-  // cartonやeggが変更された時に合計を計算
-  const calculateTotal = () => {
-    setTotal(carton * 30 + egg); // カートン数×30 + 卵の数
-  };
-
-  // cartonやeggが変更されたときに再計算する
-  React.useEffect(() => {
-    calculateTotal();
-  }, [carton, egg]);
-
-
 
     try {
       // PostgreSQLにデータを保存
