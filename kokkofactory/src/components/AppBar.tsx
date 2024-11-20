@@ -6,9 +6,6 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
@@ -16,7 +13,7 @@ type MenuAppBarProps = {
   title: string;
 };
 
-export default function MenuAppBar({title}: MenuAppBarProps) {
+export default function MenuAppBar({ title }: MenuAppBarProps) {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -34,7 +31,7 @@ export default function MenuAppBar({title}: MenuAppBarProps) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ backgroundColor: '#ffca80' }}> {/* ベージュ：ユニバーサルカラー */}
         <Toolbar>
           <IconButton
             size="large"
@@ -45,7 +42,16 @@ export default function MenuAppBar({title}: MenuAppBarProps) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              flexGrow: 1,
+              fontFamily: 'Poppins, sans-serif', // 柔らかい印象のフォント
+              fontSize: '1.5rem', // フォントサイズ調整
+              color: '#fff', // 白色にして明るく
+            }}
+          >
             {title}
           </Typography>
           {auth && (
