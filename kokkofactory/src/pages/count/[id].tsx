@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import HomeButton from "../../components/HomeButton"
 
+
 const CountPage: React.FC = () => {
   const router = useRouter();
   const { id: coopId } = router.query; // URLのパラメータから鶏舎IDを取得
