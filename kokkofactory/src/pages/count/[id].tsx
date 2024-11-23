@@ -5,6 +5,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import HomeButton from "../../components/HomeButton"
+
 
 const CountPage: React.FC = () => {
   const router = useRouter();
@@ -152,10 +154,12 @@ const CountPage: React.FC = () => {
         </div>
       </div>
       <div
-        style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
+        style={{ display: "flex", justifyContent: "space-between", width: "100%", padding: "10px" }}
       >
+        <HomeButton />
         <BackButton />
       </div>
+
     </div>
   );
 };
