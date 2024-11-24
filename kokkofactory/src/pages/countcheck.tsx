@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AppBar from "../components/AppBar";
+import BackButton from "../components/BackButton";
 
 type CountData = {
   id: number;
@@ -76,6 +77,11 @@ const CountCheck = () => {
           })}
         </tbody>
       </table>
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
+      >
+        <BackButton />
+      </div>
     </div>
   );
 };
