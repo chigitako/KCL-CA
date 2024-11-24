@@ -92,8 +92,6 @@ const CoopSelectionPage: React.FC = () => {
         ))}
       </Grid>
 
-      <BackButton />
-
       {/* 戻るボタン */}
       <div
         style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
