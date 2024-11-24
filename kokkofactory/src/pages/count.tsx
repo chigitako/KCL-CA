@@ -15,20 +15,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { coopId, count, weight } = req.body;
+    const { coopId, count, averageWeight } = req.body;
 
     // 必要なデータがない場合、エラーメッセージを返す
-    if (!coopId || count === undefined || weight === undefined) {
+    if (!coopId || count === undefined || averageWeight === undefined) {
       return res.status(400).json({ message: "必要なデータが不足しています" });
     }
 
     try {
       // PostgreSQLにデータを保存
       const query = `
-        INSERT INTO eggs (coop_id, count, weight)
+        INSERT INTO egg_counts (coop_id, count, average_weight)
         VALUES ($1, $2, $3) RETURNING id;
       `;
-      const values = [coopId, count, weight];
+      const values = [coopId, count, averageWeight];
       const result = await pool.query(query, values);
 
       // 保存が成功した場合

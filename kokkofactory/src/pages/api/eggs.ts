@@ -1,4 +1,3 @@
-// pages/api/eggs.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { pool } from "../../../lib/db"; // DB接続
 
@@ -6,7 +5,6 @@ interface RequestBody {
   coopId: number;
   count: number;
   averageWeight: number;
-  totalWeight: number;
 }
 
 interface ResponseData {
@@ -21,13 +19,13 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   if (req.method === "POST") {
-    const { coopId, count, averageWeight, totalWeight }: RequestBody = req.body;
+    const { coopId, count, averageWeight }: RequestBody = req.body;
 
     try {
       // egg_countsテーブルにデータを保存
       const result = await pool.query(
-        "INSERT INTO egg_counts (coop_id, count, average_weight, total_weight, recorded_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING *",
-        [coopId, count, averageWeight, totalWeight] // ここで平均重量も保存
+        "INSERT INTO egg_counts (coop_id, count, average_weight) VALUES ($1, $2, $3) RETURNING *",
+        [coopId, count, averageWeight] // 平均重量のみ保存
       );
 
       // 成功時のレスポンスに保存したデータを返す
