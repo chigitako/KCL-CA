@@ -20,7 +20,7 @@ const CountPage: React.FC = () => {
 
   // cartonやeggが変更された時に合計を計算
   const calculateTotal = () => {
-    const totalEggs = carton * 30 + egg; // カートンから卵の総数を計算
+    const totalEggs = carton * 40 + egg; // カートンから卵の総数を計算
     setTotal(totalEggs);
 
     if (totalEggs > 0 && weight > 0) {
