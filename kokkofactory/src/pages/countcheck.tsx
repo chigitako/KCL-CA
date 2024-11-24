@@ -1,29 +1,37 @@
 import { useEffect, useState } from "react";
+import AppBar from "../components/AppBar";
 
-// データの型を定義
-interface EggCount {
+type CountData = {
   id: number;
-  coop_id: string;
+  coop_id: number;
   count: number;
   recorded_at: string;
-}
+  average_weight: number | string;
+};
 
-export default function CountCheck() {
-  const [data, setData] = useState<EggCount[]>([]); // EggCount型の配列
-  const [error, setError] = useState<string | null>(null); // エラーは文字列かnull
+const CountCheck = () => {
+  const [data, setData] = useState<CountData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   useEffect(() => {
-    // APIからデータを取得
     const fetchData = async () => {
       try {
         const response = await fetch("/api/countcheck");
         if (!response.ok) {
-          throw new Error("データ取得に失敗しました");
+          const errorData = await response.json();
+          setError(errorData.message || "Error fetching data");
+          return;
         }
-        const result: EggCount[] = await response.json(); // 結果をEggCount型で推論
-        setData(result); // データをセット
-      } catch (error) {
-        setError((error as Error).message); // エラーメッセージをセット
+        const result: CountData[] = await response.json();
+        console.log(result); // データを確認
+        setData(result);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to fetch count data.");
       }
     };
 
@@ -32,34 +40,44 @@ export default function CountCheck() {
 
   return (
     <div>
-      <h1>卵のカウント確認</h1>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <table>
+      <AppBar title="集卵　count" />
+      <h1>集卵</h1>
+      <table style={{ borderCollapse: "collapse", width: "100%" }} border={1}>
         <thead>
           <tr>
-            <th>鶏舎ID</th>
-            <th>カウント</th>
-            <th>記録日時</th>
+            <th style={{ padding: "8px" }}>ID</th>
+            <th style={{ padding: "8px" }}>鶏舎番号</th>
+            <th style={{ padding: "8px" }}>数</th>
+            <th style={{ padding: "8px" }}>時間</th>
+            <th style={{ padding: "8px" }}>卵重</th>
           </tr>
         </thead>
         <tbody>
-          {data.length > 0 ? (
-            data.map((row) => (
+          {data.map((row) => {
+            // average_weight を数値に変換
+            const averageWeight = Number(row.average_weight); // 文字列から数値に変換
+
+            return (
               <tr key={row.id}>
-                <td>{row.coop_id}</td>
-                <td>{row.count}</td>
-                <td>{new Date(row.recorded_at).toLocaleString()}</td>
+                <td style={{ padding: "8px" }}>{row.id}</td>
+                <td style={{ padding: "8px" }}>{row.coop_id}</td>
+                <td style={{ padding: "8px" }}>{row.count}</td>
+                <td style={{ padding: "8px" }}>
+                  {new Date(row.recorded_at).toLocaleString()}
+                </td>
+                <td style={{ padding: "8px" }}>
+                  {/* averageWeight が有効な数値か確認し、必要に応じて表示 */}
+                  {typeof averageWeight === "number" && !isNaN(averageWeight)
+                    ? `${averageWeight.toFixed(2)} g`
+                    : "N/A"}
+                </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={3}>データがありません</td>
-            </tr>
-          )}
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
-}
+};
+
+export default CountCheck;
