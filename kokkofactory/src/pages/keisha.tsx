@@ -61,7 +61,17 @@ const CoopSelectionPage: React.FC = () => {
   );
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: "#FFFFF0", // 背景色（画像がない場合に表示される）
+        padding: "20px",
+        minHeight: "100vh",
+        backgroundImage: "url(/images/haikei1.png)", // 画像の URL を指定
+        backgroundSize: "923px 473px", // 背景画像サイズ
+        backgroundPosition: "0 0", // 画像を左上に配置
+        backgroundRepeat: "repeat", // 画像を繰り返し表示
+      }}
+    >
       <AppBar title="鶏舎を選択" />
       <Grid container spacing={2} style={{ padding: "20px" }}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((coopId) => (
