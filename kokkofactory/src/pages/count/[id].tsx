@@ -99,7 +99,7 @@ const CountPage: React.FC = () => {
           }}
         >
           <Image
-            src="/images/egg_transparent.PNG"
+            src="/images/egg_count_2.PNG"
             alt="Egg carton"
             width={100}
             height={100}
@@ -113,7 +113,7 @@ const CountPage: React.FC = () => {
           />
           <span>カートン</span>
           <Image
-            src="/images/egg_kari.jpg"
+            src="/images/egg_count_1.PNG"
             alt="Egg"
             width={100}
             height={100}
@@ -131,7 +131,7 @@ const CountPage: React.FC = () => {
           <div style={{ fontSize: "1.5rem", marginBottom: "10px" }}>
             Total: {total} 個
           </div>
-          <Image src="/images/scale.png" alt="Scale" width={100} height={100} />
+          <Image src="/images/hakari_touka.PNG" alt="Scale" width={100} height={100} />
           <TextField
             variant="outlined"
             style={{ width: "80px" }}

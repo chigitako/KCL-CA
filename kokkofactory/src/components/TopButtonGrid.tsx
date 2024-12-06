@@ -5,8 +5,8 @@ const buttonLabels = [
   { 
     label: '集卵 count', 
     path: '/keisha', 
-    illustrationSrc1: '/images/count-egg.jpg',//通常時の画像
-    illustrationSrc2: '/images/hakari.png',//ホバー時の画像
+    illustrationSrc1: '/images/egg_count_1.PNG',//通常時の画像
+    illustrationSrc2: '/images/egg_count_2.PNG',//ホバー時の画像
   },
   { 
     label: 'サイズ size',
