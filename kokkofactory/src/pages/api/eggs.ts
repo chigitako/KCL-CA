@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { pool } from "../../../lib/db"; // DB接続
+import { pool } from "../../../lib/db"; // データベース接続
 
 interface RequestBody {
-  coopId: number;
+  coopId: number; // coopIdをnumberに変更
   count: number;
-  averageWeight: number;
+  weight: number;
 }
 
 interface ResponseData {
@@ -19,26 +19,20 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   if (req.method === "POST") {
-    const { coopId, count, averageWeight }: RequestBody = req.body;
+    const { coopId, count, weight }: RequestBody = req.body;
 
     try {
-      // egg_countsテーブルにデータを保存
       const result = await pool.query(
-        "INSERT INTO egg_counts (coop_id, count, average_weight) VALUES ($1, $2, $3) RETURNING *",
-        [coopId, count, averageWeight] // 平均重量のみ保存
+        "INSERT INTO egg_counts (coop_id, count, weight, recorded_at) VALUES ($1, $2, $3, NOW())",
+        [coopId, count, weight]
       );
-
-      // 成功時のレスポンスに保存したデータを返す
-      res.status(200).json({
-        message: "データが保存されました",
-        result: result.rows[0], // 保存されたデータを返却
-      });
+      res.status(200).json({ message: "データが保存されました", result });
     } catch (error: any) {
       console.error("データ保存エラー:", error);
       res.status(500).json({
         message: "保存に失敗しました",
         error: error.message,
-        stack: error.stack, // スタックトレースを開発環境でのみ表示
+        stack: error.stack,
       });
     }
   } else {

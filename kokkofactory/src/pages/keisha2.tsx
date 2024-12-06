@@ -15,7 +15,7 @@ const CoopSelectionPage: React.FC = () => {
   }> = ({ label, coopId, style }) => (
     <Button
       variant="contained"
-      onClick={() => router.push(`/coop/${coopId}`)} // 修正: ダイナミックルートへの遷移
+      onClick={() => router.push(`/chicken/${coopId}`)} // ここで動的に遷移
       style={{
         ...style,
         backgroundColor: "rgba(255, 255, 204, 0.7)",
@@ -78,7 +78,7 @@ const CoopSelectionPage: React.FC = () => {
             }}
           >
             <BasicButtons
-              label={`鶏舎 ${coopId}`} // 修正: テンプレートリテラルの中で `${coopId}` を使用
+              label={`鶏舎 ${coopId}`}
               coopId={coopId}
               style={{
                 width: "90%", // ボタンの幅

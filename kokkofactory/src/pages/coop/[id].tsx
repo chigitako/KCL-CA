@@ -1,40 +1,31 @@
-import BackButton from "../../components/BackButton";
-import AppBar from "../../components/AppBar";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import AppBar from "../../components/AppBar";
+import BackButton from "../../components/BackButton";
+import HomeButton from "../../components/HomeButton";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import HomeButton from "../../components/HomeButton"
+import Link from "next/link";
 
-
-const CountPage: React.FC = () => {
+const CountEggsPage: React.FC = () => {
   const router = useRouter();
-  const { id: coopId } = router.query; // URLのパラメータから鶏舎IDを取得
+  const { id: coopId } = router.query; // 鶏舎IDを取得
 
-  const [carton, setCarton] = useState<number>(0); // カートンの個数
-  const [egg, setEgg] = useState<number>(0); // 卵の個数
-  const [total, setTotal] = useState<number>(0); // 合計の卵の個数
-  const [weight, setWeight] = useState<number>(0); // 重さの入力
-  const [averageWeight, setAverageWeight] = useState<number>(0); // 卵1個あたりの平均重量
+  const [carton, setCarton] = useState<number>(0);
+  const [egg, setEgg] = useState<number>(0);
+  const [weight, setWeight] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
+  const [averageWeight, setAverageWeight] = useState<number>(0);
 
-  // cartonやeggが変更された時に合計を計算
-  const calculateTotal = () => {
-    const totalEggs = carton * 40 + egg; // カートンから卵の総数を計算
-    setTotal(totalEggs);
-
-    if (totalEggs > 0 && weight > 0) {
-      const eggWeight = weight / 120; // 1個あたりの平均重量
-      setAverageWeight(eggWeight); // 1個あたりの平均重量を設定
-    } else {
-      setAverageWeight(0); // 卵数が0なら平均は0
-    }
-  };
-
-  // carton, egg, weightが変更されたときに再計算する
+  // coopId がまだ取得されていない場合は画面に「Loading...」を表示
   useEffect(() => {
-    calculateTotal();
-  }, [carton, egg, weight]);
+    if (coopId) {
+      const totalEggs = carton * 40 + egg;
+      setTotal(totalEggs);
+      setAverageWeight(totalEggs > 0 && weight > 0 ? weight / totalEggs : 0);
+    }
+  }, [coopId, carton, egg, weight]);
 
   const handleSave = async () => {
     if (!coopId) {
@@ -43,44 +34,43 @@ const CountPage: React.FC = () => {
     }
 
     try {
-      const coopIdNumber = Number(coopId); // coopIdを数値に変換
-      if (isNaN(coopIdNumber)) {
-        alert("無効な鶏舎IDです");
-        return;
-      }
-
-      const response = await fetch("/api/eggs", {
+      const response = await fetch("/api/egg", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          coopId: coopIdNumber, // coopIdを送信
-          count: total, // 卵の数
-          averageWeight: averageWeight, // 卵1個あたりの平均重量
+          coopId: Number(coopId),
+          count: total,
+          averageWeight,
         }),
       });
 
       const data = await response.json();
-
-      if (response.ok) {
-        alert(data.message); // 成功メッセージ
-      } else {
-        alert(`保存に失敗しました: ${data.message}`); // エラーメッセージ
-      }
+      if (response.ok) alert(data.message);
+      else alert(`保存に失敗しました: ${data.message}`);
     } catch (error) {
-      console.error("エラー:", error);
       alert("保存に失敗しました: サーバーエラー");
     }
   };
 
-  if (!coopId) {
-    return <div>Loading...</div>; // coopIdが取得できるまで待機
-  }
+  // coopIdがまだ取得されていない場合は「Loading...」を表示
+  if (!coopId) return <div>Loading...</div>;
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <AppBar title={`鶏舎 ${coopId} の集卵`} />
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#FFFFF0", // 背景色（画像がない場合に表示される）
+        padding: "20px",
+        minHeight: "100vh",
+        backgroundImage: "url(/images/haikei1.png)", // 画像の URL を指定
+        backgroundSize: "923px 473px", // 背景画像サイズ
+        backgroundPosition: "0 0", // 画像を左上に配置
+        backgroundRepeat: "repeat", // 画像を繰り返し表示
+      }}
+    >
+      <AppBar title={`鶏舎 ${coopId} の卵のカウント`} />
       <div
         style={{
           flex: 1,
@@ -154,14 +144,18 @@ const CountPage: React.FC = () => {
         </div>
       </div>
       <div
-        style={{ display: "flex", justifyContent: "space-between", width: "100%", padding: "10px" }}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+          padding: "10px",
+        }}
       >
         <HomeButton />
         <BackButton />
       </div>
-
     </div>
   );
 };
 
-export default CountPage;
+export default CountEggsPage;
