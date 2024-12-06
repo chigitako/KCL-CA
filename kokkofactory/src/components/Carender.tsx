@@ -3,18 +3,15 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../App.css';
 
-type ValuePiece = Date | null;
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
 type CarenderProps = {
     onDateChange: (date: Date | null) => void; // 親から渡された関数
 };
 
 const Carender: React.FC<CarenderProps> = ({ onDateChange }) => {
-    const [date, setDate] = useState<Value>(new Date());
+    const [date, setDate] = useState<Date | Date[] | null>(new Date());
 
-    const handleDateChange = (value: Value, event: React.MouseEvent<HTMLButtonElement>) => {
-        setDate(value); //選択された日付を状態に保存
+    const handleDateChange = (value: Date | Date[]) => {
+        setDate(value); // 選択された日付を状態に保存
         if (value instanceof Date) {
             onDateChange(value); // 親コンポーネントに選択された日付を通知
         } else {
@@ -22,18 +19,18 @@ const Carender: React.FC<CarenderProps> = ({ onDateChange }) => {
         }
     };
 
-    return(
+    return (
         <div
             style={{
-                textAlign: 'center', //テキストを中央ぞろえ
+                textAlign: 'center', // テキストを中央ぞろえ
+                marginTop: '20px',
             }}
         >
-            <h2>カレンダー</h2>
             <div
                 style={{
                     width: '100%',
-                    maxWidth: '600px', //カレンダーの幅を指定
-                    height: '400px',
+                    maxWidth: '800px', // カレンダーの幅を指定
+                    height: '450px',
                     margin: '0 auto',
                     backgroundColor: '#8B4513',
                     padding: '20px',
@@ -41,13 +38,14 @@ const Carender: React.FC<CarenderProps> = ({ onDateChange }) => {
                     borderRadius: '10px',
                 }}
             >
-                {/* カレンダーを表示 */}
-                <Calendar
-                    onChange={handleDateChange} //日付が指定された時の処理
-                    value={date} //現在選択されている日付
-                    locale="en-US" //曜日を英語に設定
-                    className = "custom-calendar"
-                />
+
+            {/* カレンダーを表示 */}
+            <Calendar
+                onChange={handleDateChange} // 日付が指定された時の処理
+                value={date || undefined} // `null` を `undefined` に変換
+                locale="en-US" // 曜日を英語に設定
+                className="custom-calendar"
+            />
             </div>
         </div>
     );

@@ -1,21 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchWeather, WeatherData } from './WeatherApi';
 
 type DashbordProps = {
-    selectedDate: Date | null; // 親から渡された日付
+    selectedDate: Date | null;
 };
 
 const Dashbord: React.FC<DashbordProps> = ({ selectedDate }) => {
-    return(
-        <div
-            style={{
-                textAlign: 'center', //テキストを中央ぞろえ
-                alignItems: 'flex-start',
-                width: 'calc(100% - 100px)',
-            }}
-        >
-            <h2>
-                ダッシュボード
-            </h2>
+    const [weather, setWeather] = useState<WeatherData | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (selectedDate) {
+            const fetchWeatherData = async () => {
+                setLoading(true);
+                setError(null);
+                try {
+                    const weatherData = await fetchWeather(selectedDate);
+                    setWeather(weatherData);
+                } catch (error) {
+                    setError('天気データの取得に失敗しました。');
+                    setWeather(null);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchWeatherData();
+        }
+    }, [selectedDate]);
+
+    return (
+        <div style={{ textAlign: 'center', width: 'calc(100% - 100px)' }}>
+            <h2>ダッシュボード</h2>
             <div
                 style={{
                     width: '100%',
@@ -33,10 +50,21 @@ const Dashbord: React.FC<DashbordProps> = ({ selectedDate }) => {
                         ? `選択された日付: ${selectedDate.toLocaleDateString()}`
                         : '日付が選択されていません'}
                 </p>
-                <p>ダッシュボードコンテンツは個々に表示されます</p>
+                {loading ? (
+                    <p>天気情報を取得中...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : weather ? (
+                    <div>
+                        <p>気温: {weather.temperature}°C</p>
+                        <p>天気: {weather.weather}</p>
+                    </div>
+                ) : (
+                    <p>天気データが見つかりませんでした。</p>
+                )}
             </div>
         </div>
     );
 };
 
-export default Dashbord;    
+export default Dashbord;
