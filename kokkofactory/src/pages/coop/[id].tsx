@@ -34,9 +34,12 @@ const CountEggsPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/egg", {
+      // APIリクエストの発行
+      const response = await fetch("/api/eggs", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           coopId: Number(coopId),
           count: total,
@@ -45,9 +48,15 @@ const CountEggsPage: React.FC = () => {
       });
 
       const data = await response.json();
-      if (response.ok) alert(data.message);
-      else alert(`保存に失敗しました: ${data.message}`);
+      if (response.ok) {
+        console.log("データが保存されました", data);
+        alert(data.message); // 成功時のメッセージ表示
+      } else {
+        console.error("エラー:", data.message);
+        alert(`エラー: ${data.message}`); // エラーメッセージ表示
+      }
     } catch (error) {
+      console.error("保存に失敗しました:", error);
       alert("保存に失敗しました: サーバーエラー");
     }
   };
