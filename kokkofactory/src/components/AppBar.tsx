@@ -16,7 +16,7 @@ import Menu from "@mui/material/Menu";
 
 
 type MenuAppBarProps = {
-  title: string;
+  title: string | {src: string; alt: string};
 };
 
 export default function MenuAppBar({ title }: MenuAppBarProps) {
@@ -37,40 +37,77 @@ export default function MenuAppBar({ title }: MenuAppBarProps) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: '#ffca80' }}> {/* ベージュ：ユニバーサルカラー */}
-        <Toolbar>
+      <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', }}> {/* ベージュ：ユニバーサルカラー */}
+        <Toolbar
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            position: 'relative', 
+          }}
+        >
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
+            sx={{ 
+              position: 'flex', //アイコン左端
+              left: 0,
+              color: '#8B4513',
+              width: 64,
+              height: 10,
+              top: '8px',
+             }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{fontSize: 64}}/>
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              flexGrow: 1,
-              fontFamily: 'Poppins, sans-serif', // 柔らかい印象のフォント
-              fontSize: '1.5rem', // フォントサイズ調整
-              color: '#fff', // 白色にして明るく
-            }}
-          >
-            {title}
-          </Typography>
+          {typeof title === 'string' ? (
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                flexGrow: 1,
+                fontFamily: 'Poppins, sans-serif', // 柔らかい印象のフォント
+                fontSize: '1.5rem', // フォントサイズ調整
+                color: '#fff', // 白色にして明るく
+                textAlign: 'center',
+              }}
+            >
+              {title}
+            </Typography>
+          ) : (
+            <img
+              src={title.src}
+              alt={title.alt}
+              style={{
+                height: '170px', //ロゴの高さ
+                objectFit: 'contain',
+                display: 'block',
+                margin: 'auto',
+              }}
+            />
+          )}
           {auth && (
             <div>
               <IconButton
                 size="large"
+                edge="start"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
+                sx={{
+                  position: 'flex', //アイコンみぎはじ
+                  right: 0,
+                  color: '#8B4513',
+                  width: 64,
+                  height: 10,
+                  top: '8px'
+                }}
               >
-                <AccountCircle />
+                <AccountCircle style={{fontSize: 64}}/>
               </IconButton>
               <Menu
                 id="menu-appbar"
