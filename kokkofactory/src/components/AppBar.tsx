@@ -41,9 +41,9 @@ export default function MenuAppBar({ title }: MenuAppBarProps) {
         <Toolbar
           sx={{
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'relative',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            position: 'relative', 
           }}
         >
           <IconButton
@@ -52,12 +52,15 @@ export default function MenuAppBar({ title }: MenuAppBarProps) {
             color="inherit"
             aria-label="menu"
             sx={{ 
-              position: 'absolute', //アイコン左端
+              position: 'flex', //アイコン左端
               left: 0,
               color: '#8B4513',
+              width: 64,
+              height: 10,
+              top: '8px',
              }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{fontSize: 64}}/>
           </IconButton>
           {typeof title === 'string' ? (
             <Typography
@@ -89,18 +92,22 @@ export default function MenuAppBar({ title }: MenuAppBarProps) {
             <div>
               <IconButton
                 size="large"
+                edge="start"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
                 sx={{
-                  position: 'absolute', //アイコンみぎはじ
+                  position: 'flex', //アイコンみぎはじ
                   right: 0,
                   color: '#8B4513',
+                  width: 64,
+                  height: 10,
+                  top: '8px'
                 }}
               >
-                <AccountCircle />
+                <AccountCircle style={{fontSize: 64}}/>
               </IconButton>
               <Menu
                 id="menu-appbar"
