@@ -1,68 +1,95 @@
-import * as React from 'react';
-import { Button } from '@mui/material';  // MUIのButtonを使う場合のインポート
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 
 const buttonLabels = [
-  { label: '集卵 count', path: '/keisha', illustrationSrc: '/images/count-egg.jpg' },
-  { label: 'サイズ size', path: '/size', illustrationSrc: '/images/size-egg.jpg' },
-  { label: '鶏 chicken', path: '/chicken', illustrationSrc: '/images/chicken.jpg' }
+  { 
+    label: '集卵 count', 
+    path: '/keisha', 
+    illustrationSrc1: '/images/count-egg.jpg',//通常時の画像
+    illustrationSrc2: '/images/hakari.png',//ホバー時の画像
+  },
+  { 
+    label: 'サイズ size',
+    path: '/size', 
+    illustrationSrc1: '/images/size-egg.jpg',//通常時の画像
+    illustrationSrc2: '/images/hakari.png',//ホバー時の画像
+  },
+  { 
+    label: '鶏 chicken', 
+    path: '/chicken', 
+    illustrationSrc1: '/images/chicken.jpg',
+    illustrationSrc2: '/images/hakari.png',
+  },
 ];
 
 const TopButtonGrid: React.FC = () => {
+  //状態管理のフック
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [imageSrc, setImageSrc] = useState<string>('');
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    //マウスホバー中の処理
+    if(hoveredIndex !== null){
+      setImageSrc(buttonLabels[hoveredIndex].illustrationSrc1);//初期画面
+
+      //画像を交互に切り替え
+      interval = setInterval(() => {
+        setImageSrc((prev) => {
+          return prev === buttonLabels[hoveredIndex].illustrationSrc1
+            ? buttonLabels[hoveredIndex].illustrationSrc2
+            : buttonLabels[hoveredIndex].illustrationSrc1
+        });
+      }, 500); //0.5秒ごとに切り替え
+    } else {
+      // ホバーしていないときは、最初の画像を表示
+      setImageSrc('');
+      if(interval){
+        clearInterval(interval);
+      }
+    }
+
+    return () => {
+      if(interval){
+        clearInterval(interval);
+      }
+    };
+  }, [hoveredIndex]);
+
   return (
     <div
       style={{
         display: 'flex',
-        flexDirection: 'row', // 横並びに変更
-        justifyContent: 'space-evenly', // ボタン間を均等に配置
-        alignItems: 'center', // 水平方向に中央配置
-        height: '100vh', // 画面全体の高さを指定
-        padding: '0 20px', // 左右の余白
-        backgroundColor: '#ffffad', // 淡い黄系の色の背景
+        flexDirection: 'column', // 縦並びに変更
+        justifyContent: 'center', // 中央に寄せる
+        alignItems: 'flex-start', // 上部に寄せる
+        padding: '20px', // 左右の余白
+        gap: '20px', //アイコン間の間隔を設定
+        flexWrap: 'wrap', //小さい画面で折り返しを許可
+        width: '300px',
       }}
     >
       {buttonLabels.map((label, index) => (
         <div
           key={index}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#ffff80', // ボタン背景色：ユニバーサルカラー（クリーム）
-            borderRadius: '15px', // 丸みを帯びた角
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // 影を追加
-            padding: '20px',
-            width: '250px', // ボタンの横幅を大きく
-            textAlign: 'center', // テキストを中央に
-            cursor: 'pointer',
-          }}
+          onMouseEnter={() => setHoveredIndex(index)} //ホバー開始時
+          onMouseLeave={() => setHoveredIndex(null)} //ホバー終了時
         >
-          {/* 文字表記を削除し、アイコン部分のみを表示 */}
-          <img
-            src={label.illustrationSrc}
-            alt={label.label}
-            style={{
-              width: '100px', // アイコンの幅を大きく
-              height: '100px', // アイコンの高さを大きく
-              borderRadius: '10px', // アイコンに角をつける
-              marginBottom: '15px', // アイコンとボタン間に隙間を追加
-            }}
-          />
-          {/* ボタンのサイズを大きく */}
-          <Link href={label.path}>
-            <Button
-              variant="outlined"
-              sx={{
-                width: '100%', // ボタンを親要素の幅いっぱいに
-                height: '70px', // ボタンの高さを大きく
-                fontSize: '1.2rem', // ボタンのフォントサイズを大きく
-                borderRadius: '10px', // ボタンの角を丸く
-                marginTop: '10px', // ボタンとアイコンの間に隙間を追加
+          {/* 画像をクリック可能にする */}
+          <Link href={label.path} passHref>
+            <img
+              src={hoveredIndex === index ? imageSrc : label.illustrationSrc1}
+              alt={label.label}
+              style={{
+                width: '140px', // アイコンの幅を大きく
+                height: '140px', // アイコンの高さを大きく
+                borderRadius: '10px', // アイコンに角をつける
+                marginBottom: '15px', // アイコンとボタン間に隙間を追加
+                cursor: 'pointer', // 画像をクリック可能に
+                transition: '0.3s ease',
               }}
-            >
-              {label.label}
-            </Button>
+            />
           </Link>
         </div>
       ))}

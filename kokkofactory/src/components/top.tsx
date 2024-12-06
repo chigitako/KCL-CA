@@ -29,8 +29,8 @@ const TopPage: React.FC = () => {
         style={{
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'flex-start', //左寄せ
-          marginLeft: '100px',
+          justifyContent: 'center',
+          alignItems: 'center',
           gap: '50px',
         }}
       >
