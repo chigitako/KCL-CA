@@ -11,6 +11,7 @@ export default function BackButton() {
       onClick={() => {
         router.back(); // routerを使って前のページに戻る
       }}
+      sx={{ backgroundColor: '#ffd700' ,color:'#8B4513' }}
     >
       ←(back)
     </Button>
