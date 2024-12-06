@@ -11,6 +11,7 @@ export default function BackButton() {
     <Button
       variant="contained"
       onClick={BackHome}
+      sx={{ backgroundColor: '#ffd700' ,color:'#8B4513' }}
     >
       🏠(top)
     </Button>
