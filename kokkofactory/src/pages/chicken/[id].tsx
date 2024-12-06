@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import AppBar from "../components/AppBar";
-import BackButton from "../components/BackButton";
-import HomeButton from "../components/HomeButton";
+import AppBar from "../../components/AppBar";
+import BackButton from "../../components/BackButton";
+import HomeButton from "../../components/HomeButton";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Image from "next/image";
@@ -69,8 +69,8 @@ const CountDeadChickensPage: React.FC = () => {
       >
         <div style={{ textAlign: "center" }}>
           <Image
-            src="/images/dead-bird.png"
-            alt="Dead Bird"
+            src="/images/chicken.jpg"
+            alt="Dead chicken"
             width={100}
             height={100}
           />
