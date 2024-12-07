@@ -11,7 +11,7 @@ const buttonLabels = [
   {
     label: "サイズ size",
     path: "/size",
-    illustrationSrc1: "/images/size-egg.jpg", //通常時の画像
+    illustrationSrc1: "/images/size1.png", //通常時の画像
     illustrationSrc2: "/images/hakari.png", //ホバー時の画像
   },
   {
