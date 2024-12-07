@@ -73,12 +73,12 @@ const SizePage: React.FC = () => {
 
         <div style={styles.eggContainer}>
           {[
-            { src: "/images/eggLLL.png", label: "LLL 超特大" },
-            { src: "/images/eggLL.png", label: "LL 特大" },
-            { src: "/images/eggL.png", label: "L 大" },
-            { src: "/images/eggM.png", label: "M 中" },
-            { src: "/images/eggS.png", label: "S 小1" },
-            { src: "/images/eggS.png", label: "S 小2" },
+            { src: "/images/egg_LLL.JPG", label: "LLL 超特大" },
+            { src: "/images/egg_LL.JPG", label: "LL 特大" },
+            { src: "/images/egg_L.JPG", label: "L 大" },
+            { src: "/images/egg_m.JPG", label: "M 中" },
+            { src: "/images/egg_s.JPG", label: "S 小1" },
+            { src: "/images/egg_ss.JPG", label: "S 小2" },
           ].map((item, index) => (
             <div key={index} style={styles.eggItem}>
               <Image
