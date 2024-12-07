@@ -1,48 +1,50 @@
-import React, { useState } from 'react';
-import AppBar from "../components/AppBar"; 
+import React, { useState } from "react";
+import AppBar from "../components/AppBar";
 import Button from "@mui/material/Button";
 import Image from "next/image";
+import HomeButton from "../components/HomeButton";
+import BackButton from "../components/BackButton";
 
 const styles: { [key: string]: React.CSSProperties } = {
   eggContainer: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)', // 3列で並べる
-    gap: '16px',
-    padding: '0 16px',
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)", // 3列で並べる
+    gap: "16px",
+    padding: "0 16px",
   },
   eggItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   label: {
-    fontSize: '1rem',
-    textAlign: 'center',
-    marginBottom: '8px',
+    fontSize: "1rem",
+    textAlign: "center",
+    marginBottom: "8px",
   },
   inputContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '8px',
-    width: '100%',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "8px",
+    width: "100%",
   },
   inputRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
   },
   inputBox: {
-    width: '80px',
-    height: '30px',
-    fontSize: '1rem',
-    textAlign: 'center',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
+    width: "80px",
+    height: "30px",
+    fontSize: "1rem",
+    textAlign: "center",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
   },
   unitLabel: {
-    fontSize: '0.9rem',
+    fontSize: "0.9rem",
   },
 };
 
@@ -50,26 +52,33 @@ const SizePage: React.FC = () => {
   return (
     <div
       style={{
-        backgroundColor: '#FFFFF0',
-        padding: '20px',
-        minHeight: '100vh',
-        backgroundImage: 'url(/images/haikei1.png)',
-        backgroundSize: '923px 473px', // 背景画像サイズ
-        backgroundPosition: '0 0', // 画像を左上に配置
-        backgroundRepeat: 'repeat', // 画像を繰り返し表示
+        backgroundColor: "#FFFFF0",
+        padding: "20px",
+        minHeight: "100vh",
+        backgroundImage: "url(/images/haikei1.png)",
+        backgroundSize: "923px 473px", // 背景画像サイズ
+        backgroundPosition: "0 0", // 画像を左上に配置
+        backgroundRepeat: "repeat", // 画像を繰り返し表示
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", margin: 0, padding: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          margin: 0,
+          padding: 0,
+        }}
+      >
         <AppBar title="サイズ size" />
 
         <div style={styles.eggContainer}>
           {[
-            { src: '/images/eggLLL.png', label: 'LLL 超特大' },
-            { src: '/images/eggLL.png', label: 'LL 特大' },
-            { src: '/images/eggL.png', label: 'L 大' },
-            { src: '/images/eggM.png', label: 'M 中' },
-            { src: '/images/eggS.png', label: 'S 小1' },
-            { src: '/images/eggS.png', label: 'S 小2' },
+            { src: "/images/eggLLL.png", label: "LLL 超特大" },
+            { src: "/images/eggLL.png", label: "LL 特大" },
+            { src: "/images/eggL.png", label: "L 大" },
+            { src: "/images/eggM.png", label: "M 中" },
+            { src: "/images/eggS.png", label: "S 小1" },
+            { src: "/images/eggS.png", label: "S 小2" },
           ].map((item, index) => (
             <div key={index} style={styles.eggItem}>
               <Image
@@ -82,11 +91,19 @@ const SizePage: React.FC = () => {
               <label style={styles.label}>{item.label}</label>
               <div style={styles.inputContainer}>
                 <div style={styles.inputRow}>
-                  <input type="number" placeholder="カートン" style={styles.inputBox} />
+                  <input
+                    type="number"
+                    placeholder="カートン"
+                    style={styles.inputBox}
+                  />
                   <span style={styles.unitLabel}>カートン</span>
                 </div>
                 <div style={styles.inputRow}>
-                  <input type="number" placeholder="個" style={styles.inputBox} />
+                  <input
+                    type="number"
+                    placeholder="個"
+                    style={styles.inputBox}
+                  />
                   <span style={styles.unitLabel}>個</span>
                 </div>
               </div>
@@ -99,9 +116,21 @@ const SizePage: React.FC = () => {
             variant="contained"
             color="primary"
             style={{ width: "100px", height: "50px" }}
+            sx={{ backgroundColor: "#ffd700", color: "#8B4513" }}
           >
             Save
           </Button>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              padding: "10px",
+            }}
+          >
+            <HomeButton />
+            <BackButton />
+          </div>
         </div>
       </div>
     </div>
