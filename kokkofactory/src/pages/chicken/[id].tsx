@@ -110,6 +110,7 @@ const CountDeadChickensPage: React.FC = () => {
             color="primary"
             style={{ width: "100px", height: "50px" }}
             onClick={handleSave}
+            sx={{ backgroundColor: "#ffd700", color: "#8B4513" }}
           >
             Save
           </Button>
