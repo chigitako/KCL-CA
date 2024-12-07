@@ -17,7 +17,7 @@ const buttonLabels = [
   {
     label: "鶏 chicken",
     path: "/keisha2",
-    illustrationSrc1: "/images/chicken.jpg",
+    illustrationSrc1: "/images/chicken1.png",
     illustrationSrc2: "/images/hakari.png",
   },
 ];
