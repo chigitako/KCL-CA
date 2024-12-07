@@ -56,20 +56,7 @@ const CountDeadChickensPage: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#FFFFF0", // 背景色（画像がない場合に表示される）
-        padding: "20px",
-        minHeight: "100vh",
-        backgroundImage: "url(/images/haikei1.png)", // 画像の URL を指定
-        backgroundSize: "923px 473px", // 背景画像サイズ
-        backgroundPosition: "0 0", // 画像を左上に配置
-        backgroundRepeat: "repeat", // 画像を繰り返し表示
-      }}
-    >
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <AppBar title={`鶏舎 ${coopId} の死んだ鶏のカウント`} />
       <div
         style={{
@@ -80,15 +67,7 @@ const CountDeadChickensPage: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <div
-          style={{
-            textAlign: "center",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "10px",
-          }}
-        >
+        <div style={{ textAlign: "center" }}>
           <Image
             src="/images/chicken.jpg"
             alt="Dead chicken"
@@ -110,7 +89,6 @@ const CountDeadChickensPage: React.FC = () => {
             color="primary"
             style={{ width: "100px", height: "50px" }}
             onClick={handleSave}
-            sx={{ backgroundColor: "#ffd700", color: "#8B4513" }}
           >
             Save
           </Button>
