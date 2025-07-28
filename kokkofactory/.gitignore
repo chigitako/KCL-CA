@@ -44,3 +44,5 @@ next-env.d.ts
 .DS_Store
 ../kkokko/
 node_modules/
+
+/generated/prisma

@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//卵の数
+model Egg_counts {
+    id Int @id@default(autoincrement())@map("egg_id")
+    coop_id Int
+    count Int
+    recorded_at DateTime @default(now())
+    average_weight Float? 
+
+    @@map("egg_counts")
+}
