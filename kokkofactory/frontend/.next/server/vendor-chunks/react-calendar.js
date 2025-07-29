@@ -10,10 +10,10 @@ exports.id = "vendor-chunks/react-calendar";
 exports.ids = ["vendor-chunks/react-calendar"];
 exports.modules = {
 
-/***/ "./node_modules/react-calendar/dist/Calendar.css":
-/*!*******************************************************!*\
-  !*** ./node_modules/react-calendar/dist/Calendar.css ***!
-  \*******************************************************/
+/***/ "../node_modules/react-calendar/dist/Calendar.css":
+/*!********************************************************!*\
+  !*** ../node_modules/react-calendar/dist/Calendar.css ***!
+  \********************************************************/
 /***/ (() => {
 
 

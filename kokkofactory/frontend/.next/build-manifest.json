@@ -26,16 +26,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/coop/[id]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/coop/[id].js"
-    ],
-    "/keisha": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/keisha.js"
-    ],
     "/top": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
