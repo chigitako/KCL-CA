@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.app.api.v1.endpoints  import eggs
+from app.api.v1.endpoints  import eggs
 
 print("Hello World")
 
