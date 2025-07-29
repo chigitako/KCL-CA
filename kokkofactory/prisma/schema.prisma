@@ -24,3 +24,15 @@ model Egg_counts {
 
     @@map("egg_counts")
 }
+
+//気温等デバイス関連のテーブル
+model Sensor_weather_logs {
+  coop_id Int @id@default(autoincrement())@map("coop_id")
+  temperature Float
+  humidity Float
+  water_temperature Float
+  ammonia_concentration Float
+  recorded_at DateTime @default(now())
+
+  @@map("sensor_weather_logs")
+}
