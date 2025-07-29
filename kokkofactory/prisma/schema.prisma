@@ -22,17 +22,31 @@ model Egg_counts {
     recorded_at DateTime @default(now())
     average_weight Float? 
 
+    coop Chicken_coops @relation(fields:[coop_id],references:[coop_id])
     @@map("egg_counts")
+}
+
+//鶏舎テーブル
+model Chicken_coops {
+  coop_id Int @id@default(autoincrement())@map("coop_id")
+  device_number Int
+
+  eggCounts Egg_counts[]
+  sensorLogs Sensor_weather_logs[]
+
+  @@map("chicken_coops")
 }
 
 //気温等デバイス関連のテーブル
 model Sensor_weather_logs {
-  coop_id Int @id@default(autoincrement())@map("coop_id")
+  id Int @id@default(autoincrement())
+  coop_id Int
   temperature Float
   humidity Float
   water_temperature Float
   ammonia_concentration Float
   recorded_at DateTime @default(now())
+  coop Chicken_coops @relation(fields:[coop_id],references:[coop_id])
 
   @@map("sensor_weather_logs")
 }
