@@ -1,5 +1,7 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import auth, items, eggs
+from .api.v1.endpoints import eggs
+
+print("Hello World")
 
 app = FastAPI(
     title="養鶏場管理API",
