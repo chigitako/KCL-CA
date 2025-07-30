@@ -1,5 +1,5 @@
 // next.config.js
-const path = require("path");
+/*const path = require("path");
 
 module.exports = {
   webpack(config, { isServer }) {
@@ -15,4 +15,28 @@ module.exports = {
 
     return config;
   },
+};*/
+// next.config.ts
+import path from "path";
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  webpack(config, { isServer }) {
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve?.alias,
+        "@": path.resolve(__dirname, "src"),
+      },
+    };
+
+    if (!isServer) {
+      // クライアント専用設定はここに書いてにょ✨
+    }
+
+    return config;
+  },
 };
+
+export default nextConfig;
+
