@@ -1,0 +1,5 @@
+webページの基本スタイルを書いてるにょ
+page.txtは一番初めに訪れるページにょ
+
+左にプルタブを設置…div className={baseStyles.leftPulltab},div className={baseStyles.srideMenu}
+ページ本体       …div className={baseStyles.main}
