@@ -24,30 +24,5 @@ font-family: var(--font-geist-sans);
 
 }
 
-.leftPulltab{
-    position: fixed;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    background-color: #ffcc00;
-    padding: 10px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    cursor: pointer;
-    user-select: none;
-    z-index: 1000;
-}
 
-.srideMenu{
-    position: fixed;
-    top: 0;
-    left: -200px; /* 初期は隠す */
-    width: 200px;
-    height: 100vh;
-    background-color: #ffee66;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-    transition: left 0.3s ease;
-    padding: 20px;
-    z-index: 999;
-}
 
