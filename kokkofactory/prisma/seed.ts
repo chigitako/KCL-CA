@@ -1,99 +1,89 @@
-// prisma/seed.ts
-import { PrismaClient } from '../generated/prisma'; // output設定に合わせてこのパスにしています
+import { PrismaClient } from '../generated/prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function main() {
-  console.log('--- シード処理を開始します --- 🌱');
+  console.log('Start seeding...')
+  //データをリセット
+  await prisma.shipment.deleteMany()
+  await prisma.customer.deleteMany()
+  await prisma.deadChicken.deleteMany()
+  await prisma.egg.deleteMany()
+  await prisma.loginInfo.deleteMany()
 
-  try {
-    // 1. 既存のデータをクリーンアップ (開発用なので毎回リセットする想定)
-    // 依存関係のあるテーブルから順に削除 (外部キー制約のため)
-    // 子テーブルから削除 -> 親テーブルを削除 の順になります
-    await prisma.egg_counts.deleteMany({});
-    await prisma.sensor_weather_logs.deleteMany({});
-    await prisma.chicken_coops.deleteMany({}); // 親テーブルも削除
+  // ログイン情報の投入
+  await prisma.loginInfo.createMany({
+    data: [
+      { login_type: '生産', password: 'production_password_hash' },
+      { login_type: '経営', password: 'business_password_hash' },
+      { login_type: '出荷準備', password: 'shipping_password_hash' },
+      { login_type: '事務', password: 'office_password_hash' },
 
-    console.log('既存のデータを全てクリアしました。🧹');
+    ],
+  })
 
-    // --- 2. Chicken_coops データ (依存元のため最初に作成) ---
-    // coop_id = 1 と coop_id = 2 の鶏舎を作成します
-    const coop1 = await prisma.chicken_coops.create({
-      data: {
-        device_number: 101, // デバイス番号
+  // 卵の生産記録の投入
+  await prisma.egg.createMany({
+    data: [
+      { coop_number: 1, date: new Date('2025-09-15T08:00:00Z'), count: 1200 },
+      { coop_number: 2, date: new Date('2025-09-15T08:00:00Z'), count: 1500 },
+      { coop_number: 1, date: new Date('2025-09-16T08:00:00Z'), count: 1250 },
+    ],
+  })
+
+  // 死んだ鶏の数の記録の投入
+  await prisma.deadChicken.createMany({
+    data: [
+      { coop_number: 1, date: new Date('2025-09-15T09:00:00Z'), count: 5, cause_of_death: '病気' },
+      { coop_number: 2, date: new Date('2025-09-15T09:00:00Z'), count: 2, cause_of_death: '事故' },
+    ],
+  })
+
+  // 取引先情報の投入
+  const customer1 = await prisma.customer.create({
+    data: {
+      name: 'スーパーマーケットA',
+      address: '東京都千代田区1-1-1',
+      phone_number: '03-1234-5678',
+      email: 'a@example.com',
+    },
+  })
+
+  const customer2 = await prisma.customer.create({
+    data: {
+      name: 'レストランB',
+      address: '東京都中央区2-2-2',
+      phone_number: '03-9876-5432',
+      email: 'b@example.com',
+    },
+  })
+
+  // 出荷情報の投入
+  await prisma.shipment.createMany({
+    data: [
+      {
+        customerId: customer1.id,
+        shipment_date: new Date('2025-09-16T10:00:00Z'),
+        shipped_count: 500,
+        remaining_count: 750,
       },
-    });
-    const coop2 = await prisma.chicken_coops.create({
-      data: {
-        device_number: 102,
+      {
+        customerId: customer2.id,
+        shipment_date: new Date('2025-09-16T11:00:00Z'),
+        shipped_count: 300,
+        remaining_count: 450,
       },
-    });
-    console.log(`鶏舎データを作成しました: ${coop1.coop_id}, ${coop2.coop_id}`);
+    ],
+  })
 
-    // --- 3. Egg_counts データ (Chicken_coopsに依存) ---
-    await prisma.egg_counts.createMany({
-      data: [
-        {
-          coop_id: coop1.coop_id, // 作成したcoop_idを使用
-          count: 10,
-          average_weight: 55.2,
-          // recorded_at は @default(now()) で自動設定される
-        },
-        {
-          coop_id: coop1.coop_id,
-          count: 12,
-          average_weight: 58.1,
-        },
-        {
-          coop_id: coop2.coop_id,
-          count: 8,
-          average_weight: 50.0,
-        },
-      ],
-    });
-    console.log('卵の数データを追加しました。🥚');
-
-    // --- 4. Sensor_weather_logs データ (Chicken_coopsに依存) ---
-    await prisma.sensor_weather_logs.createMany({
-      data: [
-        {
-          coop_id: coop1.coop_id, // 作成したcoop_idを使用
-          temperature: 25.5,
-          humidity: 60.3,
-          water_temperature: 28.1,
-          ammonia_concentration: 5.2,
-          // recorded_at は @default(now()) で自動設定される
-        },
-        {
-          coop_id: coop1.coop_id,
-          temperature: 26.1,
-          humidity: 62.0,
-          water_temperature: 29.5,
-          ammonia_concentration: 5.5,
-        },
-        {
-          coop_id: coop2.coop_id,
-          temperature: 24.0,
-          humidity: 58.5,
-          water_temperature: 27.0,
-          ammonia_concentration: 4.8,
-        },
-      ],
-    });
-    console.log('センサーログデータを追加しました。🌡️');
-
-    console.log('--- シード処理が完了しました！✨ ---');
-
-  } catch (error) {
-    // エラーが発生した場合にコンソールに出力
-    console.error('シード中にエラーが発生しました:', error);
-    // プロセスをエラー終了させる
-    process.exit(1);
-  } finally {
-    // 処理の最後にデータベース接続を閉じる
-    await prisma.$disconnect();
-  }
+  console.log('Seeding finished.')
 }
 
-// main 関数を実行
-main();
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
