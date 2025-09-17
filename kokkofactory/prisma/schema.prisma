@@ -14,39 +14,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//ログイン情報
+model LoginInfo {
+  id         Int    @id @default(autoincrement())
+  login_type String // 種別
+  password   String //パスワード
+}
+
 //卵の数
-model Egg_counts {
-    id Int @id@default(autoincrement())@map("egg_id")
-    coop_id Int
-    count Int
-    recorded_at DateTime @default(now())
-    average_weight Float? 
-
-    coop Chicken_coops @relation(fields:[coop_id],references:[coop_id])
-    @@map("egg_counts")
+model Egg {
+  id           Int      @id @default(autoincrement())
+  coop_number  Int      // 鶏舎番号
+  date         DateTime @default(now())
+  count        Int      // 個数
 }
 
-//鶏舎テーブル
-model Chicken_coops {
-  coop_id Int @id@default(autoincrement())@map("coop_id")
-  device_number Int
-
-  eggCounts Egg_counts[]
-  sensorLogs Sensor_weather_logs[]
-
-  @@map("chicken_coops")
+//死んだ鶏の数
+model DeadChicken {
+  id           Int      @id @default(autoincrement())
+  coop_number  Int      // 鶏舎番号
+  date         DateTime @default(now())
+  count        Int      // 死んだ鶏の数
+  cause_of_death String // 死因
 }
 
-//気温等デバイス関連のテーブル
-model Sensor_weather_logs {
-  id Int @id@default(autoincrement())
-  coop_id Int
-  temperature Float
-  humidity Float
-  water_temperature Float
-  ammonia_concentration Float
-  recorded_at DateTime @default(now())
-  coop Chicken_coops @relation(fields:[coop_id],references:[coop_id])
+//取引先情報
+model Customer {
+  id            Int     @id @default(autoincrement())
+  name          String  @unique // 取引先名
+  address       String?
+  phone_number  String?
+  email         String?
+  // 出荷情報とのリレーション
+  shipments     Shipment[]
+}
 
-  @@map("sensor_weather_logs")
+//出荷情報
+model Shipment {
+  id             Int      @id @default(autoincrement())
+  // 取引先とのリレーション
+  customer       Customer @relation(fields: [customerId], references: [id])
+  customerId     Int      // 取引先No
+  shipment_date  DateTime @default(now()) // 出荷日
+  shipped_count  Int      // 出荷個数
+  remaining_count Int      // 残り個数
 }
