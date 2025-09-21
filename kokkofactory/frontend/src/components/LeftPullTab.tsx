@@ -28,6 +28,12 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
         <Link href="/web/environment">
           <button className="buttonStyle">環境 🌎</button>
         </Link>
+        <Link href="/web/shipment">
+          <button className="buttonStyle">注文・売上</button>
+        </Link>
+        <Link href="/web/customers">
+          <button className="buttonStyle">取引先名簿</button>
+        </Link>
       </div>
 
       {/* ページ本体 */}

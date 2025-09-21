@@ -1,8 +1,6 @@
 {
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/api/customers/route": "app/api/customers/route.js",
   "/page": "app/page.js",
-  "/web/shipment/page": "app/web/shipment/page.js",
-  "/web/customers/page": "app/web/customers/page.js",
-  "/web/shipment/new/page": "app/web/shipment/new/page.js"
+  "/web/page": "app/web/page.js",
+  "/web/customers/page": "app/web/customers/page.js"
 }

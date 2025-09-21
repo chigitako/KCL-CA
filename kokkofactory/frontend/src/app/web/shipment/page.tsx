@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import LeftPullTab from "@components/LeftPullTab";
+
 
 // APIから取得するデータの型を定義（配列を想定）
 interface ShipmentDetails {
@@ -41,6 +43,7 @@ export default function WebPage() {
   if (error) return <div>エラー: {error}</div>;
 
   return (
+    <LeftPullTab>
     <div>
       <h1>出荷情報一覧</h1>
       {shipments.length === 0 ? (
@@ -72,5 +75,6 @@ export default function WebPage() {
         </table>
       )}
     </div>
+    </LeftPullTab>
   );
 }

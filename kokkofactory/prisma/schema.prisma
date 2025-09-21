@@ -53,7 +53,7 @@ model Customer {
 model Shipment {
   id             Int      @id @default(autoincrement())
   // 取引先とのリレーション
-  customer       Customer @relation(fields: [customerId], references: [id])
+  customer       Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId     Int      // 取引先No
   shipment_date  DateTime @default(now()) // 出荷日
   shipped_count  Int      // 出荷個数
