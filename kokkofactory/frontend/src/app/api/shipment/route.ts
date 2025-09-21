@@ -78,3 +78,47 @@ export async function GET(request: Request) {
     }
   }
 }
+
+// POSTリクエスト（データ作成）の処理
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { customerName, phone_number, email, address, shipment_date, shipped_count, remaining_count } = body;
+
+    if (!customerName || !shipped_count || !remaining_count) {
+      return NextResponse.json({ error: 'Required fields are missing.' }, { status: 400 });
+    }
+
+    let customer = await prisma.customer.findUnique({
+      where: { name: customerName },
+    });
+
+    if (!customer) {
+      customer = await prisma.customer.create({
+        data: {
+          name: customerName,
+          phone_number: phone_number || null,
+          email: email || null,
+          address: address || null,
+        },
+      });
+    }
+
+    const newShipment = await prisma.shipment.create({
+      data: {
+        customerId: customer.id,
+        shipped_count,
+        remaining_count,
+        shipment_date: shipment_date ? new Date(shipment_date) : new Date(),
+      },
+    });
+
+    return NextResponse.json(newShipment, { status: 201 });
+  } catch (error) {
+    console.error('Error creating new shipment:', error);
+    return NextResponse.json(
+      { error: 'Failed to create new shipment.' },
+      { status: 500 }
+    );
+  }
+}
