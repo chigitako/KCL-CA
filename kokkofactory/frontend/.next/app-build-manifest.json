@@ -11,23 +11,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/web/page": [
+    "/web/shipment/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/web/page.css",
-      "static/chunks/app/web/page.js"
+      "static/chunks/app/web/shipment/page.js"
     ],
-    "/web/chicken/page": [
+    "/api/shipment/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/web/chicken/page.css",
-      "static/chunks/app/web/chicken/page.js"
+      "static/chunks/app/api/shipment/route.js"
     ],
-    "/web/environment/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/web/environment/page.css",
-      "static/chunks/app/web/environment/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }
