@@ -1,0 +1,183 @@
+/*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./src/app/web/stock/page.module.css ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************/
+/* ページ全体のスタイル */
+.page_container__cvNVI {
+  padding: 20px;
+  max-width: 1200px; /* 画像に合わせて幅を広げたよ */
+  margin: auto;
+}
+
+/* ヘッダー部分のスタイル */
+.page_header__GvKWI {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.page_newButton__RHahb {
+  padding: 8px 16px;
+  background-color: #f0f0f0; /* 新規作成ボタンの色を合わせたよ */
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 検索フォームのスタイル */
+.page_searchForm__yrecA {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* 検索ボタンを右に寄せたよ */
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.page_searchInput__w93CX {
+  flex-grow: 1; /* 入力欄が均等に広がるようにしたよ */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.page_searchButton__gbi6n, .page_clearButton__16PPC {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.page_searchButton__gbi6n {
+  background-color: #e0e0e0;
+}
+
+.page_clearButton__16PPC {
+  background-color: #f0f0f0;
+}
+
+/* テーブルのスタイル */
+.page_supplierTable__kAuK_ {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.page_tableHeader__l9OvF {
+  background-color: #f2f2f2;
+}
+
+.page_tableHeader__l9OvF th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.page_tableRow__UOICU {
+  border-bottom: 1px solid #eee;
+}
+
+.page_tableRow__UOICU:nth-child(even) {
+  background-color: #fcfcfc;
+}
+
+.page_tableRow__UOICU td {
+  padding: 12px;
+  vertical-align: top;
+}
+
+/* 在庫が0個の場合のスタイル */
+.page_zeroStockRow__Qsa4o {
+  background-color: #ffeaea; /* 薄い赤色 */
+}
+
+/* 在庫数とボタンのセル */
+.page_stockCell___4IDh {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* ボタンとテキストの間隔 */
+}
+
+.page_updateButton__6ml3i {
+  padding: 4px 8px;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+}
+
+/* その他 */
+.page_loading__M7Y_H, .page_error__QFxav, .page_noData__fmqwM {
+  padding: 20px;
+  text-align: center;
+}
+
+.page_error__QFxav {
+  color: #ff0000;
+}
+/*!******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/components/LeftPullTab.css ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************/
+/* src/components/LeftPullTab.css */
+.leftPullTab {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background-color: #ffcc00;
+  padding: 10px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  z-index: 1000;
+}
+
+.slideMenu {
+  position: fixed;
+  top: 0;
+  left: -200px;
+  width: 200px;
+  height: 100vh;
+  background-color: #ffee66;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  transition: left 0.3s ease;
+  padding: 20px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.slideMenu.open {
+  left: 0;
+}
+
+.buttonStyle {
+  background-color: #ffdd44;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.main {
+  transition: margin-left 0.3s ease;
+  padding: 20px;
+}
+
+.main.shifted {
+  margin-left: 200px;
+}
+

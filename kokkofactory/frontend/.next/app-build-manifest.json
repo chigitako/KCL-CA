@@ -27,6 +27,40 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/api/customers/route.js"
+    ],
+    "/web/shipment/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/shipment/page.css",
+      "static/chunks/app/web/shipment/page.js"
+    ],
+    "/api/shipment/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/shipment/route.js"
+    ],
+    "/web/customers/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/customers/new/page.css",
+      "static/chunks/app/web/customers/new/page.js"
+    ],
+    "/web/stock/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/stock/page.css",
+      "static/chunks/app/web/stock/page.js"
+    ],
+    "/api/stock/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/stock/route.js"
+    ],
+    "/web/stock/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/stock/new/page.css",
+      "static/chunks/app/web/stock/new/page.js"
     ]
   }
 }

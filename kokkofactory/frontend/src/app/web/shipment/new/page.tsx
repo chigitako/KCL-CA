@@ -18,7 +18,6 @@ export default function NewShipmentPage() {
     email: '',
     address: '',
     shipped_count: '',
-    remaining_count: '',
     shipment_date: new Date().toISOString().split('T')[0],
   });
   const [message, setMessage] = useState('');
@@ -87,7 +86,6 @@ export default function NewShipmentPage() {
       const payload = {
         ...formData,
         shipped_count: parseInt(formData.shipped_count),
-        remaining_count: parseInt(formData.remaining_count),
       };
 
       const response = await fetch('/api/shipments', {
@@ -111,7 +109,6 @@ export default function NewShipmentPage() {
         email: '',
         address: '',
         shipped_count: '',
-        remaining_count: '',
         shipment_date: new Date().toISOString().split('T')[0],
       });
       setIsCustomerNew(true);
@@ -183,15 +180,6 @@ export default function NewShipmentPage() {
           name="shipped_count"
           placeholder="出荷個数"
           value={formData.shipped_count}
-          onChange={handleChange}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="number"
-          name="remaining_count"
-          placeholder="残り個数"
-          value={formData.remaining_count}
           onChange={handleChange}
           required
           style={inputStyle}

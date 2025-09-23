@@ -108,7 +108,6 @@ export async function POST(request: Request) {
       data: {
         customerId: customer.id,
         shipped_count,
-        remaining_count,
         shipment_date: shipment_date ? new Date(shipment_date) : new Date(),
       },
     });
