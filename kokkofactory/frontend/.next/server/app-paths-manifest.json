@@ -1,8 +1,10 @@
 {
+  "/api/customers/route": "app/api/customers/route.js",
+  "/api/shipment/route": "app/api/shipment/route.js",
   "/api/stock/route": "app/api/stock/route.js",
-  "/web/page": "app/web/page.js",
-  "/web/customers/page": "app/web/customers/page.js",
   "/web/shipment/page": "app/web/shipment/page.js",
   "/web/stock/page": "app/web/stock/page.js",
-  "/web/stock/new/page": "app/web/stock/new/page.js"
+  "/web/page": "app/web/page.js",
+  "/web/customers/page": "app/web/customers/page.js",
+  "/page": "app/page.js"
 }
