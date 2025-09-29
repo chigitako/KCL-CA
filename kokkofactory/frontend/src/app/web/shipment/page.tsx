@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import LeftPullTab from "@components/LeftPullTab";
+import styles from './page.module.css'; // CSSファイルをインポート
 
 
 // APIから取得するデータの型を定義（配列を想定）
@@ -17,6 +19,11 @@ export default function WebPage() {
   const [shipments, setShipments] = useState<ShipmentDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); 
+
+  const handleShowGraph = () => {
+    router.push('/web/shipment/graph');
+  };
 
   useEffect(() => {
     const fetchShipments = async () => {
@@ -44,37 +51,40 @@ export default function WebPage() {
 
   return (
     <LeftPullTab>
-    <div>
-      <h1>出荷情報一覧</h1>
-      {shipments.length === 0 ? (
-        <p>出荷情報がありません。</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>取引先</th>
-              <th>出荷日</th>
-              <th>出荷個数</th>
-              <th>住所</th>
-              <th>電話番号</th>
-              <th>メール</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shipments.map((shipment, index) => (
-              <tr key={index}>
-                <td>{shipment.vendor}</td>
-                <td>{new Date(shipment.shipmentDate).toLocaleDateString()}</td>
-                <td>{shipment.shippedCount}</td>
-                <td>{shipment.address || '情報なし'}</td>
-                <td>{shipment.phoneNumber || '情報なし'}</td>
-                <td>{shipment.email || '情報なし'}</td>
+      <div>
+        <h1>出荷情報一覧</h1>
+        <button className={styles.createGraph} onClick={handleShowGraph}>
+          グラフを作成
+        </button>
+        {shipments.length === 0 ? (
+          <p>出荷情報がありません。</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>取引先</th>
+                <th>出荷日</th>
+                <th>出荷個数</th>
+                <th>住所</th>
+                <th>電話番号</th>
+                <th>メール</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+            </thead>
+            <tbody>
+              {shipments.map((shipment, index) => (
+                <tr key={index}>
+                  <td>{shipment.vendor}</td>
+                  <td>{new Date(shipment.shipmentDate).toLocaleDateString()}</td>
+                  <td>{shipment.shippedCount}</td>
+                  <td>{shipment.address || '情報なし'}</td>
+                  <td>{shipment.phoneNumber || '情報なし'}</td>
+                  <td>{shipment.email || '情報なし'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </LeftPullTab>
   );
 }

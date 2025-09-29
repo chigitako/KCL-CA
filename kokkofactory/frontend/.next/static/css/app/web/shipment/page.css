@@ -56,3 +56,19 @@
   margin-left: 200px;
 }
 
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./src/app/web/shipment/page.module.css ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+.page_createGraph__8zJzY {
+  padding: 0.5rem 1rem;
+  background-color: #ffd700; /* 黄色で目立たせる例 */
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+.page_createGraph__8zJzY:hover {
+  background-color: #ffc700;
+}
+
+
