@@ -28,113 +28,173 @@ const Loader = () => (
   </svg>
 );
 
+type DataType = 'egg' | 'deathchicken';
+
 // --- Component ---
-export default function EggInputFormPage() {
+export default function ChickenFarmDataPage() {
   
+  const [dataType, setDataType] = useState<DataType>('egg'); // 採卵 or 死鶏
   const [coopNumber, setCoopNumber] = useState(1);
-  // 文字列として管理することで、NaNエラーを回避
   const [countString, setCountString] = useState('0'); 
+  const [causeOfDeath, setCauseOfDeath] = useState(''); // 死鶏の場合のみ使用
   const [isLoading, setIsLoading] = useState(false);
   
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
 
+  // フォームが切り替わったときにメッセージと死因をリセット
+  const handleTypeChange = useCallback((newType: DataType) => {
+    setDataType(newType);
+    setMessage(null);
+    setMessageType('');
+    setCauseOfDeath('');
+    setCountString('0');
+  }, []);
+
   /**
-   * フォーム送信時の処理。/api/chickenにデータをPOSTします。
+   * フォーム送信時の処理。選択されたデータタイプに応じてAPIを切り替えます。
    */
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
     setMessageType('');
     
-    // 文字列を数値に変換。空文字列の場合は0として扱う
     const count = parseInt(countString || '0', 10);
 
-    // クライアントサイドでの基本的なバリデーション
+    // 1. 基本的なバリデーション
     if (coopNumber < 1 || coopNumber > 9) {
       setMessage('エラー: 鶏舎番号を1から9の中から選択してください。');
       setMessageType('error');
       return;
     }
     
-    // NaNまたは0以下のチェック
-    if (isNaN(count) || count <= 0) {
-      setMessage('エラー: 個数は0より大きい数値を入力してください。');
+    if (isNaN(count) || count < 0) {
+      setMessage(`エラー: ${dataType === 'egg' ? '個数' : '羽数'}は0以上の数値を入力してください。`);
+      setMessageType('error');
+      return;
+    }
+    
+    // 採卵の場合、個数は1以上を要求
+    if (dataType === 'egg' && count <= 0) {
+      setMessage('エラー: 採卵個数は1以上の数値を入力してください。');
+      setMessageType('error');
+      return;
+    }
+
+    // 死鶏の場合、死因をチェック
+    if (dataType === 'deathchicken' && !causeOfDeath.trim()) {
+      setMessage('エラー: 死因は必須入力です。');
       setMessageType('error');
       return;
     }
     
     setIsLoading(true);
 
+    // 2. APIパスとペイロードの決定
+    const apiPath = `/api/${dataType}`;
+    const payload: { [key: string]: any } = {
+      coop_number: coopNumber,
+      count: count,
+    };
+    
+    if (dataType === 'deathchicken') {
+      payload.cause_of_death = causeOfDeath.trim();
+    }
+
     try {
-      const apiPath = '/api/egg'; 
-      
       const response = await fetch(apiPath, { 
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          coop_number: coopNumber,
-          count: count, 
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
-      // APIからのレスポンスをJSONとして解析
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        // 404の場合、JSONではないHTMLが返ってくるため、ここで捕捉する
         throw new Error(`サーバーから不正な応答がありました。APIパス (${apiPath}) を確認してください。`);
       }
       
       const data = await response.json();
 
       if (response.ok) {
-        // 成功時の処理
-        setMessage(`鶏舎 ${coopNumber} の卵 ${count} 個を記録しました！`);
+        let successMessage = '';
+        if (dataType === 'egg') {
+          successMessage = `✅ 鶏舎 ${coopNumber} の卵 ${count} 個を記録しました！`;
+        } else {
+          successMessage = `✅ 鶏舎 ${coopNumber} の死んだ鶏 ${count} 羽（死因: ${causeOfDeath}）を記録しました！`;
+        }
+        setMessage(successMessage);
         setMessageType('success');
-        // 成功したら個数入力をリセット
-        setCountString('0');
+        setCountString('0'); // 成功したら個数入力をリセット
+        setCauseOfDeath('');
       } else {
-        // API側で発生したエラー（4xx, 5xxなど）の処理
-        setMessage(`登録に失敗しました: ${data.message || '不明なエラー'}`);
+        setMessage(`❌ 登録に失敗しました: ${data.message || '不明なエラー'}`);
         setMessageType('error');
       }
     } catch (error) {
-      // ネットワークエラー、JSON解析エラーなどのキャッチ
       console.error('API通信エラー:', error);
       // @ts-ignore
-      setMessage(`API通信エラーが発生しました: ${error.message}`);
+      setMessage(`💔 API通信エラーが発生しました: ${error.message}`);
       setMessageType('error');
     } finally {
       setIsLoading(false);
     }
-  }, [coopNumber, countString]); 
+  }, [coopNumber, countString, causeOfDeath, dataType]); 
 
   // メッセージのクラスを動的に決定
   const messageClasses = useMemo(() => {
     if (messageType === 'success') {
-      return 'bg-pink-100 text-pink-700 border-pink-500';
+      // 卵はピンク、死鶏は赤（成功は緑）
+      return 'bg-green-100 text-green-700 border-green-500'; 
     } else if (messageType === 'error') {
       return 'bg-red-100 text-red-700 border-red-500';
     }
     return '';
   }, [messageType]);
 
+  // テーマカラーを決定
+  const themeColor = dataType === 'egg' ? 'pink' : 'red';
+  const headerText = dataType === 'egg' ? '採卵データ登録' : '死んだ鶏の記録';
+  const headerIcon = dataType === 'egg' ? '🥚' : '💀';
+  const labelText = dataType === 'egg' ? '採集された卵の個数' : '死んだ鶏の羽数';
+  const buttonText = dataType === 'egg' ? '🐣 採卵データを記録する' : '💀 死んだ鶏を記録する';
+
   return (
-    <div className="min-h-screen bg-pink-50 p-4 sm:p-8 flex items-center justify-center font-inter">
-      <div className="w-full max-w-lg bg-white p-6 sm:p-10 shadow-xl rounded-2xl border-4 border-pink-300 transform transition duration-500 hover:scale-[1.01]">
+    <div className={`min-h-screen bg-${themeColor}-50 p-4 sm:p-8 flex items-center justify-center font-inter transition-colors duration-500`}>
+      <div className={`w-full max-w-lg bg-white p-6 sm:p-10 shadow-xl rounded-2xl border-4 border-${themeColor}-300 transform transition duration-500 hover:scale-[1.01]`}>
         
-        <div className="flex items-center justify-center mb-6">
-          <h1 className="text-3xl font-extrabold text-pink-600">
-            採卵データ登録
-          </h1>
+        {/* ヘッダーとタブ切り替え */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <span className="text-4xl mr-3">{headerIcon}</span>
+            <h1 className="text-3xl font-extrabold text-gray-700">
+              {headerText}
+            </h1>
+          </div>
+
+          <div className="flex p-1 bg-gray-100 rounded-xl shadow-inner">
+            <button
+              onClick={() => handleTypeChange('egg')}
+              className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-300 ${
+                dataType === 'egg' 
+                  ? 'bg-pink-600 text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              🥚 採卵データ
+            </button>
+            <button
+              onClick={() => handleTypeChange('deathchicken')}
+              className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-300 ${
+                dataType === 'deathchicken' 
+                  ? 'bg-red-600 text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              💀 死んだ鶏
+            </button>
+          </div>
         </div>
-
-        <p className="text-center text-gray-500 mb-8">
-          鶏舎番号と、今日採集された卵の個数を入力してください。
-        </p>
-
+        
         {/* メッセージ表示エリア */}
         {message && (
           <div className={`p-4 mb-6 rounded-xl border-l-4 font-medium transition duration-300 ${messageClasses}`}>
@@ -150,14 +210,14 @@ export default function EggInputFormPage() {
           {/* 鶏舎番号入力 (プルダウン) */}
           <div className="mb-6">
             <label htmlFor="coopNumber" className="block text-sm font-semibold text-gray-700 mb-2">
-              鶏舎番号 (1-9)
+              🐔 鶏舎番号 (1-9)
             </label>
             <div className="relative">
               <select
                 id="coopNumber"
                 value={coopNumber}
                 onChange={(e) => setCoopNumber(parseInt(e.target.value, 10))}
-                className="w-full p-3 border-2 border-pink-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 appearance-none bg-white transition duration-200 shadow-sm hover:border-pink-400"
+                className={`w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-${themeColor}-500 focus:border-${themeColor}-500 appearance-none bg-white transition duration-200 shadow-sm hover:border-gray-400`}
                 required
                 disabled={isLoading}
               >
@@ -170,26 +230,43 @@ export default function EggInputFormPage() {
             </div>
           </div>
 
-          {/* 卵の個数入力 (数値) */}
-          <div className="mb-8">
-            <label htmlFor="eggCount" className="block text-sm font-semibold text-gray-700 mb-2">
-              採集された卵の個数
+          {/* 個数/羽数入力 (数値) */}
+          <div className="mb-6">
+            <label htmlFor="count" className="block text-sm font-semibold text-gray-700 mb-2">
+              🔢 {labelText}
             </label>
             <input
               type="number"
-              id="eggCount"
-              // countStateを文字列として使う
+              id="count"
               value={countString} 
-              // 入力を直接文字列としてStateに保存
               onChange={(e) => setCountString(e.target.value)} 
-              min="0"
+              min={dataType === 'egg' ? "1" : "0"}
               step="1"
-              className="w-full p-3 border-2 border-pink-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 transition duration-200 shadow-sm"
-              placeholder="例: 150"
+              className={`w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-${themeColor}-500 focus:border-${themeColor}-500 transition duration-200 shadow-sm`}
+              placeholder={dataType === 'egg' ? "例: 150" : "例: 5"}
               required
               disabled={isLoading}
             />
           </div>
+          
+          {/* 死因入力 (死鶏モードの場合のみ表示) */}
+          {dataType === 'deathchicken' && (
+            <div className="mb-8">
+              <label htmlFor="causeOfDeath" className="block text-sm font-semibold text-gray-700 mb-2">
+                📝 死因
+              </label>
+              <input
+                type="text"
+                id="causeOfDeath"
+                value={causeOfDeath}
+                onChange={(e) => setCauseOfDeath(e.target.value)}
+                className={`w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-${themeColor}-500 focus:border-${themeColor}-500 transition duration-200 shadow-sm`}
+                placeholder="例: 換気不良、病気など"
+                required={dataType === 'dead-chicken'}
+                disabled={isLoading}
+              />
+            </div>
+          )}
 
           {/* 送信ボタン */}
           <button
@@ -197,8 +274,8 @@ export default function EggInputFormPage() {
             disabled={isLoading}
             className={`w-full flex items-center justify-center p-3 text-lg font-bold rounded-lg text-white transition duration-300 shadow-lg 
               ${isLoading
-                ? 'bg-pink-400 cursor-not-allowed' 
-                : 'bg-pink-600 hover:bg-pink-700 active:bg-pink-800 transform hover:-translate-y-0.5'}`
+                ? `bg-${themeColor}-400 cursor-not-allowed` 
+                : `bg-${themeColor}-600 hover:bg-${themeColor}-700 active:bg-${themeColor}-800 transform hover:-translate-y-0.5`}`
             }
           >
             {isLoading ? (
@@ -207,7 +284,7 @@ export default function EggInputFormPage() {
                 登録中...
               </>
             ) : (
-              'データを記録する'
+              buttonText
             )}
           </button>
         </form>
