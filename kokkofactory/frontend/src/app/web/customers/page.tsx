@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useCallback, useMemo } from 'react';
 import { Egg, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
