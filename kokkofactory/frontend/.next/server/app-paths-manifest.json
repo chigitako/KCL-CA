@@ -1,6 +1,0 @@
-{
-  "/api/egg/route": "app/api/egg/route.js",
-  "/api/deathchicken/route": "app/api/deathchicken/route.js",
-  "/web/chicken/page": "app/web/chicken/page.js",
-  "/web/page": "app/web/page.js"
-}
