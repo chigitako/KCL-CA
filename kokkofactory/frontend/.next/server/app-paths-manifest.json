@@ -1,6 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
+  "/api/egg/route": "app/api/egg/route.js",
   "/api/deathchicken/route": "app/api/deathchicken/route.js",
-  "/web/page": "app/web/page.js",
-  "/web/chicken/page": "app/web/chicken/page.js"
+  "/web/chicken/page": "app/web/chicken/page.js",
+  "/web/page": "app/web/page.js"
 }

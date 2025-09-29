@@ -65,6 +65,23 @@ export async function POST(request: Request) {
   }
 }
 
+
 export async function GET() {
-  return NextResponse.json({ message: 'GETメソッドは許可されていません。' }, { status: 405 });
+  try {
+    // DeadChickenテーブルから全てのレコードを取得
+    const deadChickens = await prisma.deadChicken.findMany({
+      // 取得順序を指定することが多いので、ここでは日付の降順（新しい順）に並べ替える設定を追加するね
+      orderBy: {
+        date: 'desc', 
+      },
+    });
+
+    return NextResponse.json(deadChickens, { status: 200 });
+  } catch (error) {
+    console.error('Prisma DeadChickenデータ取得エラー:', error);
+    return NextResponse.json(
+      { message: 'サーバーエラーが発生しました。一覧データの取得に失敗しました。' },
+      { status: 500 }
+    );
+  }
 }
