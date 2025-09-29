@@ -15,7 +15,7 @@
 /coverage
 
 # next.js
-/.next/
+../.next/
 /out/
 
 # production
@@ -46,4 +46,3 @@ next-env.d.ts
 ../kkokko/
 node_modules/
 
-/generated/prisma
