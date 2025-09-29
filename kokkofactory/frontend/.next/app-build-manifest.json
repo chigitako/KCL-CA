@@ -6,22 +6,43 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/web/shipment/graph/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/web/shipment/graph/page.css",
-      "static/chunks/app/web/shipment/graph/page.js"
+      "static/chunks/app/page.js"
     ],
-    "/api/shipment/route": [
+    "/web/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/shipment/route.js"
+      "static/css/app/web/page.css",
+      "static/chunks/app/web/page.js"
     ],
     "/web/shipment/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/web/shipment/page.css",
       "static/chunks/app/web/shipment/page.js"
+    ],
+    "/api/shipment/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/shipment/route.js"
+    ],
+    "/web/customers/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/customers/page.css",
+      "static/chunks/app/web/customers/page.js"
+    ],
+    "/api/customers/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/customers/route.js"
+    ],
+    "/web/shipment/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/web/shipment/new/page.js"
     ]
   }
 }

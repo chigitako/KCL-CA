@@ -59,6 +59,19 @@
 /*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./src/app/web/shipment/page.module.css ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************/
+/* ページ全体のスタイル */
+.page_container__ZaeqF {
+  padding: 20px;
+  max-width: 100%;
+  margin: auto;
+}
+/* ヘッダー部分のスタイル */
+.page_header___v57d {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  justify-content: flex-start; 
+}
 .page_createGraph__8zJzY {
   padding: 0.5rem 1rem;
   background-color: #ffd700; /* 黄色で目立たせる例 */
@@ -71,4 +84,30 @@
   background-color: #ffc700;
 }
 
+.page_shipmentTable__cLwhT {
+  width: 100%;
+  border-collapse: collapse;
+}
 
+.page_tableHeader__u4ghy {
+  background-color: #f2f2f2;
+}
+
+.page_tableHeader__u4ghy th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.page_tableRow__3Zc8W {
+  border-bottom: 1px solid #eee;
+}
+
+.page_tableRow__3Zc8W:nth-child(even) {
+  background-color: #fcfcfc;
+}
+
+.page_tableRow__3Zc8W td {
+  padding: 12px;
+  vertical-align: top;
+}

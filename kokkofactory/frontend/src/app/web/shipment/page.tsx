@@ -28,6 +28,10 @@ export default function WebPage() {
     router.push('/web/shipment/graph');
   };
 
+  const handleNew = () => {
+    router.push('/web/shipment/new');
+  }
+
   useEffect(() => {
     if (shipments.length === 0) {
       const fetchShipments = async () => {
@@ -57,17 +61,22 @@ export default function WebPage() {
 
   return (
     <LeftPullTab>
-      <div>
-        <h1>出荷情報一覧</h1>
-        <button className={styles.createGraph} onClick={handleShowGraph}>
-          グラフを作成
-        </button>
+      <div className ={styles.container}>
+        <div className={styles.header}>
+          <button className={styles.createGraph} onClick={handleShowGraph}>
+            グラフを作成
+          </button>
+          <button className={styles.createGraph} onClick={handleNew}>
+            新規出荷情報
+          </button>
+        </div>
+        
         {shipments.length === 0 ? (
           <p>出荷情報がありません。</p>
         ) : (
-          <table>
+          <table className={styles.shipmentTable}>
             <thead>
-              <tr>
+              <tr className={styles.tableHeader}>
                 <th>取引先</th>
                 <th>出荷日</th>
                 <th>出荷個数</th>
@@ -78,7 +87,7 @@ export default function WebPage() {
             </thead>
             <tbody>
               {shipments.map((shipment, index) => (
-                <tr key={index}>
+                <tr key={index} className={styles.tableRow}>
                   <td>{shipment.vendor}</td>
                   <td>{new Date(shipment.shipmentDate).toLocaleDateString()}</td>
                   <td>{shipment.shippedCount}</td>
