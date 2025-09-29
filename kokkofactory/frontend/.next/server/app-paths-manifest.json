@@ -1,7 +1,6 @@
 {
   "/api/shipment/route": "app/api/shipment/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/web/page": "app/web/page.js",
   "/web/shipment/page": "app/web/shipment/page.js",
   "/web/shipment/graph/page": "app/web/shipment/graph/page.js"
 }

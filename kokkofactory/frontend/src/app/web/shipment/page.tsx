@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LeftPullTab from "@components/LeftPullTab";
 import styles from './page.module.css'; // CSSファイルをインポート
+import { useShipment } from '@components/ShipmentContext';
 
 
 // APIから取得するデータの型を定義（配列を想定）
@@ -16,8 +17,10 @@ interface ShipmentDetails {
 }
 
 export default function WebPage() {
-  const [shipments, setShipments] = useState<ShipmentDetails[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { shipments, setShipments } = useShipment();
+  //const [shipments, setShipments] = useState<ShipmentDetails[]>([]);
+  const [loading, setLoading] = useState(shipments.length === 0); // Context にデータあるかで判定
+  //const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter(); 
 
@@ -26,25 +29,28 @@ export default function WebPage() {
   };
 
   useEffect(() => {
-    const fetchShipments = async () => {
-      try {
-        // バックエンドのAPIにアクセス
-        // すべてのデータを取得するため、IDは指定しない
-        const response = await fetch('/api/shipment');
-        if (!response.ok) {
-          throw new Error('APIからデータの取得に失敗しました。');
+    if (shipments.length === 0) {
+      const fetchShipments = async () => {
+        try {
+          // バックエンドのAPIにアクセス
+          // すべてのデータを取得するため、IDは指定しない
+          const response = await fetch('/api/shipment');
+          if (!response.ok) {
+            throw new Error('APIからデータの取得に失敗しました。');
+          }
+          const data: ShipmentDetails[] = await response.json();
+          setShipments(data);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'データの取得中にエラーが発生しました。');
+        } finally {
+          setLoading(false);
         }
-        const data: ShipmentDetails[] = await response.json();
-        setShipments(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'データの取得中にエラーが発生しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchShipments();
-  }, []);
+      };
+      fetchShipments();
+    } else {
+      setLoading(false);
+    }
+  }, [shipments, setShipments]);
 
   if (loading) return <div>読み込み中...</div>;
   if (error) return <div>エラー: {error}</div>;

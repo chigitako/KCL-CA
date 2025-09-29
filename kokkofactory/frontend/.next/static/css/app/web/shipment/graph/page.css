@@ -56,23 +56,3 @@
   margin-left: 200px;
 }
 
-/*!****************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./src/app/web/shipment/graph/page.module.css ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************/
-.page_sidebar__tuPOc {
-  position: fixed;
-  top: 0;
-  right: -400px; /* 初期は画面外 */
-  width: 400px;
-  height: 100%;
-  background-color: #f9f9f9;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-  transition: right 0.3s ease;
-  padding: 1rem;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
-.page_sidebar__tuPOc.page_show__Bf5L_ {
-  right: 0; /* 表示状態 */
-}
