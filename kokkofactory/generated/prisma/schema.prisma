@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//ログイン情報
+model LoginInfo {
+  id         Int    @id @default(autoincrement())
+  login_type String // 種別
+  password   String //パスワード
+}
+
+//卵の数
+model Egg {
+  id          Int      @id @default(autoincrement())
+  coop_number Int // 鶏舎番号
+  date        DateTime @default(now())
+  count       Int // 個数
+}
+
+//死んだ鶏の数
+model DeadChicken {
+  id             Int      @id @default(autoincrement())
+  coop_number    Int // 鶏舎番号
+  date           DateTime @default(now())
+  count          Int // 死んだ鶏の数
+  cause_of_death String // 死因
+}
+
+//取引先情報
+model Customer {
+  id           Int        @id @default(autoincrement())
+  name         String     @unique // 取引先名
+  address      String?
+  phone_number String?
+  email        String?
+  // 出荷情報とのリレーション
+  shipments    Shipment[]
+}
+
+//出荷情報
+model Shipment {
+  id            Int      @id @default(autoincrement())
+  // 取引先とのリレーション
+  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId    Int // 取引先No
+  shipment_date DateTime @default(now()) // 出荷日
+  shipped_count Int // 出荷個数
+}
+
+// 仕入れ先情報
+model Supplier {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique // 仕入れ先
+  item_name    String  @default("未登録") //備品名
+  address      String? // 住所
+  phone_number String? // 電話番号
+  email        String? // メールアドレス
+  // 在庫とのリレーション
+  Stock        Stock[]
+}
+
+// 仕入れ在庫
+model Stock {
+  id         Int      @id @default(autoincrement())
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId Int // 仕入れ先No
+  count      Int // 残り個数
+}
