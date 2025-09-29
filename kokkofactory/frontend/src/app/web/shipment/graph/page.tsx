@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import LeftPullTab from "@components/LeftPullTab";
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css'; // CSSファイルをインポート
@@ -37,24 +37,49 @@ export default function GraphPage() {
     router.push('/web/shipment');
   };
 
-  // 日付順にソート
-  const sortedShipments = [...shipments].sort(
-    (a, b) => new Date(a.shipmentDate).getTime() - new Date(b.shipmentDate).getTime()
-  );
+  // 日/月/年の選択
+  const [groupBy, setGroupBy] = useState<"day" | "month" | "year">("day");
 
-  // ラベル（日付）とデータ（出荷数）を作成
-  const labels = sortedShipments.map(s => new Date(s.shipmentDate).toLocaleDateString());
-  const dataValues = sortedShipments.map(s => s.shippedCount);
+  // 集計処理
+  const { labels, values } = useMemo(() => {
+    const map = new Map<string, number>();
 
+    shipments.forEach((s) => {
+      const date = new Date(s.shipmentDate);
+      let key = "";
+
+      if (groupBy === "day") {
+        key = date.toLocaleDateString(); // 例: 2025/09/30
+      } else if (groupBy === "month") {
+        key = `${date.getFullYear()}-${date.getMonth() + 1}`; // 例: 2025-9
+      } else if (groupBy === "year") {
+        key = `${date.getFullYear()}`; // 例: 2025
+      }
+
+      map.set(key, (map.get(key) ?? 0) + s.shippedCount);
+    });
+
+
+    const sortedKeys = Array.from(map.keys()).sort((a, b) => {
+      // 日付として比較できるように変換
+      return new Date(a).getTime() - new Date(b).getTime();
+    });
+    return {
+      labels: sortedKeys,
+      values: sortedKeys.map((k) => map.get(k) ?? 0),
+    };
+  }, [shipments, groupBy]);
+
+ 
   const data = {
     labels,
     datasets: [
       {
         label: '出荷数',
-        data: dataValues,
+        data: values,
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        tension: 0.3, // 線のカーブ調整
+        tension: 0.3,
       },
     ],
   };
@@ -62,27 +87,16 @@ export default function GraphPage() {
   const options = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: '出荷数の推移',
-      },
+      legend: { position: 'top' as const },
+      title: { display: true, text: '出荷数の推移' },
     },
     scales: {
       y: {
         beginAtZero: true,
-        title: {
-          display: true,
-          text: '出荷数',
-        },
+        title: { display: true, text: '出荷数' },
       },
       x: {
-        title: {
-          display: true,
-          text: '出荷日',
-        },
+        title: { display: true, text: groupBy === "day" ? "出荷日" : groupBy === "month" ? "月" : "年" },
       },
     },
   };
@@ -92,6 +106,12 @@ export default function GraphPage() {
       <div className ={styles.container}>
         <div className={styles.graph}>
           <h1>出荷数グラフ</h1>
+          {/* ▼ 日/月/年の切り替えUI */}
+          <select value={groupBy} onChange={(e) => setGroupBy(e.target.value as any)}>
+            <option value="day">日ごと</option>
+            <option value="month">月ごと</option>
+            <option value="year">年ごと</option>
+          </select>
           {shipments.length === 0 ? (
             <p>出荷情報がありません！</p>
           ) : (
