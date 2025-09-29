@@ -22,10 +22,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/web/chicken/page.js"
     ],
-    "/api/chicken/route": [
+    "/api/egg/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/chicken/route.js"
+      "static/chunks/app/api/egg/route.js"
     ]
   }
 }

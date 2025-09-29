@@ -67,8 +67,7 @@ export default function EggInputFormPage() {
     setIsLoading(true);
 
     try {
-      // 🐔 APIパスを /api/chicken に統一
-      const apiPath = '/api/chicken'; 
+      const apiPath = '/api/egg'; 
       
       const response = await fetch(apiPath, { 
         method: 'POST',
