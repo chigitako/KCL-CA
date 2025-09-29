@@ -1,11 +1,10 @@
-/* ページ全体のスタイル */
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
 }
 
-/* ヘッダー部分のスタイル */
+
 .header {
   display: flex;
   justify-content: flex-end;
@@ -24,7 +23,7 @@
   text-decoration: none;
 }
 
-/* 検索フォームのスタイル */
+
 .searchForm {
   display: grid;
   grid-template-columns: repeat(4, 1fr) auto auto;
@@ -58,7 +57,7 @@
   background-color: #f0f0f0;
 }
 
-/* テーブルのスタイル */
+
 .customerTable {
   width: 100%;
   border-collapse: collapse;
