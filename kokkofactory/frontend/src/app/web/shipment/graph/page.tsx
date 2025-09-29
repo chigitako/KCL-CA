@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import LeftPullTab from "@components/LeftPullTab";
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css'; // CSSファイルをインポート
@@ -39,66 +39,109 @@ export default function GraphPage() {
 
   // 日/月/年の選択
   const [groupBy, setGroupBy] = useState<"day" | "month" | "year">("day");
+  const vendors = useMemo(
+    () => Array.from(new Set(shipments.map((s) => s.vendor))),
+    [shipments]
+  );
 
-  // 集計処理
-  const { labels, values } = useMemo(() => {
-    const map = new Map<string, number>();
+  // 「全出荷数」も選択肢に追加
+  const allOptions = useMemo(() => ["総出荷数", ...vendors], [vendors]);
+
+  // 初期値を「すべて選択」にする
+  const [selectedVendors, setSelectedVendors] = useState<string[]>(allOptions);
+  useEffect(() => {
+    setSelectedVendors(allOptions);
+  }, [allOptions]);
+
+  /// 集計処理
+  const { labels, datasets } = useMemo(() => {
+    const vendorMaps: Record<string, Map<string, number>> = {};
+
+    vendors.forEach((v) => {
+      vendorMaps[v] = new Map<string, number>();
+    });
+    const totalMap = new Map<string, number>();
+
 
     shipments.forEach((s) => {
       const date = new Date(s.shipmentDate);
       let key = "";
+      if (groupBy === "day") key = date.toLocaleDateString();
+      else if (groupBy === "month") key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+      else key = `${date.getFullYear()}`;
 
-      if (groupBy === "day") {
-        key = date.toLocaleDateString(); // 例: 2025/09/30
-      } else if (groupBy === "month") {
-        key = `${date.getFullYear()}-${date.getMonth() + 1}`; // 例: 2025-9
-      } else if (groupBy === "year") {
-        key = `${date.getFullYear()}`; // 例: 2025
-      }
-
-      map.set(key, (map.get(key) ?? 0) + s.shippedCount);
+      // 企業別
+      vendorMaps[s.vendor].set(key, (vendorMaps[s.vendor].get(key) ?? 0) + s.shippedCount);
+      // 合計
+      totalMap.set(key, (totalMap.get(key) ?? 0) + s.shippedCount);
     });
 
-
-    const sortedKeys = Array.from(map.keys()).sort((a, b) => {
-      // 日付として比較できるように変換
-      return new Date(a).getTime() - new Date(b).getTime();
+    const allKeys = new Set<string>();
+    Object.values(vendorMaps).forEach((map) => {
+      map.forEach((_, k) => allKeys.add(k));
     });
-    return {
-      labels: sortedKeys,
-      values: sortedKeys.map((k) => map.get(k) ?? 0),
-    };
-  }, [shipments, groupBy]);
+    totalMap.forEach((_, k) => allKeys.add(k));
+
+    const sortedKeys = Array.from(allKeys).sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime()
+    );
 
  
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: '出荷数',
-        data: values,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+  // ランダム色生成（例）
+    const colors = [
+      "rgba(255, 99, 132, 1)",
+      "rgba(54, 162, 235, 1)",
+      "rgba(255, 206, 86, 1)",
+      "rgba(75, 192, 192, 1)",
+      "rgba(153, 102, 255, 1)",
+      "rgba(255, 159, 64, 1)",
+    ];
+
+    const datasets = allOptions
+      .filter((v) => selectedVendors.includes(v))
+      .map((vendor, i) => {
+        if (vendor === "総出荷数") {
+          return {
+            label: vendor,
+            data: sortedKeys.map((k) => totalMap.get(k) ?? 0),
+            borderColor: "rgba(0, 0, 0, 1)", // 黒で目立たせる
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            tension: 0.3,
+          };
+        }
+      return {
+        label: vendor,
+        data: sortedKeys.map((k) => vendorMaps[vendor].get(k) ?? 0),
+        borderColor: colors[i % colors.length],
+        backgroundColor: colors[i % colors.length].replace(/1\)$/, "0.2)"),
         tension: 0.3,
-      },
-    ],
-  };
+      };
+    });
+
+  return { labels: sortedKeys, datasets };
+  }, [shipments, groupBy, vendors, selectedVendors, allOptions]);
 
   const options = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' as const },
-      title: { display: true, text: '出荷数の推移' },
+      legend: { position: "top" as const },
+      title: { display: true, text: "出荷数の推移（企業別＋合計）" },
     },
     scales: {
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: '出荷数' },
-      },
+      y: { beginAtZero: true, title: { display: true, text: "出荷数" } },
       x: {
-        title: { display: true, text: groupBy === "day" ? "出荷日" : groupBy === "month" ? "月" : "年" },
+        title: {
+          display: true,
+          text: groupBy === "day" ? "出荷日" : groupBy === "month" ? "月" : "年",
+        },
       },
     },
+  };
+
+  const toggleVendor = (vendor: string) => {
+    setSelectedVendors((prev) =>
+      prev.includes(vendor) ? prev.filter((v) => v !== vendor) : [...prev, vendor]
+    );
   };
 
   return (
@@ -112,11 +155,29 @@ export default function GraphPage() {
             <option value="month">月ごと</option>
             <option value="year">年ごと</option>
           </select>
+
+          {/* フィルターUI */}
+          <div>
+            {allOptions.map((v) => (
+              <label key={v} style={{ marginRight: "10px" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedVendors.includes(v)}
+                  onChange={() => toggleVendor(v)}
+                />
+                {v}
+              </label>
+            ))}
+          </div>
+
+
           {shipments.length === 0 ? (
-            <p>出荷情報がありません！</p>
+            <p>まだ出荷データがありません！</p>
           ) : (
-            <Line data={data} options={options} />
+            <Line data={{ labels, datasets }} options={options} />
           )}
+
+          <h1>取引先円グラフ</h1>
         </div>
         <div className={styles.list}>
           {shipments.length === 0 ? (
