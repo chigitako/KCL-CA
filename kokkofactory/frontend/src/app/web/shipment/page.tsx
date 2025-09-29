@@ -64,7 +64,7 @@ export default function WebPage() {
       <div className ={styles.container}>
         <div className={styles.header}>
           <button className={styles.createGraph} onClick={handleShowGraph}>
-            グラフを作成
+            グラフを表示
           </button>
           <button className={styles.createGraph} onClick={handleNew}>
             新規出荷情報
