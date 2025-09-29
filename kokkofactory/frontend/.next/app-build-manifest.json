@@ -17,17 +17,38 @@
       "static/css/app/web/page.css",
       "static/chunks/app/web/page.js"
     ],
-    "/web/chicken/page": [
+    "/web/shipment/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/web/chicken/page.css",
-      "static/chunks/app/web/chicken/page.js"
+      "static/css/app/web/shipment/page.css",
+      "static/chunks/app/web/shipment/page.js"
     ],
-    "/web/environment/page": [
+    "/api/shipment/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/web/environment/page.css",
-      "static/chunks/app/web/environment/page.js"
+      "static/chunks/app/api/shipment/route.js"
+    ],
+    "/web/customers/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/customers/page.css",
+      "static/chunks/app/web/customers/page.js"
+    ],
+    "/api/customers/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/customers/route.js"
+    ],
+    "/web/stock/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/web/stock/page.css",
+      "static/chunks/app/web/stock/page.js"
+    ],
+    "/api/stock/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/stock/route.js"
     ]
   }
 }
