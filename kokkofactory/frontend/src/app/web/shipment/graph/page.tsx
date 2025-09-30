@@ -46,6 +46,18 @@ export default function GraphPage() {
 
   // 日/月/年の選択
   const [groupBy, setGroupBy] = useState<"day" | "month" | "year">("day");
+  const [rangeStart, setRangeStart] = useState<string>("");
+  const [rangeEnd, setRangeEnd] = useState<string>("");
+  const [rangeEnabled, setRangeEnabled] = useState(false);
+  useEffect(() => {
+    if (!rangeEnabled) {
+      setRangeStart("");
+      setRangeEnd("");
+    }
+  }, [rangeEnabled]);
+
+
+
   const vendors = useMemo(
     () => Array.from(new Set(shipments.map((s) => s.vendor))),
     [shipments]
@@ -95,13 +107,25 @@ export default function GraphPage() {
     return `hsl(${hue} 70% 50% / ${alpha})`; // modern CSS rgba-like HSL with alpha
   };
 
+  // 期間指定で絞り込む
+  const filteredShipments = useMemo(() => {
+    if (!rangeStart || !rangeEnd) return shipments;
+    const start = new Date(rangeStart);
+    const end = new Date(rangeEnd);
+    return shipments.filter(s => {
+      const d = new Date(s.shipmentDate);
+      return d >= start && d <= end;
+    });
+  }, [shipments, rangeStart, rangeEnd]);
+
+
   /// 折れ線グラフ用集計処理
   const { labels, datasets, sortedKeys } = useMemo(() => {
     const vendorMaps: Record<string, Map<string, number>> = {};
     vendors.forEach((v) => (vendorMaps[v] = new Map<string, number>()));
     const totalMap = new Map<string, number>();
 
-    shipments.forEach((s) => {
+    filteredShipments.forEach((s) => {
       const date = new Date(s.shipmentDate);
       const key = makeKey(date, groupBy);
       vendorMaps[s.vendor].set(key, (vendorMaps[s.vendor].get(key) ?? 0) + s.shippedCount);
@@ -141,12 +165,12 @@ export default function GraphPage() {
       });
 
   return { labels: displayLabels, datasets, sortedKeys };
-  }, [shipments, groupBy, vendors, selectedVendors, allOptions]);
+  }, [filteredShipments, groupBy, vendors, selectedVendors, allOptions]);
 
   /// 円グラフ（全期間）
   const pieData = useMemo(() => {
     const vendorTotals = vendors.map((v) =>
-      shipments
+      filteredShipments
         .filter((s) => s.vendor === v)
         .reduce((sum, s) => sum + s.shippedCount, 0)
     );
@@ -162,7 +186,7 @@ export default function GraphPage() {
         },
       ],
     };
-  }, [shipments, vendors]);
+  }, [filteredShipments, vendors]);
 
   // 日付別円グラフ
   const pieDayData = useMemo(() => {
@@ -182,7 +206,7 @@ export default function GraphPage() {
     }
 
     const totals = vendors.map((v) => 
-      shipments
+      filteredShipments
         .filter((s) => makeKey(new Date(s.shipmentDate), groupBy) === selectedKey && s.vendor === v)
           .reduce((sum, s) => sum + s.shippedCount, 0)
     );
@@ -197,7 +221,7 @@ export default function GraphPage() {
         },
       ],
     };
-  }, [shipments, vendors, selectedKey, groupBy]);
+  }, [filteredShipments, vendors, selectedKey, groupBy]);
 
   const options = {
     responsive: true,
@@ -261,6 +285,28 @@ export default function GraphPage() {
               ))}
             </div>
 
+            <div style={{ margin: "1rem 0" }}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={rangeEnabled}
+                  onChange={(e) => setRangeEnabled(e.target.checked)}
+                />
+                期間指定
+              </label>
+
+
+              {rangeEnabled && (
+                <span style={{ marginLeft: "1rem" }}>
+                  開始日:
+                  <input type="date" value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} />
+                  終了日:
+                  <input type="date" value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} />
+                </span>
+              )}
+
+            </div>
+
             {/* フィルターUI */}
             <div>
               {allOptions.map((v) => (
@@ -317,7 +363,7 @@ export default function GraphPage() {
                   <h2 style={{ margin: "1rem" }}>
                     {selectedKey
                       ? `${formatKeyLabel(selectedKey, groupBy)} の出荷割合`
-                      : "日付をクリックしてください"}
+                      : "出荷数グラフの値をクリックしてください"}
                   </h2>
                   {selectedKey && <Pie data={pieDayData!} options={pieOptions} />}
                 </div>
