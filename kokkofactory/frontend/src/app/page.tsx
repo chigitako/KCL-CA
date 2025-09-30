@@ -42,7 +42,7 @@ export default function WebPage() {
     <div className={styles.page}>
       {/* ロゴ */}
         <div className={styles.logoWrapper}>
-          <img src="images/kokkologo.png" alt="こっこふぁくとりーロゴ" className={styles.logo} />
+          <img src="/images/kokkologo.png" alt="こっこふぁくとりーロゴ" className={styles.logo} />
         </div>
       <div className={styles.main}>
         
