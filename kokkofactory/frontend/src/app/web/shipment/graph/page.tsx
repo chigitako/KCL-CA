@@ -246,7 +246,7 @@ export default function GraphPage() {
       <div className ={styles.container}>
         <div className={styles.graph}>
           <div className={styles.linegraph}>
-            <h1>出荷数グラフ</h1>
+            <h1 style={{ margin: "1rem" }}>🍳出荷数グラフ</h1>
 
             {/* ▼ 日/月/年の切り替えUI */}
             <div className={styles.tabGroup}>
@@ -303,18 +303,18 @@ export default function GraphPage() {
 
 
           <div className={styles.engraphContainer}>
-            <h1>取引先円グラフ</h1>
+            <h1 style={{ margin: "1rem" }}>🍳取引先円グラフ</h1>
              
             {shipments.length === 0 ? (
               <p>まだ出荷データがありません！</p>
             ) : (
               <div className={styles.engraphWrapper}>
                 <div className={styles.totalEngrapf}>
-                  <h2>総出荷割合</h2>
+                  <h2 style={{ margin: "1rem" }}>総出荷割合</h2>
                   <Pie data={pieData} options={pieOptions} />
                 </div>
                 <div className={styles.selectEngraph}>
-                  <h2>
+                  <h2 style={{ margin: "1rem" }}>
                     {selectedKey
                       ? `${formatKeyLabel(selectedKey, groupBy)} の出荷割合`
                       : "日付をクリックしてください"}
