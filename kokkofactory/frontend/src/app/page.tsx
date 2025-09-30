@@ -25,6 +25,7 @@ export default function WebPage() {
       }
     } else if (role === "employee") {
       setMessage("従業員ログイン成功🎉");
+      router.push("/web/employee");
       
     } else {
       setMessage("ユーザー種別を選んで");

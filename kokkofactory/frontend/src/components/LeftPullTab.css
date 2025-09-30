@@ -50,3 +50,9 @@
 .main.shifted {
   margin-left: 200px;
 }
+
+.settingsSection {
+  margin-top: auto; /* メニュー下に固定 */
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
