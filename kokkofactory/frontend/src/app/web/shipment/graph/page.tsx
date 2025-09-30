@@ -216,6 +216,25 @@ export default function GraphPage() {
     },
   };
 
+  const pieOptions = {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            const dataset = context.dataset;
+            const total = dataset.data.reduce((sum: number, val: number) => sum + val, 0);
+            const value = context.raw;
+            const percentage = ((value / total) * 100).toFixed(1) + "%";
+            return `${context.label}: ${value} (${percentage})`;
+          },
+        },
+      },
+      legend: { position: "top" as const },
+    },
+  };
+
+
   const toggleVendor = (vendor: string) => {
     setSelectedVendors((prev) =>
       prev.includes(vendor) ? prev.filter((v) => v !== vendor) : [...prev, vendor]
@@ -285,7 +304,7 @@ export default function GraphPage() {
               <div className={styles.engraphWrapper}>
                 <div className={styles.totalEngrapf}>
                   <h2>総出荷割合</h2>
-                  <Pie data={pieData} />
+                  <Pie data={pieData} options={pieOptions} />
                 </div>
                 <div className={styles.selectEngraph}>
                   <h2>
@@ -293,7 +312,7 @@ export default function GraphPage() {
                       ? `${formatKeyLabel(selectedKey, groupBy)} の出荷割合`
                       : "日付をクリックしてください"}
                   </h2>
-                  {selectedKey && <Pie data={pieDayData!} options={{ responsive: true }}/>}
+                  {selectedKey && <Pie data={pieDayData!} options={pieOptions} />}
                 </div>
               </div>
             )}
