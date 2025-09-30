@@ -247,12 +247,19 @@ export default function GraphPage() {
         <div className={styles.graph}>
           <div className={styles.linegraph}>
             <h1>出荷数グラフ</h1>
+
             {/* ▼ 日/月/年の切り替えUI */}
-            <select value={groupBy} onChange={(e) => setGroupBy(e.target.value as any)}>
-              <option value="day">日ごと</option>
-              <option value="month">月ごと</option>
-              <option value="year">年ごと</option>
-            </select>
+            <div className={styles.tabGroup}>
+              {["day", "month", "year"].map((mode) => (
+                <button
+                  key={mode}
+                  className={`${styles.tab} ${groupBy === mode ? styles.active : ""}`}
+                  onClick={() => setGroupBy(mode as any)}
+                >
+                  {mode === "day" ? "日別" : mode === "month" ? "月別" : "年別"}
+                </button>
+              ))}
+            </div>
 
             {/* フィルターUI */}
             <div>
