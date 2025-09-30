@@ -80,6 +80,15 @@ export default function GraphPage() {
     return new Date(Number(key), 0, 1);
   };
 
+  const formatKeyLabel = (key: string, mode: "day" | "month" | "year") => {
+    if (mode === "day") return keyToDate(key, "day").toLocaleDateString();
+    if (mode === "month") {
+      const [y, m] = key.split("-");
+      return `${y}年${m}月`;
+    }
+    return `${key}年`;
+  };
+
   // 色生成（HSLで回す）
   const getColor = (i: number, alpha = 1) => {
     const hue = (i * 47) % 360; // 47のステップで色を回す
@@ -87,11 +96,10 @@ export default function GraphPage() {
   };
 
   /// 折れ線グラフ用集計処理
-  const { labels, datasets } = useMemo(() => {
+  const { labels, datasets, sortedKeys } = useMemo(() => {
     const vendorMaps: Record<string, Map<string, number>> = {};
     vendors.forEach((v) => (vendorMaps[v] = new Map<string, number>()));
     const totalMap = new Map<string, number>();
-
 
     shipments.forEach((s) => {
       const date = new Date(s.shipmentDate);
@@ -108,25 +116,7 @@ export default function GraphPage() {
       (a, b) => keyToDate(a, groupBy).getTime() - keyToDate(b, groupBy).getTime()
     );
 
-    // 折れ線グラフクリック時
-    const handleLineClick = (elements: any[], chart: any) => {
-      if (elements.length > 0) {
-        const idx = elements[0].index;
-        const label = chart.data.labels[idx];
-        setSelectedKey(label);
-      }
-    };
-
- 
-   // ラベル表示を見やすく（表示用）
-    const displayLabels = sortedKeys.map((k) => {
-      if (groupBy === "day") return keyToDate(k, "day").toLocaleDateString();
-      if (groupBy === "month") {
-        const [y, m] = k.split("-");
-        return `${y}/${m}`;
-      }
-      return k;
-    });
+    const displayLabels = sortedKeys.map((k) => formatKeyLabel(k, groupBy));
 
     const datasets = allOptions
       .filter((v) => selectedVendors.includes(v))
@@ -140,7 +130,7 @@ export default function GraphPage() {
             tension: 0.3,
           };
         }
-      const idx = vendors.indexOf(vendor); // vendor 配列内の index を使うと色が安定する
+        const idx = vendors.indexOf(vendor); // vendor 配列内の index を使うと色が安定する
         return {
           label: vendor,
           data: sortedKeys.map((k) => vendorMaps[vendor].get(k) ?? 0),
@@ -150,19 +140,16 @@ export default function GraphPage() {
         };
       });
 
-  return { labels: displayLabels, datasets };
+  return { labels: displayLabels, datasets, sortedKeys };
   }, [shipments, groupBy, vendors, selectedVendors, allOptions]);
 
-  /// 円グラフ用データ
+  /// 円グラフ（全期間）
   const pieData = useMemo(() => {
-    const vendorTotals = vendors.map((v) =>{
-      return shipments
+    const vendorTotals = vendors.map((v) =>
+      shipments
         .filter((s) => s.vendor === v)
-        .reduce((sum, s) => {
-          const dateKey = makeKey(new Date(s.shipmentDate), groupBy);
-          return sum + s.shippedCount; // 合計だけでOK
-      }, 0);
-    });
+        .reduce((sum, s) => sum + s.shippedCount, 0)
+    );
 
     return {
       labels: vendors,
@@ -175,33 +162,30 @@ export default function GraphPage() {
         },
       ],
     };
-  }, [shipments, vendors, groupBy]);
+  }, [shipments, vendors]);
 
   // 日付別円グラフ
   const pieDayData = useMemo(() => {
     if (!selectedKey) {
     // vendors の数だけ薄いグレーにする
-    return {
-      labels: vendors,
-      datasets: [
-        {
-          data: vendors.map(() => 1), // 数値は同じで OK
-          backgroundColor: vendors.map(() => 'rgba(200, 200, 200, 0.3)'),
-          borderColor: vendors.map(() => 'rgba(200, 200, 200, 0.8)'),
-          borderWidth: 1,
-        },
-      ],
-    };
-  }
+      return {
+        labels: vendors,
+        datasets: [
+          {
+            data: vendors.map(() => 1), // 数値は同じで OK
+            backgroundColor: vendors.map(() => 'rgba(200, 200, 200, 0.3)'),
+            borderColor: vendors.map(() => 'rgba(200, 200, 200, 0.8)'),
+            borderWidth: 1,
+          },
+        ],
+      };
+    }
 
-    const totals = vendors.map((v) => {
-      return shipments
-        .filter((s) => s.vendor === v)
-        .reduce((sum, s) => {
-          const key = makeKey(new Date(s.shipmentDate), groupBy);
-          return sum + (key === selectedKey ? s.shippedCount : 0);
-        }, 0);
-    });
+    const totals = vendors.map((v) => 
+      shipments
+        .filter((s) => makeKey(new Date(s.shipmentDate), groupBy) === selectedKey && s.vendor === v)
+          .reduce((sum, s) => sum + s.shippedCount, 0)
+    );
     return {
       labels: vendors,
       datasets: [
@@ -213,7 +197,7 @@ export default function GraphPage() {
         },
       ],
     };
-  }, [shipments, vendors, selectedKey]);
+  }, [shipments, vendors, selectedKey, groupBy]);
 
   const options = {
     responsive: true,
@@ -283,8 +267,8 @@ export default function GraphPage() {
                   );
                   if (points.length > 0) {
                     const idx = points[0].index;
-                    const label = chartRef.current.data.labels![idx];
-                    setSelectedKey(label as string);
+                    const key = sortedKeys[idx]; // 内部キーを保存
+                    setSelectedKey(key);
                   }
                 }}
               />
@@ -304,7 +288,11 @@ export default function GraphPage() {
                   <Pie data={pieData} />
                 </div>
                 <div className={styles.selectEngraph}>
-                  <h2>{selectedKey ? `${selectedKey} の出荷割合` : "日付をクリックしてください"}</h2>
+                  <h2>
+                    {selectedKey
+                      ? `${keyToDate(selectedKey, groupBy).toLocaleDateString()} の出荷割合`
+                      : "日付をクリックしてください"}
+                  </h2>
                   {selectedKey && <Pie data={pieDayData!} options={{ responsive: true }}/>}
                 </div>
               </div>
