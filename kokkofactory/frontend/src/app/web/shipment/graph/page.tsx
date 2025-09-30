@@ -372,19 +372,28 @@ export default function GraphPage() {
           </div>
         </div>
         <div className={styles.list}>
+          <h2 style={{textAlign:"center"}}>出荷情報一覧</h2>
           {shipments.length === 0 ? (
             <p>出荷情報がまだ Context にありません！</p>
           ) : (
-          <>
-            <p>出荷情報を Context から取得できています🎉</p>
-            <ul>
+            <table className={styles.shipmentTable}>
+            <thead>
+              <tr className={styles.tableHeader}>
+                <th>取引先</th>
+                <th>出荷個数</th>
+                <th>出荷日</th>
+              </tr>
+            </thead>
+            <tbody>
               {shipments.map((s, i) => (
-                <li key={i}>
-                  {s.vendor} - {s.shippedCount} 個 ({new Date(s.shipmentDate).toLocaleDateString()})
-                </li>
+                <tr key={i} className={styles.tableRow}>
+                  <td>{s.vendor}</td>
+                  <td>{s.shippedCount}</td>
+                  <td>{new Date(s.shipmentDate).toLocaleDateString()}</td>
+                </tr>
               ))}
-            </ul>
-          </>
+            </tbody>
+          </table>
           )}
         </div>
       </div>
