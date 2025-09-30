@@ -1,17 +1,34 @@
 /* src/components/LeftPullTab.css */
+
+/* 全体的なフォントを少し丸みのあるものに */
+body {
+  font-family: 'Hannotate SC', 'BIZ UDPGothic', 'メイリオ', Meiryo, sans-serif;
+}
+
+
 .leftPullTab {
   position: fixed;
-  top: 50%;
+  top: 80%; 
   left: 0;
   transform: translateY(-50%);
-  background-color: #ffcc00;
-  padding: 10px;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
+  background-color: #FDD835;
+  color: #5D4037;
+  padding: 10px 15px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
   cursor: pointer;
   user-select: none;
   z-index: 1000;
+  font-weight: bold;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.leftPullTab:hover {
+    background-color: #FFECB3;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+}
+
 
 .slideMenu {
   position: fixed;
@@ -19,40 +36,73 @@
   left: -200px;
   width: 200px;
   height: 100vh;
-  background-color: #ffee66;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-  transition: left 0.3s ease;
-  padding: 20px;
+  background: linear-gradient(180deg, #FFF9C4 0%, #FFECB3 100%);
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
+  transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  padding: 25px 20px;
   z-index: 999;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .slideMenu.open {
   left: 0;
 }
 
+
+.slideMenu h2 {
+    color: #8D6E63;
+    font-size: 1.6em;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+
 .buttonStyle {
-  background-color: #ffdd44;
+  background-color: #FFEB3B;
+  color: #795548;
   border: none;
-  padding: 10px;
-  border-radius: 4px;
+  padding: 12px 15px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 15px;
+  width: 100%;
+  text-align: left;
+  font-size: 1em;
+  font-weight: 600;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.buttonStyle:hover {
+  background-color: #FFC107;
+  transform: translateY(-2px);
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+.activeButton {
+  background-color: #FF8A65;
+  color: white;
+  font-weight: bold;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 138, 101, 0.6);
+  transform: none;
+}
+
+.activeButton:hover {
+    background-color: #FF8A65;
+    transform: none;
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 138, 101, 0.6);
 }
 
 .main {
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   padding: 20px;
 }
 
 .main.shifted {
   margin-left: 200px;
-}
-
-.settingsSection {
-  margin-top: auto; /* メニュー下に固定 */
-  padding: 10px;
-  border-top: 1px solid #ccc;
 }
