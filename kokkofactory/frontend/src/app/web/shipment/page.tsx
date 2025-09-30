@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import LeftPullTab from "@components/LeftPullTab";
 import styles from './page.module.css'; // CSSファイルをインポート
 import { useShipment } from '@components/ShipmentContext';
-
+import LoadingScreen from "@components/LoadingScreen";
 
 // APIから取得するデータの型を定義（配列を想定）
 interface ShipmentDetails {
@@ -56,7 +56,7 @@ export default function WebPage() {
     }
   }, [shipments, setShipments]);
 
-  if (loading) return <div>読み込み中...</div>;
+  if (loading) return <LoadingScreen message="データ読み込み中・・・" />;
   if (error) return <div>エラー: {error}</div>;
 
   return (
