@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
+import LoadingScreen from "@components/LoadingScreen";
 
 interface Customer {
   id: number;
@@ -98,7 +99,7 @@ export default function CustomerListPage() {
   };
 
   if (loading) {
-    return <p>ロード中... </p>;
+    return <LoadingScreen message="ロード中・・・" />;
   }
 
   if (error) {

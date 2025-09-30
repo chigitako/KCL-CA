@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import LoadingScreen from "@components/LoadingScreen";
 
 // 在庫情報の型定義（APIのGETリクエストのレスポンスに基づく）
 interface InventoryItem {
@@ -141,7 +142,7 @@ export default function StockPage() {
 
       {/* ----------------- 在庫一覧表示 ----------------- */}
       {loading ? (
-        <p>読み込み中...お待ちください...🐰</p>
+        <LoadingScreen message="データ読み込み中・・・" />
       ) : (
         <table style={styles.table}>
           <thead>

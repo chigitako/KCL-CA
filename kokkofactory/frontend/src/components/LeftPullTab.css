@@ -106,3 +106,7 @@ body {
 .main.shifted {
   margin-left: 200px;
 }
+
+.logo{
+  width: 100%;
+}

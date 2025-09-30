@@ -36,7 +36,11 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
 
       {/* スライドメニュー */}
       <div className={`slideMenu ${open ? "open" : ""}`}>
-        <h2>こっこ<br/>ふぁくとりー</h2>
+        <h2>
+          <Link href="/web">
+            <img src="/images/kokkologo.png" alt="こっこふぁくとりーロゴ" className={"logo"} />
+          </Link>
+        </h2>
 
         <NavButton href="/web/chicken">産卵記録</NavButton>
         <NavButton href="/web/environment">環境モニタリング</NavButton>
