@@ -290,7 +290,7 @@ export default function GraphPage() {
                 <div className={styles.selectEngraph}>
                   <h2>
                     {selectedKey
-                      ? `${keyToDate(selectedKey, groupBy).toLocaleDateString()} の出荷割合`
+                      ? `${formatKeyLabel(selectedKey, groupBy)} の出荷割合`
                       : "日付をクリックしてください"}
                   </h2>
                   {selectedKey && <Pie data={pieDayData!} options={{ responsive: true }}/>}
