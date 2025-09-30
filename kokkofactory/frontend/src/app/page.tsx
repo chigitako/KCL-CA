@@ -40,7 +40,12 @@ export default function WebPage() {
 
   return (
     <div className={styles.page}>
+      {/* ロゴ */}
+        <div className={styles.logoWrapper}>
+          <img src="images/kokkologo.png" alt="こっこふぁくとりーロゴ" className={styles.logo} />
+        </div>
       <div className={styles.main}>
+        
         {mode === "login" ? (
           <>
             <h1>ログイン</h1>
