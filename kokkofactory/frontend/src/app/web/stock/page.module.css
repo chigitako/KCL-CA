@@ -1,6 +1,6 @@
 .container {
   padding: 20px;
-  max-width: 900px;
+  max-width: 100%;
   margin: auto;
 }
 
@@ -56,7 +56,7 @@
   background-color: #f0f0f0;
 }
 
-.customerTable {
+.table {
   width: 100%;
   border-collapse: collapse;
 }

@@ -3,6 +3,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import LoadingScreen from "@components/LoadingScreen";
+import LeftPullTab from "@components/LeftPullTab";
+import styles from "./page.module.css";
+
 
 // 在庫情報の型定義（APIのGETリクエストのレスポンスに基づく）
 interface InventoryItem {
@@ -75,6 +78,13 @@ export default function StockPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<NewStockForm>({ supplierName: '', count: '' });
+  // 更新ボタン用ハンドラ
+  const handleUpdate = (item: InventoryItem) => {
+    // ここで編集ページに飛ぶとか、モーダルを開くとかにゃ
+    // 今は簡単にアラート表示にしてみる
+    alert(`${item.supplierName} の在庫情報を更新します`);
+  };
+
 
   // 在庫一覧をフェッチするコールバック
   const loadInventory = useCallback(async () => {
@@ -135,143 +145,57 @@ export default function StockPage() {
   };
 
   return (
-    <div style={styles.container}>
-      
-      {/* エラーメッセージ表示 */}
-      {error && <div style={styles.error}>{error}</div>}
+    <LeftPullTab>
+      <div className={styles.container}>
+        
+        {/* エラーメッセージ表示 */}
+        {error && <div className={styles.error}>{error}</div>}
 
-      {/* ----------------- 在庫一覧表示 ----------------- */}
-      {loading ? (
-        <LoadingScreen message="データ読み込み中・・・" />
-      ) : (
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>仕入れ先名</th>
-              <th style={styles.th}>品目名</th>
-              <th style={styles.th}>在庫数</th>
-              <th style={styles.th}>住所</th>
-              <th style={styles.th}>連絡先</th>
-            </tr>
-          </thead>
-          <tbody>
-            {inventory.length === 0 ? (
+        {/* ----------------- 在庫一覧表示 ----------------- */}
+        {loading ? (
+          <LoadingScreen message="データ読み込み中・・・" />
+        ) : (
+          <table className={styles.table}>
+            <thead className={styles.tableHeader}>
               <tr>
-                <td colSpan={5} style={styles.td}>在庫データがありません。</td>
+                <th>仕入れ先名</th>
+                <th>品目名</th>
+                <th>在庫数</th>
+                <th>住所</th>
+                <th>連絡先</th>
+                <th></th>
               </tr>
-            ) : (
-              inventory.map((item, index) => (
-                <tr key={index} style={index % 2 === 0 ? styles.rowEven : styles.rowOdd}>
-                  <td style={styles.td}>{item.supplierName}</td>
-                  <td style={styles.td}>{item.ItemName}</td>
-                  <td style={styles.tdRight}>{item.remainingCount.toLocaleString()}</td>
-                  <td style={styles.td}>{item.address}</td>
-                  <td style={styles.td}>{item.phoneNumber} / {item.email}</td>
+            </thead>
+            <tbody>
+              {inventory.length === 0 ? (
+                <tr>
+                  <td colSpan={5}>在庫データがありません。</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      )}
-    </div>
+              ) : (
+                inventory.map((item, index) => (
+                  <tr key={index} className={styles.tableRow}>
+                    <td>{item.supplierName}</td>
+                    <td>{item.ItemName}</td>
+                    <td >{item.remainingCount.toLocaleString()}</td>
+                    <td>{item.address}</td>
+                    <td>{item.phoneNumber} / {item.email}</td>
+                    <td>
+                      <button
+                        className={styles.updateButton}
+                        onClick={() => handleUpdate(item)}
+                      >
+                        🖊️ 更新
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </LeftPullTab>
   );
 }
 
 
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    padding: '20px',
-    maxWidth: '1000px',
-    margin: '0 auto',
-    backgroundColor: '#fff',
-  },
-  header: {
-    color: '#ff66aa', // ピンク色
-    borderBottom: '2px solid #ffcc00', // 黄色の下線
-    paddingBottom: '10px',
-  },
-  subHeader: {
-    color: '#ffcc00', // 黄色
-    marginTop: '20px',
-    marginBottom: '15px',
-  },
-  formSection: {
-    backgroundColor: '#fffbe6', // 淡い黄色背景
-    padding: '20px',
-    borderRadius: '8px',
-    border: '1px solid #ffcc00',
-    marginBottom: '30px',
-  },
-  form: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'flex-end',
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  label: {
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-  },
-  input: {
-    padding: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    width: '200px',
-  },
-  button: {
-    backgroundColor: '#ff66aa', // ピンク色
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '4px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    transition: 'background-color 0.2s',
-  },
-  hr: {
-    border: 'none',
-    borderTop: '1px solid #ccc',
-    margin: '30px 0',
-  },
-  error: {
-    backgroundColor: '#fdd',
-    color: '#d00',
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '20px',
-    border: '1px solid #f00',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '15px',
-  },
-  th: {
-    backgroundColor: '#ffcc00', // 黄色ヘッダー
-    color: '#333',
-    padding: '12px 10px',
-    textAlign: 'left',
-    border: '1px solid #e0e0e0',
-  },
-  td: {
-    padding: '10px',
-    border: '1px solid #e0e0e0',
-    textAlign: 'left',
-  },
-  tdRight: {
-    padding: '10px',
-    border: '1px solid #e0e0e0',
-    textAlign: 'right',
-    fontWeight: 'bold',
-  },
-  rowEven: {
-    backgroundColor: '#f9f9f9',
-  },
-  rowOdd: {
-    backgroundColor: '#fff',
-  }
-};
