@@ -13,13 +13,21 @@ export default function WebPage() {
   const router = useRouter();
   
 
+  //スマホかどうかの判定
+  const isMobile = () => {
+    if (typeof navigator === "undefined") return false; // SSR対策
+    return /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+  };
+
+
   const ADMIN_PASSWORD = "kokkofactory"; // 管理者用パスワード
 
   const handleLogin = () => {
+    const mobile = isMobile();
     if (role === "admin") {
       if (password === ADMIN_PASSWORD) {
         setMessage("管理者ログイン成功🎉");
-        router.push("/web"); 
+        router.push(mobile ? "/mobile" : "/web"); // ←スマホなら /mobile
       } else {
         setMessage("パスワードが違う💦");
       }
