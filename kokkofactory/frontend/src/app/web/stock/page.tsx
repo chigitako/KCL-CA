@@ -1,13 +1,11 @@
-// src/app/web/stock/page.tsx
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import LoadingScreen from "@components/LoadingScreen";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
 
-
-// 在庫情報の型定義（APIのGETリクエストのレスポンスに基づく）
+// 在庫情報の型定義
 interface InventoryItem {
   supplierName: string;
   ItemName: string;
@@ -27,47 +25,40 @@ interface NewStockForm {
 // 1. API通信関数
 // --------------------------------------------------
 
-/**
- * 在庫一覧を取得するAPI呼び出し
- */
 const fetchInventory = async (): Promise<InventoryItem[]> => {
-  const res = await fetch('/api/stock');
-  
+  const res = await fetch("/api/stock");
+
   if (!res.ok) {
-    // サーバーエラーの場合、具体的なメッセージを表示
     const errorBody = await res.json();
-    throw new Error(`在庫の取得に失敗しました: ${errorBody.error || res.statusText}`);
+    throw new Error(
+      `在庫の取得に失敗しました: ${errorBody.error || res.statusText}`
+    );
   }
-  
+
   return res.json();
 };
 
-/**
- * 新しい在庫情報を登録するAPI呼び出し
- */
 const createStock = async (data: NewStockForm) => {
   const payload = {
     supplierName: data.supplierName,
-    count: parseInt(data.count, 10), // 数値に変換して送信
+    count: parseInt(data.count, 10),
   };
 
-  const res = await fetch('/api/stock', {
-    method: 'POST',
+  const res = await fetch("/api/stock", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
-    // サーバーエラーの場合、具体的なメッセージを表示
     const errorBody = await res.json();
     throw new Error(`登録に失敗しました: ${errorBody.error || res.statusText}`);
   }
-  
+
   return res.json();
 };
-
 
 // --------------------------------------------------
 // 2. メインコンポーネント
@@ -77,16 +68,20 @@ export default function StockPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<NewStockForm>({ supplierName: '', count: '' });
-  // 更新ボタン用ハンドラ
+
+  // 🔹 追加: 検索用の state
+  const [searchTerms, setSearchTerms] = useState({
+    supplierName: "",
+    itemName: "",
+    address: "",
+    phoneNumber: "",
+    inventoryCount: "", // 在庫数を追加
+  });
+
   const handleUpdate = (item: InventoryItem) => {
-    // ここで編集ページに飛ぶとか、モーダルを開くとかにゃ
-    // 今は簡単にアラート表示にしてみる
     alert(`${item.supplierName} の在庫情報を更新します`);
   };
 
-
-  // 在庫一覧をフェッチするコールバック
   const loadInventory = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -97,7 +92,7 @@ export default function StockPage() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('在庫一覧の読み込み中に不明なエラーが発生しました。');
+        setError("在庫一覧の読み込み中に不明なエラーが発生しました。");
       }
     } finally {
       setLoading(false);
@@ -108,48 +103,99 @@ export default function StockPage() {
     loadInventory();
   }, [loadInventory]);
 
-  // フォーム入力ハンドラ
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 🔹 検索フォーム入力ハンドラ
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setSearchTerms((prev) => ({ ...prev, [name]: value }));
   };
 
-  // フォーム送信ハンドラ
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!formData.supplierName.trim() || !formData.count.trim()) {
-      setError('仕入れ先名と在庫数は必須です。');
-      return;
-    }
-    if (isNaN(parseInt(formData.count, 10))) {
-      setError('在庫数は数値で入力してください。');
-      return;
-    }
-
-    try {
-      await createStock(formData);
-      
-      // 成功したら一覧を再読み込みし、フォームをクリア
-      await loadInventory();
-      setFormData({ supplierName: '', count: '' });
-      alert('新しい在庫が登録されました！💖');
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('在庫の登録中に不明なエラーが発生しました。');
-      }
-    }
+  // 🔹 クリアボタン処理
+  const handleClear = () => {
+    setSearchTerms({
+      supplierName: "",
+      itemName: "",
+      address: "",
+      phoneNumber: "",
+      inventoryCount: "",
+    });
   };
+
+  // 🔹 検索結果フィルタリング
+  const filteredInventory = inventory.filter((item) => {
+    return (
+      item.supplierName.includes(searchTerms.supplierName) &&
+      item.ItemName.includes(searchTerms.itemName) &&
+      item.address.includes(searchTerms.address) &&
+      item.phoneNumber.includes(searchTerms.phoneNumber) &&
+      (searchTerms.inventoryCount === "" ||
+        item.remainingCount.toString().includes(searchTerms.inventoryCount))
+    );
+  });
 
   return (
     <LeftPullTab>
       <div className={styles.container}>
-        
-        {/* エラーメッセージ表示 */}
-        {error && <div className={styles.error}>{error}</div>}
+        <div className={styles.header}>
+          <a href="/web/stock/new" className={styles.newButton}>
+            新規作成
+          </a>
+        </div>
+        {/* 🔹 検索フォーム */}
+        <form
+          className={styles.searchForm}
+          onSubmit={(e) => e.preventDefault()} // フォーム送信でリロード防止
+        >
+          <input
+            type="text"
+            name="supplierName"
+            placeholder="仕入れ先名"
+            value={searchTerms.supplierName}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
+          />
+          <input
+            type="text"
+            name="itemName"
+            placeholder="品目名"
+            value={searchTerms.itemName}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
+          />
+          <input
+            type="text"
+            name="inventoryCount"
+            placeholder="在庫数"
+            value={searchTerms.inventoryCount}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
+          />
+          <input
+            type="text"
+            name="address"
+            placeholder="住所"
+            value={searchTerms.address}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
+          />
+          <input
+            type="text"
+            name="phoneNumber"
+            placeholder="連絡先"
+            value={searchTerms.phoneNumber}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
+          />
+          <button type="submit" className={styles.searchButton}>
+            検索
+          </button>
+          <button
+            type="button"
+            onClick={handleClear}
+            className={styles.clearButton}
+          >
+            クリア
+          </button>
+        </form>
 
         {/* ----------------- 在庫一覧表示 ----------------- */}
         {loading ? (
@@ -167,18 +213,20 @@ export default function StockPage() {
               </tr>
             </thead>
             <tbody>
-              {inventory.length === 0 ? (
+              {filteredInventory.length === 0 ? (
                 <tr>
-                  <td colSpan={5}>在庫データがありません。</td>
+                  <td colSpan={6}>在庫データがありません。</td>
                 </tr>
               ) : (
-                inventory.map((item, index) => (
+                filteredInventory.map((item, index) => (
                   <tr key={index} className={styles.tableRow}>
                     <td>{item.supplierName}</td>
                     <td>{item.ItemName}</td>
-                    <td >{item.remainingCount.toLocaleString()}</td>
+                    <td>{item.remainingCount.toLocaleString()}</td>
                     <td>{item.address}</td>
-                    <td>{item.phoneNumber} / {item.email}</td>
+                    <td>
+                      {item.phoneNumber} / {item.email}
+                    </td>
                     <td>
                       <button
                         className={styles.updateButton}
@@ -197,5 +245,3 @@ export default function StockPage() {
     </LeftPullTab>
   );
 }
-
-
