@@ -37,16 +37,16 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
       {/* スライドメニュー */}
       <div className={`slideMenu ${open ? "open" : ""}`}>
         <h2>
-          <Link href="/web">
+          <Link href="/mobile">
             <img src="/images/kokkologo.png" alt="こっこふぁくとりーロゴ" className={"logo"} />
           </Link>
         </h2>
 
-        <NavButton href="/web/chicken">産卵記録</NavButton>
-        <NavButton href="/web/environment">環境モニタリング</NavButton>
-        <NavButton href="/web/shipment">出荷履歴</NavButton>
-        <NavButton href="/web/customers">取引先名簿</NavButton>
-        <NavButton href="/web/stock">在庫</NavButton>
+        <NavButton href="/mobile/chicken">産卵記録</NavButton>
+        <NavButton href="/mobile/environment">環境モニタリング</NavButton>
+        <NavButton href="/mobile/shipment">出荷履歴</NavButton>
+        <NavButton href="/mobile/customers">取引先名簿</NavButton>
+        <NavButton href="/mobile/stock">在庫</NavButton>
       </div>
       {/* オーバーレイ */}
       {open && <div className="overlay" onClick={() => setOpen(false)}></div>}
