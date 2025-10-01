@@ -163,35 +163,21 @@ export default function CustomerListPage() {
         {customers.length === 0 ? (
           <p>取引先が見つかりませんでした。</p>
         ) : (
-          <table className={styles.customerTable}>
-            <thead>
-              <tr className={styles.tableHeader}>
-                <th>取引先</th>
-                <th>住所</th>
-                <th>電話</th>
-                <th>メール</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers.map((customer) => (
-                <tr key={customer.id} className={styles.tableRow}>
-                  <td>{customer.name}</td>
-                  <td>{customer.address || "未登録"}</td>
-                  <td>{customer.phone_number || "未登録"}</td>
-                  <td>{customer.email || "未登録"}</td>
-                  <td>
-                    <span
-                      className={styles.deleteIcon}
-                      onClick={() => handleDelete(customer.id, customer.name)}
-                    >
-                      &#128465;
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ul className={styles.customerList}>
+            {customers.map((customer) => (
+              <li key={customer.id} className={styles.customerItem}>
+                <a href={`/mobile/customers/${customer.id}`} className={styles.customerLink}>
+                  {customer.name}
+                </a>
+                <span
+                  className={styles.deleteIcon}
+                  onClick={() => handleDelete(customer.id, customer.name)}
+                >
+                  &#128465;
+                </span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </LeftPullTab>
