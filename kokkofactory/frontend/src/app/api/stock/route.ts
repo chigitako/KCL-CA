@@ -34,45 +34,64 @@ export async function POST(request: Request) {
     const { supplierName, count } = body;
 
     // 必須フィールドの検証
-    if (!supplierName || count === undefined) {
-      return NextResponse.json({ error: 'Required fields are missing: supplierName or count.' }, { status: 400 });
+    if (!supplierName || count === undefined || typeof count !== 'number') {
+      return NextResponse.json({ error: 'Required fields are missing or invalid.' }, { status: 400 });
     }
 
     // トランザクションを使って、複数の処理を安全に実行
     const result = await prisma.$transaction(async (tx) => {
       // 1. 仕入れ先を検索し、なければ作成
+      // NOTE: この時点で仕入れ先の item_name が不明なままになる問題は一旦無視します
       let supplier = await tx.supplier.findUnique({
         where: { name: supplierName },
       });
 
       if (!supplier) {
+        // 新規仕入れ先の場合、item_nameの入力がないため仮の値を入れるか、POSTを拒否すべきだが、
+        // 既存ロジックを尊重し、仮の値で作成します。
         supplier = await tx.supplier.create({
           data: {
             name: supplierName,
-            // 必要に応じて他のフィールドもここで追加
             address: '未登録',
             phone_number: '未登録',
             email: '未登録',
+            item_name: '未登録', // 🚨 item_nameも必須として仮登録が必要
           },
         });
       }
 
-      // 2. 新しい在庫情報をデータベースに作成
-      const newStock = await tx.stock.create({
-        data: {
+      // 2. 在庫レコードを UPSERT (更新または作成)
+      //    目的: 既存の在庫があれば count を加算し、なければ新規作成する。
+      // まず、supplierIdで既存のstockレコードを検索し、idを取得
+      const existingStock = await tx.stock.findFirst({
+        where: { supplierId: supplier.id },
+      });
+
+      const upsertedStock = await tx.stock.upsert({
+        where: {
+          id: existingStock ? existingStock.id : 0, // 既存ならid、なければ0（存在しないid）
+        },
+        update: {
+          count: {
+            increment: count,
+          },
+        },
+        create: {
           supplierId: supplier.id,
           count: count,
         },
+        include: {
+          supplier: true,
+        },
       });
 
-      return newStock;
+      return upsertedStock;
     });
 
-    // 新しく作成された在庫情報を返す
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error('Error creating new stock:', error);
-    return NextResponse.json({ error: '新しい在庫の作成に失敗しました。' }, { status: 500 });
+    console.error('Error upserting stock:', error);
+    return NextResponse.json({ error: '在庫の更新/作成に失敗しました。' }, { status: 500 });
   }
 }
 
