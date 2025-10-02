@@ -1,12 +1,11 @@
 .container{
-    height:auto;
+    height:100vh;
 }
 
 .main{
     
     display: flex;         /* 横並びになる */
-    min-height: 100vh;
-    height:auto;
+    height: 100vh;
 }
 
 .inputContainer{
@@ -76,9 +75,68 @@
 
 
 .memoryContainer{
-    
     display: flex;
+    height: 100%;
     flex: 1;
     flex-direction: column; /* ←縦並び */
-    height: 100%;
+}
+.eggMemoryContainer{
+    flex:1;
+    display: flex;              /* 子をflexアイテムにする */
+    flex-direction: column; /* ←縦並び */
+    justify-content: center;    /* 横方向の中央寄せ */
+    align-items: center;        /* 縦方向の中央寄せ */
+    overflow-y: auto;  /* ここでスクロール */
+    max-height: 300px; /* 好きな高さ */
+    
+}
+.deathMemoryContainer{
+    flex:1;
+    display: flex;              /* 子をflexアイテムにする */
+    flex-direction: column; /* ←縦並び */
+    justify-content: center;    /* 横方向の中央寄せ */
+    align-items: center;        /* 縦方向の中央寄せ */
+    overflow-y: auto;  /* ここでスクロール */
+    max-height: 300px; /* 好きな高さ */
+    
+}
+.memoryTable{
+    width:100%;
+    height:100%;
+    border-collapse: collapse;
+}
+.memoryTable th,
+.memoryTable td {
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.memoryTable thead {
+    position: sticky; /* ヘッダー固定 */
+    top: 0;
+    background-color: #f0f0f0;
+    z-index: 1;
+  display: table; /* tbodyと並べるためにtable */
+  width: 100%;
+  table-layout: fixed;
+}
+
+.memoryTable tbody {
+display: table-row-group; /* 元に戻す */
+}
+
+.memoryTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+.tableHeader {
+  background-color: #f2f2f2;
+}
+
+.tableHeader th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
 }

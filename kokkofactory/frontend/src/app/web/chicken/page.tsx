@@ -103,28 +103,6 @@ const useEggList = () => {
 };
 
 
-// --- SVG Icons (インラインで定義) ---
-// (SVG定義は省略)
-
-const Checkmark = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2">
-      <polyline points="20 6 9 17 4 12"></polyline>
-    </svg>
-  );
-  
-const XMark = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2">
-      <line x1="18" y1="6" x2="6" y2="18"></line>
-      <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
-  );
-  
-const Loader = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2 animate-spin">
-      <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-    </svg>
-  );
-
 type DataType = 'egg' | 'deathchicken';
 
 // --- Component ---
@@ -340,8 +318,86 @@ export default function ChickenFarmDataPage() {
             
           </div>
 
+          {/* 記録表 */}
           <div className={styles.memoryContainer}>
-            
+            <div className={styles.eggMemoryContainer}>
+              <h3 style={{textAlign: "center"}}>採卵記録</h3>
+              {eggListLoading ? (
+                <p>読み込み中…</p>
+              ) : eggList.length === 0 ? (
+                <p>まだ採卵記録はありません。</p>
+              ) : (
+                <table className={styles.memoryTable}>
+                  <thead>
+                    <tr className={styles.tableHeader}>
+                      <th>日時</th>
+                      <th>鶏舎番号</th>
+                      <th>個数</th>
+                      <th>変更</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {eggList.map((egg) => {
+                      const date = new Date(egg.date);
+                      const formattedDate = `${date.getFullYear()}/${(date.getMonth()+1)
+                        .toString()
+                        .padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
+                      return (
+                        <tr key={egg.id}>
+                          <td>{formattedDate}</td>
+                          <td>{egg.coop_number}</td>
+                          <td>{egg.count}</td>
+                          <td>
+                            {/* ここに編集ボタンとかアイコンを置ける */}
+                            <button className={styles.editButton}>✏️</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            <div className={styles.deathMemoryContainer}>
+              <h3 style={{textAlign: "center"}}>死亡記録</h3>
+              {listLoading ? (
+                <p>読み込み中…</p>
+              ) : deadChickenList.length === 0 ? (
+                <p>まだ死亡記録はありません。</p>
+              ) : (
+                <table className={styles.memoryTable}>
+                  <thead>
+                    <tr className={styles.tableHeader}>
+                      <th>日時</th>
+                      <th>鶏舎番号</th>
+                      <th>羽数</th>
+                      <th>変更</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {deadChickenList.map((egg) => {
+                      const date = new Date(egg.date);
+                      const formattedDate = `${date.getFullYear()}/${(date.getMonth()+1)
+                        .toString()
+                        .padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
+                      return (
+                        <tr key={egg.id}>
+                          <td>{formattedDate}</td>
+                          <td>{egg.coop_number}</td>
+                          <td>{egg.count}</td>
+                          <td>
+                            {/* ここに編集ボタンとかアイコンを置ける */}
+                            <button className={styles.editButton}>✏️</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+                      
           </div>
         </div>
         
