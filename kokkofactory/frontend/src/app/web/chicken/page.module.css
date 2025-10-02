@@ -1,0 +1,142 @@
+.container{
+    height:100vh;
+}
+
+.main{
+    
+    display: flex;         /* 横並びになる */
+    height: 100vh;
+}
+
+.inputContainer{
+    display: flex;
+    flex: 1;
+    flex-direction: column; /* ←縦並び */
+    height: 100vh;
+}
+.FormContainer{
+    display: flex;              /* 子をflexアイテムにする */
+    justify-content: center;    /* 横方向の中央寄せ */
+    align-items: center;        /* 縦方向の中央寄せ */
+    flex:1;
+}
+/* 入力フォーム全体 */
+.form {
+  display: flex;
+  flex-direction: column;
+  width:70%;
+  height:70%;
+  gap: 1rem;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ラベル */
+.label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #333;
+}
+
+/* セレクトとインプット共通 */
+.input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 1rem;
+  margin-top: 4px;
+}
+.countInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.unit {
+  font-size: 16px;
+  margin-left: 4px;
+}
+.button {
+    margin: 0 auto;
+    background-color: #ffd700; /* 黄色で目立たせる例 */
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    padding:1rem;
+    width:35%;
+}
+.button:hover {
+  background-color: #ffc700;
+}
+
+
+.memoryContainer{
+    display: flex;
+    height: 100%;
+    flex: 1;
+    flex-direction: column; /* ←縦並び */
+}
+.eggMemoryContainer{
+    flex:1;
+    display: flex;              /* 子をflexアイテムにする */
+    flex-direction: column; /* ←縦並び */
+    justify-content: center;    /* 横方向の中央寄せ */
+    align-items: center;        /* 縦方向の中央寄せ */
+    overflow-y: auto;  /* ここでスクロール */
+    max-height: 300px; /* 好きな高さ */
+    
+}
+.deathMemoryContainer{
+    flex:1;
+    display: flex;              /* 子をflexアイテムにする */
+    flex-direction: column; /* ←縦並び */
+    justify-content: center;    /* 横方向の中央寄せ */
+    align-items: center;        /* 縦方向の中央寄せ */
+    overflow-y: auto;  /* ここでスクロール */
+    max-height: 300px; /* 好きな高さ */
+    
+}
+.memoryTable{
+    width:100%;
+    height:100%;
+    border-collapse: collapse;
+}
+.memoryTable th,
+.memoryTable td {
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.memoryTable thead {
+    position: sticky; /* ヘッダー固定 */
+    top: 0;
+    background-color: #f0f0f0;
+    z-index: 1;
+  display: table; /* tbodyと並べるためにtable */
+  width: 100%;
+  table-layout: fixed;
+}
+
+.memoryTable tbody {
+display: table-row-group; /* 元に戻す */
+}
+
+.memoryTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+.tableHeader {
+  background-color: #f2f2f2;
+}
+
+.tableHeader th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
