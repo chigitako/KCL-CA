@@ -328,7 +328,7 @@ export default function DashboardPage() {
                     </div>
 
                      <div className={styles.infoPanel}>
-                        <h2>💀 本日の斃死記録</h2>
+                        <h2>💀 本日の死んだ羽数</h2>
                         <div className={styles.kpiSummary}>
                             <div className={`${styles.kpiValue} ${data && data.chickenDeathCountToday > 0 ? styles.alertCount : ''}`}>
                                 {data ? data.chickenDeathCountToday.toLocaleString() : "—"}
@@ -366,6 +366,7 @@ export default function DashboardPage() {
                                 <option>6号舎</option>
                                 <option>7号舎</option>
                                 <option>8号舎</option>
+                                <option>15号舎</option>
                                 {/* ... 15号舎まで続く ... */}
                             </select>
                         </div>
