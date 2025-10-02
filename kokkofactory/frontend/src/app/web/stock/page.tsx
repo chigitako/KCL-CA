@@ -60,6 +60,31 @@ const createStock = async (data: NewStockForm) => {
   return res.json();
 };
 
+const updateStock = async (supplierName: string, newCount: number) => {
+  const payload = {
+    supplierName: supplierName,
+    newCount: newCount,
+  };
+
+  const res = await fetch("/api/stock", {
+    method: "PATCH", // PATCHメソッドを使用
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(
+      `更新に失敗しました: ${errorBody.error || res.statusText}`
+    );
+  }
+
+  return res.json();
+};
+
+
 // --------------------------------------------------
 // 2. メインコンポーネント
 // --------------------------------------------------
@@ -78,8 +103,41 @@ export default function StockPage() {
     inventoryCount: "", // 在庫数を追加
   });
 
-  const handleUpdate = (item: InventoryItem) => {
-    alert(`${item.supplierName} の在庫情報を更新します`);
+  const handleUpdate = async (item: InventoryItem) => {
+    // ユーザーに新しい在庫数を尋ねる
+    const newCountStr = prompt(
+      `${item.supplierName}（現在在庫: ${item.remainingCount}）の新しい在庫数を入力してください。`
+    );
+
+    if (newCountStr === null) {
+      // キャンセルされた場合
+      return;
+    }
+
+    const newCount = parseInt(newCountStr, 10);
+
+    // 入力が無効な場合（数字でない、マイナスなど）
+    if (isNaN(newCount) || newCount < 0) {
+      alert("無効な入力です。在庫数にはゼロ以上の数字を入力してください。");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      await updateStock(item.supplierName, newCount);
+      alert(`${item.supplierName} の在庫数を ${newCount.toLocaleString()} に更新しました！`);
+      // 更新成功後、在庫一覧を再読み込み
+      await loadInventory();
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("在庫更新中に不明なエラーが発生しました。");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const loadInventory = useCallback(async () => {
