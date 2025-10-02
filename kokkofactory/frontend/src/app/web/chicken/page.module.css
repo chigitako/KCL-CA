@@ -1,0 +1,84 @@
+.container{
+    height:auto;
+}
+
+.main{
+    
+    display: flex;         /* 横並びになる */
+    min-height: 100vh;
+    height:auto;
+}
+
+.inputContainer{
+    display: flex;
+    flex: 1;
+    flex-direction: column; /* ←縦並び */
+    height: 100vh;
+}
+.FormContainer{
+    display: flex;              /* 子をflexアイテムにする */
+    justify-content: center;    /* 横方向の中央寄せ */
+    align-items: center;        /* 縦方向の中央寄せ */
+    flex:1;
+}
+/* 入力フォーム全体 */
+.form {
+  display: flex;
+  flex-direction: column;
+  width:70%;
+  height:70%;
+  gap: 1rem;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ラベル */
+.label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #333;
+}
+
+/* セレクトとインプット共通 */
+.input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 1rem;
+  margin-top: 4px;
+}
+.countInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.unit {
+  font-size: 16px;
+  margin-left: 4px;
+}
+.button {
+    margin: 0 auto;
+    background-color: #ffd700; /* 黄色で目立たせる例 */
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    padding:1rem;
+    width:35%;
+}
+.button:hover {
+  background-color: #ffc700;
+}
+
+
+.memoryContainer{
+    
+    display: flex;
+    flex: 1;
+    flex-direction: column; /* ←縦並び */
+    height: 100%;
+}
