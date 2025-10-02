@@ -1,28 +1,248 @@
-/* fronted/src/app/web/page.module.css */
-.index {
---gray-rgb: 0, 0, 0;
---gray-alpha-200: rgba(var(--gray-rgb), 0.08);
---gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+/* app/dashboard/page.module.css (4分割レイアウト修正版) */
 
---button-primary-hover: #383838;
---button-secondary-hover: #f2f2f2;
+/* ------------------ コンテナの基本設定 ------------------ */
+.container {
+  padding: 10px;
+  background-color: #FFFDE7;
+  height: 100%; /* 画面高さを完全に利用 */
+  box-sizing: border-box; 
+  display: flex;
+  flex-direction: column; /* 縦に並べる（タイトル、そしてメイングリッド） */
+}
 
-display: grid;
-grid-template-rows: 20px 1fr 20px;
-align-items: center;
-justify-items: center;
-min-height: 100svh;
-padding: 80px;
-gap: 64px;
-font-family: var(--font-geist-sans);
+.title {
+  color: #5D4037;
+  margin-bottom: 10px;
+  border-bottom: 3px solid #FDD835;
+  padding-bottom: 5px; 
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0; /* 高さ計算のために固定 */
+}
+
+/* ------------------ メインコンテンツ (4分割グリッド) ------------------ */
+.mainContentGrid { 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* 🚨 修正: 4分割グリッドの高さを画面全体の半分程度に縮小 */
+  /* 残りの高さをFlexboxで調整するため、ここでは固定的な比率にせず、次に続く環境パネルが残りを占有するようにします。 */
+  flex-shrink: 0; 
+  height: 50vh; /* 例: 画面高の半分を占める */
+  gap: 10px;
+  margin-bottom: 10px; /* 環境パネルとの間に余白 */
+  min-height: 400px; /* 最小高さを確保 */
+}
+
+/* ------------------ 新規追加: 環境モニタリングセクション ------------------ */
+.environmentSection {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+    /* 🚨 修正: 残りの高さを全て占有 (画面の縦スクロールを有効活用) */
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.environmentGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 3列〜4列表示を想定 */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.envCard {
+    background-color: #FFFDE7; /* 淡い黄色の背景 */
+    border: 1px solid #FDD835;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+}
+
+.envAlert {
+    border-color: #FF8A65;
+    background-color: #FFEBEE;
+    font-weight: bold;
+}
+
+/* ... (省略: .infoPanel, .dataList などのスタイルは維持) ...
+
+
+/* ------------------ 個別の情報パネルスタイル ------------------ */
+/* 以前の alertPanel, monitorPanel を統合した新しいパネル */
+.infoPanel {
+  background-color: #ffffff;
+  border-radius: 8px; 
+  padding: 10px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1); 
+  overflow-y: auto; /* パネル内でスクロールを許可 */
+  display: flex;
+  flex-direction: column;
+}
+
+.infoPanel h2 {
+  color: #8D6E63; 
+  font-size: 14px; /* KPIと詳細のヘッダーを小さく統一 */
+  border-bottom: 1px solid #FFECB3;
+  padding-bottom: 4px; 
+  margin-bottom: 8px; 
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ------------------ KPIカードのスタイル (Panel内に組み込むため調整) ------------------ */
+.kpiSummary {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
+}
+
+/* KPIの数値部分 */
+.kpiValue {
+  font-size: 32px; /* 数値を大きく見せる */
+  font-weight: 800;
+  color: #5D4037;
+  margin-right: 10px;
+}
+
+.kpiLabel {
+  font-size: 14px;
+  color: #795548;
+}
+
+/* ------------------ リスト部分のスタイル ------------------ */
+.listTitle {
+    color: #8D6E63; 
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    flex-shrink: 0;
+}
+
+.dataList { /* リストコンテナ */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* 残りの高さをリストが占有 */
+}
+
+.dataItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px dashed #f0e0b3;
+  font-size: 12px;
+}
+
+.dataItem:last-child {
+  border-bottom: none;
+}
+
+/* アラートの強調色 */
+.alertName {
+  font-weight: 600;
+  color: #5D4037;
+}
+
+.alertCount {
+  color: #FF8A65; /* オレンジ */
+  font-weight: 800;
+}
+
+/* 出荷の強調色 */
+.shipmentCount {
+  color: #4a90e2; 
+  font-weight: bold;
+}
+
+/* app/dashboard/page.module.css (環境セクションの詳細修正) */
+
+/* ------------------ 環境モニタリングセクション (親コンテナは維持) ------------------ */
+.environmentSection {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1; 
+    display: flex;
+    min-height: 35vh; 
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.envControlPanel { /* 左側: 鶏舎選択、カメラ選択 */
+    width: 160px; /* 少し広げる */
+    padding-right: 10px; 
+    border-right: none; 
+    background-color: #fcfcfc; 
+    border-radius: 8px; 
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding-top: 10px;
+}
+.envDataPanel { /* 右側全体: データ表示とカメラ映像 */
+    flex-grow: 1;
+    padding-left: 10px;
+    /* 🚨 修正: 2分割グリッドに変更 (左側: KPIリスト、右側: カメラ) */
+    display: grid; 
+    grid-template-columns: 1fr 2fr; /* KPI:カメラを1:2の比率で分割 */
+    gap: 10px;
 }
 
 
-.main {
-    transition: margin-left 0.3s ease;
-    padding: 20px;
 
+.kpiColumn { /* 新規: KPIを縦に並べるためのコンテナ */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
+.envKpiCard { /* 画像の赤、緑、黄色のKPIカード (縦長になります) */
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: left; /* 左寄せに変更 */
+    font-size: 1.2em; /* フォントを調整 */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%; /* 親要素(kpiColumn)に合わせるために削除 (Flexboxが処理) */
+}
 
+/* 🚨 修正: KPIカード内のラベルと値の配置 */
+.kpiLabelEnv {
+    font-size: 0.6em; /* ラベルを小さく */
+    font-weight: normal;
+    display: block;
+    margin-bottom: 5px;
+}
+.kpiValueEnv {
+    font-size: 1.5em; /* 値を大きく */
+    display: block;
+}
 
+/* 画像の各色に対応 (維持) */
+.kpiAlertRed { background-color: #FFEBEE; color: #C43333; border: 1px solid #FF8A65; }
+.kpiNormalGreen { background-color: #E8F5E9; color: #388E3C; border: 1px solid #4CAF50; }
+.kpiWarningYellow { background-color: #FFFDE7; color: #FBC02D; border: 1px solid #FFEB3B; }
+
+.envVideoPanel { /* 右側: 映像表示エリア */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFF9C4;
+    border-radius: 8px;
+    min-height: 250px;
+    padding: 10px;
+}
+
+.cameraMessage {
+    font-weight: bold;
+    color: #5D4037;
+    margin-bottom: 10px;
+}

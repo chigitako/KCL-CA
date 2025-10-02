@@ -42,6 +42,7 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
           </Link>
         </h2>
 
+        <NavButton href="/web">ダッシュボード</NavButton>
         <NavButton href="/web/chicken">産卵記録</NavButton>
         <NavButton href="/web/environment">環境モニタリング</NavButton>
         <NavButton href="/web/shipment">出荷履歴</NavButton>

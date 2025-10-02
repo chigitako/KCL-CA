@@ -21,6 +21,17 @@ interface NewStockForm {
   count: string; // 入力値は文字列として扱う
 }
 
+// 既存の /api/egg からの応答型（レコードの配列）
+interface EggRecord {
+    id: number;
+    coop_number: number;
+    count: number;
+    date: string; // Prismaからの応答は通常ISO文字列
+}
+
+interface EggDataList extends Array<EggRecord> {} // 既存GETの応答全体
+
+
 // --------------------------------------------------
 // 1. API通信関数
 // --------------------------------------------------
