@@ -102,7 +102,7 @@ const fetchStockData = async (): Promise<InventoryList> => {
  */
 const fetchDeadChickenData = async (): Promise<DeadChickenDataList> => {
     const dcRes = await fetch("/api/deathchicken"); 
-    if (!dcRes.ok) throw new Error("斃死データの取得に失敗しました。");
+    if (!dcRes.ok) throw new Error("死亡記録の取得に失敗しました。");
     return dcRes.json();
 };
 
@@ -339,7 +339,7 @@ export default function DashboardPage() {
                         <div className={styles.listTitle}>— 最新の記録 -</div>
                         <ul className={styles.dataList}>
                              {!data || data.latestDeadChickenRecords.length === 0 ? (
-                                <li className={styles.dataItem} style={{ color: '#5D4037' }}>最新の斃死記録はありません。</li>
+                                <li className={styles.dataItem} style={{ color: '#5D4037' }}>最新の死亡記録はありません。</li>
                              ) : (
                                 data.latestDeadChickenRecords.map((record, index) => (
                                     <li key={record.id || index} className={styles.dataItem}>
