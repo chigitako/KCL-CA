@@ -127,6 +127,11 @@ export default function ChickenFarmDataPage() {
   // Egg一覧のカスタムフックを使用
   const { list: rawEggList, listLoading: eggListLoading, listError: eggListError, refreshList: refreshEggList } = useEggList();
 
+  // 編集中のデータ
+  const [editingEgg, setEditingEgg] = useState<Egg | null>(null);
+  const [editingDeadChicken, setEditingDeadChicken] = useState<DeadChicken | null>(null);
+    
+
   // 今日の日付を YYYY-MM-DD 形式で取得
   const todayString = useMemo(() => {
     const today = new Date();
@@ -186,7 +191,12 @@ export default function ChickenFarmDataPage() {
     setIsLoading(true);
 
     // 2. APIパスとペイロードの決定
-    const apiPath = `/api/${dataType}`;
+    let apiPath = `/api/${dataType}`;
+    let method='POST';
+    if (editingEgg) {
+      apiPath = `/api/${dataType}/${editingEgg.id}`; // 💡 IDを含める（APIが/api/egg/:id を想定）
+      method = 'PUT'; // または 'PATCH'
+    }
     const payload = {
       coop_number: coopNumber,
       count: count,
@@ -194,7 +204,7 @@ export default function ChickenFarmDataPage() {
 
     try {
       const response = await fetch(apiPath, { 
-        method: 'POST',
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -207,7 +217,10 @@ export default function ChickenFarmDataPage() {
       const data = await response.json();
 
       if (response.ok) {
-        let successMessage = `✅ 鶏舎 ${coopNumber} の卵 ${count} 個を記録しました！`;
+        let successMessage = editingEgg 
+            ? `✅ 採卵記録 (ID: ${editingEgg.id}) を更新しました！` 
+            : `✅ 鶏舎 ${coopNumber} の卵 ${count} 個を記録しました！`; // ✨ メッセージを編集/新規で切り替え
+        setEditingEgg(null); // 編集モードを解除
         refreshEggList(); 
         setMessage(successMessage);
         setMessageType('success');
@@ -261,7 +274,7 @@ export default function ChickenFarmDataPage() {
     }
 
     // 羽数が0の場合は、記録の必要なしとしてメッセージを表示して終了
-    if (count === 0) {
+    if (count === 0 && !editingDeadChicken) {
         setMessage(`✅ 鶏舎 ${coopNumber} の死亡数は0羽で記録しました。`);
         setMessageType('success');
         setDeadCountString('0');
@@ -272,7 +285,12 @@ export default function ChickenFarmDataPage() {
     setIsLoading(true);
 
     // 2. APIパスとペイロードの決定
-    const apiPath = `/api/${dataType}`;
+    let apiPath = `/api/${dataType}`;
+    let method='POST';
+    if (editingDeadChicken) {
+      apiPath = `/api/${dataType}/${editingDeadChicken.id}`; // 💡 IDを含める（APIが/api/deathchicken/:id を想定）
+      method = 'PUT';
+    }
     const payload = {
       coop_number: coopNumber,
       count: count,
@@ -281,7 +299,7 @@ export default function ChickenFarmDataPage() {
 
     try {
       const response = await fetch(apiPath, { 
-        method: 'POST',
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -294,7 +312,10 @@ export default function ChickenFarmDataPage() {
       const data = await response.json();
 
       if (response.ok) {
-        let successMessage = `✅ 鶏舎 ${coopNumber} の死んだ鶏 ${count} 羽（死因: ${causeOfDeath}）を記録しました！`;
+        let successMessage = editingDeadChicken
+            ? `✅ 死亡記録 (ID: ${editingDeadChicken.id}) を更新しました！`
+            : `✅ 鶏舎 ${coopNumber} の死んだ鶏 ${count} 羽（死因: ${causeOfDeath}）を記録しました！`; // ✨ メッセージを編集/新規で切り替え
+        setEditingDeadChicken(null); // 編集モードを解除
         refreshDeadChickenList(); 
         setMessage(successMessage);
         setMessageType('success');
@@ -323,6 +344,39 @@ export default function ChickenFarmDataPage() {
     }
     return '';
   }, [messageType]);
+
+
+    // 編集ボタンクリック時のハンドラー
+    const handleEditClick = useCallback((dataType: DataType, item: Egg | DeadChicken) => {
+        setMessage(null);
+        setMessageType('');
+        
+        if (dataType === 'egg') {
+            const eggItem = item as Egg;
+            setEditingDeadChicken(null); // 他方をリセット
+            setEditingEgg(eggItem);      // 編集対象をセット
+            
+            // フォームに入力値をセット
+            setEggCoopNumber(eggItem.coop_number);
+            setEggCountString(String(eggItem.count));
+            
+            setMessage(`🐔 採卵記録 (ID: ${eggItem.id}) を編集モードにしました。`);
+            setMessageType('success');
+            
+        } else if (dataType === 'deathchicken') {
+            const chickenItem = item as DeadChicken;
+            setEditingEgg(null); // 他方をリセット
+            setEditingDeadChicken(chickenItem); // 編集対象をセット
+            
+            // フォームに入力値をセット
+            setDeadCoopNumber(chickenItem.coop_number);
+            setDeadCountString(String(chickenItem.count));
+            setCauseOfDeath(chickenItem.cause_of_death);
+            
+            setMessage(`💀 死亡記録 (ID: ${chickenItem.id}) を編集モードにしました。`);
+            setMessageType('success');
+        }
+    }, [setEggCoopNumber, setEggCountString, setDeadCoopNumber, setDeadCountString, setCauseOfDeath]);
   
 
 
@@ -468,7 +522,7 @@ export default function ChickenFarmDataPage() {
                           <td>{egg.count}</td>
                           <td>
                             {/* ここに編集ボタンとかアイコンを置ける */}
-                            <button className={styles.editButton}>✏️</button>
+                            <button className={styles.editButton} onClick={() => handleEditClick('egg', egg)}>✏️</button>
                           </td>
                         </tr>
                       );
@@ -509,7 +563,7 @@ export default function ChickenFarmDataPage() {
                           <td>{chicken.cause_of_death}</td>
                           <td>
                             {/* ここに編集ボタンとかアイコンを置ける */}
-                            <button className={styles.editButton}>✏️</button>
+                            <button className={styles.editButton} onClick={() => handleEditClick('deathchicken', chicken)}>✏️</button>
                           </td>
                         </tr>
                       );
