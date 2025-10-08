@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run mock-start\" \"npm run next-dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "next-dev": "next dev", 
+    "mock-start": "nodemon mock-server/src/server.ts" 
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
