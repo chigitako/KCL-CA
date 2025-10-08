@@ -19,18 +19,20 @@
     justify-content: center;    /* 横方向の中央寄せ */
     align-items: center;        /* 縦方向の中央寄せ */
     flex:1;
+    height: 100vh;
 }
 /* 入力フォーム全体 */
 .form {
   display: flex;
   flex-direction: column;
   width:70%;
-  height:70%;
+  height: auto;
   gap: 1rem;
-  padding: 16px;
+  padding: 10px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
 }
 
 /* ラベル */
@@ -61,13 +63,14 @@
 }
 .button {
     margin: 0 auto;
-    background-color: #ffd700; /* 黄色で目立たせる例 */
+    background-color: #ffd700;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: bold;
     padding:1rem;
     width:35%;
+    align-self: center;
 }
 .button:hover {
   background-color: #ffc700;
@@ -83,27 +86,28 @@
 .eggMemoryContainer{
     flex:1;
     display: flex;              /* 子をflexアイテムにする */
-    flex-direction: column; /* ←縦並び */
-    justify-content: center;    /* 横方向の中央寄せ */
-    align-items: center;        /* 縦方向の中央寄せ */
+    flex-direction: column; /* ←縦並び */ 
     overflow-y: auto;  /* ここでスクロール */
-    max-height: 300px; /* 好きな高さ */
+    padding:10px;
     
 }
 .deathMemoryContainer{
     flex:1;
     display: flex;              /* 子をflexアイテムにする */
     flex-direction: column; /* ←縦並び */
-    justify-content: center;    /* 横方向の中央寄せ */
-    align-items: center;        /* 縦方向の中央寄せ */
     overflow-y: auto;  /* ここでスクロール */
-    max-height: 300px; /* 好きな高さ */
+    padding:10px;
     
 }
 .memoryTable{
     width:100%;
-    height:100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    border-spacing:0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
 }
 .memoryTable th,
 .memoryTable td {
@@ -117,22 +121,34 @@
     top: 0;
     background-color: #f0f0f0;
     z-index: 1;
-  display: table; /* tbodyと並べるためにtable */
   width: 100%;
   table-layout: fixed;
+  display: table;
+}
+
+.memoryTable thead th {
+   padding: 12px;
+    text-align: center;
+   border-bottom: 2px solid #ddd;
+    width: 20%; /* 各列の幅を均等に */
 }
 
 .memoryTable tbody {
-display: table-row-group; /* 元に戻す */
+  display: block;
+  overflow-y: auto;
+  max-height: 250px;
+  width: 100%;
 }
 
 .memoryTable tbody tr {
-  display: table;
+  display: table; /* 💡 各行の幅を100%にし、tdがthの幅に従うようにする */
   width: 100%;
   table-layout: fixed;
 }
+
+
 .tableHeader {
-  background-color: #f2f2f2;
+  background-color:#ffcc00;
 }
 
 .tableHeader th {

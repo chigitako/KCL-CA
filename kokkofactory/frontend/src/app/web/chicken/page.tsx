@@ -122,11 +122,40 @@ export default function ChickenFarmDataPage() {
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
 
   // DeadChicken一覧のカスタムフックを使用
-  const { list: deadChickenList, listLoading, listError, refreshList: refreshDeadChickenList } = useDeadChickenList();
-  
+  const { list: rawDeadChickenList, listLoading: deadListLoading, listError: deadListError, refreshList: refreshDeadChickenList } = useDeadChickenList();
+  
   // Egg一覧のカスタムフックを使用
-  const { list: eggList, listLoading: eggListLoading, listError: eggListError, refreshList: refreshEggList } = useEggList();
+  const { list: rawEggList, listLoading: eggListLoading, listError: eggListError, refreshList: refreshEggList } = useEggList();
 
+  // 今日の日付を YYYY-MM-DD 形式で取得
+  const todayString = useMemo(() => {
+    const today = new Date();
+    // ローカルタイムゾーンに変換 (ISO文字列の最初の10文字を取得)
+    // date.toISOString() はUTCになるため、タイムゾーンを考慮した処理に変更
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }, []);
+
+
+  /** 今日の採卵記録を新しい順にソートして抽出 */
+  const eggList = useMemo(() => {
+    return [...rawEggList]
+      // 1. フィルター: データの date プロパティ (YYYY-MM-DD...) のうち、最初の10文字 (YYYY-MM-DD) が今日の日付と一致するか確認
+      .filter(egg => egg.date.substring(0, 10) === todayString)
+      // 2. ソート: 新しい順 (降順) にソート
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [rawEggList, todayString]);
+
+  /** 今日の死亡記録を新しい順にソートして抽出 */
+  const deadChickenList = useMemo(() => {
+    return [...rawDeadChickenList]
+      // 1. フィルター: データの date プロパティ (YYYY-MM-DD...) のうち、最初の10文字 (YYYY-MM-DD) が今日の日付と一致するか確認
+      .filter(chicken => chicken.date.substring(0, 10) === todayString)
+      // 2. ソート: 新しい順 (降順) にソート
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [rawDeadChickenList, todayString]);
 
   /**
    * 産卵フォーム送信時の処理。
@@ -451,7 +480,7 @@ export default function ChickenFarmDataPage() {
 
             <div className={styles.deathMemoryContainer}>
               <h3 style={{textAlign: "center"}}>死亡記録</h3>
-              {listLoading ? (
+              {deadListLoading ? (
                 <p>読み込み中…</p>
               ) : deadChickenList.length === 0 ? (
                 <p>まだ死亡記録はありません。</p>
@@ -462,6 +491,7 @@ export default function ChickenFarmDataPage() {
                       <th>日時</th>
                       <th>鶏舎番号</th>
                       <th>羽数</th>
+                      <th>死因</th>
                       <th>変更</th>
                     </tr>
                   </thead>
@@ -476,6 +506,7 @@ export default function ChickenFarmDataPage() {
                           <td>{formattedDate}</td>
                           <td>{chicken.coop_number}</td>
                           <td>{chicken.count}</td>
+                          <td>{chicken.cause_of_death}</td>
                           <td>
                             {/* ここに編集ボタンとかアイコンを置ける */}
                             <button className={styles.editButton}>✏️</button>
