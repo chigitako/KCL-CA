@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 
 const app = express();
 // Next.jsのデフォルト(3000)と被らないポートを使用
@@ -29,6 +30,11 @@ function generateNextValue(current: number, min: number, max: number, delta: num
     return parseFloat(next.toFixed(1));
 }
 
+app.use(cors({
+    origin: 'http://localhost:3000', // Next.jsの開発サーバーのオリジンを明示的に許可
+}));
+
+
 // APIエンドポイントのパスを /api/v1/data と定義
 app.get('/api/v1/data', (req: Request, res: Response<SensorData>) => {
     // 各センサー値を更新
@@ -48,7 +54,8 @@ app.get('/api/v1/data', (req: Request, res: Response<SensorData>) => {
     res.status(200).json(mockData);
 });
 
+
 // サーバー起動
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
     console.log(`✅ Mock Sensor API is running at http://localhost:${PORT}`);
 });

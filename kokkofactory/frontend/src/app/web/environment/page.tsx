@@ -30,7 +30,7 @@ export default function WebPage() {
         const fetchData = async () => {
             try {
                 // Next.jsのrewrites設定により、モックサーバーに転送される
-                const response = await fetch('/api/environment'); 
+                const response = await fetch('http://localhost:4000/api/v1/data'); 
                 
                 if (!response.ok) {
                     // HTTPエラーの場合、throwしてcatchブロックで処理
