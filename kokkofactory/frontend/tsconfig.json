@@ -18,10 +18,10 @@
         "name": "next"
       }
     ],
-    "baseUrl": "./src", // プロジェクトのルートを基準に解決
     "paths": {
-      "@components/*": ["components/*"],
-      "@lib/*": ["../lib/*"] // エイリアス設定
+      "@components/*": ["./src/components/*"],
+      "@lib/*": ["../lib/*"], // エイリアス設定
+      "@/*":["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
