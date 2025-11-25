@@ -91,11 +91,20 @@
   }
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
 .ctas {
   display: flex;
+  flex-direction: column;
   gap: 16px;
   width: 100%;
   justify-content: center;
+  margin-top: 16px;
 }
 
 button.primary {

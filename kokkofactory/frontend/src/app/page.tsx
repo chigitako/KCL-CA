@@ -1,15 +1,15 @@
+
 // src/app/web/page.tsx
 "use client"; 
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css"
+import { login, signup } from '@/app/auth/login/actions'
 
 export default function WebPage() {
-  const [role, setRole] = useState<"admin" | "employee" | "">("");
+  //const [role, setRole] = useState<"admin" | "employee" | "">("");
   const [mode, setMode] = useState<"login" | "help">("login"); // 画面モード
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const router = useRouter();
   
 
@@ -20,16 +20,16 @@ export default function WebPage() {
   };
 
 
-  const ADMIN_PASSWORD = "kokkofactory"; // 管理者用パスワード
+  //const ADMIN_PASSWORD = "kokkofactory"; // 管理者用パスワード
 
-  const handleLogin = () => {
+  /*const handleLogin = () => {
     const mobile = isMobile();
     if (role === "admin") {
       if (password === ADMIN_PASSWORD) {
         setMessage("管理者ログイン成功🎉");
         router.push(mobile ? "/mobile" : "/web"); // ←スマホなら /mobile
       } else {
-        setMessage("パスワードが違う💦");
+                  setMessage("パスワードが違う💦");
       }
     } else if (role === "employee") {
       setMessage("従業員ログイン成功🎉");
@@ -39,11 +39,12 @@ export default function WebPage() {
       setMessage("ユーザー種別を選んで");
       
     }
-  };
+      
+  };*/
 
   const handleModeSwitch = () => {
     setMode(mode === "login" ? "help" : "login"); // login <-> help 切替
-    setMessage(""); // メッセージリセット
+    /*setMessage(""); // メッセージリセット*/
   };
 
   return (
@@ -53,44 +54,22 @@ export default function WebPage() {
           <img src="/images/kokkologo.png" alt="こっこふぁくとりーロゴ" className={styles.logo} />
         </div>
       <div className={styles.main}>
-        
-        {mode === "login" ? (
-          <>
-            <h1>ログイン</h1>
-            <label>
-              ユーザー種別：
-              <select value={role} onChange={(e) => setRole(e.target.value as any)}>
-                <option value="">選択してください</option>
-                <option value="admin">管理者</option>
-                <option value="employee">従業員</option>
-              </select>
-            </label>
-
-            {role === "admin" && (
-              <label>
-                パスワード：
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </label>
-            )}
+            <form>
+              <label htmlFor="email">Email:</label>
+              <input id="email" name="email" type="email" required />
+              <label htmlFor="password">パスワード：</label>
+              <input id="password" name="password" type="password" required />
 
             <div className={styles.ctas}>
-              <button className={styles.primary} onClick={handleLogin}>
+              <button className={styles.primary} formAction={login}>
                 ログイン
               </button>
+              <button className={styles.primary} formAction={signup}>
+                新規登録
+              </button>
             </div>
-          </>
-        ) : (
-          <>
-            <h1>ヘルプ</h1>
-            <p>パスワードはkokkofactory</p>
+            </form>
             <p>モバイルページを見るときは URL に "/mobile" を追加してにょ</p>
-          </>
-        )}
-        {message && <p>{message}</p>}      
       </div>
 
       <footer className={styles.footer}>
@@ -101,5 +80,5 @@ export default function WebPage() {
         <a href="#">お問い合わせ</a>
       </footer>
     </div>
-  );
+  )
 }
