@@ -37,6 +37,7 @@ interface InventoryItem {
     phoneNumber: string;
     email: string;
     remainingCount: number;
+    alertThreshold: number;
 }
 interface InventoryList extends Array<InventoryItem> {}
 
@@ -57,12 +58,10 @@ interface ShipmentDataList extends Array<ShipmentRecord> {}
 interface DashboardData {
     // 産卵数
     eggCountToday: number; 
-    // 【✅ 修正: 最新の産卵記録リストを追加】
     latestEggRecords: EggRecord[]; 
     
     // 斃死数
     chickenDeathCountToday: number;
-    // 【✅ 修正: 最新の斃死記録リストを追加】
     latestDeadChickenRecords: DeadChickenRecord[];
     
     // 出荷情報
@@ -71,7 +70,7 @@ interface DashboardData {
     
     // 在庫アラート情報
     lowStockItemsCount: number;
-    lowStockItems: { name: string; remaining: number }[];
+    lowStockItems: { name: string; remaining: number; threshold: number }[];
 }
 
 
@@ -175,20 +174,24 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
     });
 
     // --- 【在庫アラートの集計】 ---
-    const LOW_STOCK_THRESHOLD = 100;
-    const lowStockItems: { name: string; remaining: number }[] = [];
-    inventoryList.forEach(item => {
-        if (item.remainingCount <= LOW_STOCK_THRESHOLD) {
-            lowStockItems.push({ name: item.ItemName, remaining: item.remainingCount });
-        }
-    });
+    const lowStockItems: { name: string; remaining: number; threshold: number }[] = [];
+    
+    inventoryList.forEach(item => {
+        if (item.remainingCount <= item.alertThreshold) {
+            lowStockItems.push({ 
+                name: item.ItemName, 
+                remaining: item.remainingCount,
+                threshold: item.alertThreshold
+            });
+        }
+    });
 
     // --- 【最終的な DashboardData の構築】 ---
     return {
         eggCountToday: totalCountToday,
-        latestEggRecords: latestEggRecords, // ✅ 追加
+        latestEggRecords: latestEggRecords,
         chickenDeathCountToday: totalDeadChickenToday,
-        latestDeadChickenRecords: latestDeadChickenRecords, // ✅ 追加
+        latestDeadChickenRecords: latestDeadChickenRecords,
         totalShipmentCountToday: totalShipmentCountToday, 
         latestShipments: todayShipments,                  
         lowStockItemsCount: lowStockItems.length,
@@ -196,15 +199,7 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
     };
 };
 
-// --------------------------------------------------
-// 3. 補助コンポーネント (KPI表示用) - 変更なし
-// --------------------------------------------------
-// ... (KpiCard コンポーネントは省略) ...
 
-
-// --------------------------------------------------
-// 4. メインコンポーネント
-// --------------------------------------------------
 
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);
@@ -312,7 +307,7 @@ export default function DashboardPage() {
                             <div className={styles.kpiLabel}>　(品目)</div>
                         </div>
                         
-                        <div className={styles.listTitle}>— 低在庫品目 (在庫 ≤ 100) —</div>
+                        <div className={styles.listTitle}>— 低在庫品目 (各品目設定値未満) —</div>
                         <ul className={styles.dataList}>
                             {!data || data.lowStockItems.length === 0 ? (
                                 <li className={styles.dataItem} style={{ color: '#5D4037' }}>在庫は十分です。</li>
@@ -320,7 +315,9 @@ export default function DashboardPage() {
                                 data.lowStockItems.map((item, index) => (
                                     <li key={index} className={styles.dataItem}>
                                         <span className={styles.alertName}>{item.name}</span>
-                                        <span className={styles.alertCount}>残り: {item.remaining.toLocaleString()}</span>
+                                        <span className={styles.alertCount}>
+                                            残り: {item.remaining.toLocaleString()} (基準値: {item.threshold.toLocaleString()})
+                                        </span>
                                     </li>
                                 ))
                             )}

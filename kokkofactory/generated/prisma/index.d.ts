@@ -48,6 +48,11 @@ export type Supplier = $Result.DefaultSelection<Prisma.$SupplierPayload>
  * 
  */
 export type Stock = $Result.DefaultSelection<Prisma.$StockPayload>
+/**
+ * Model StockThreshold
+ * 
+ */
+export type StockThreshold = $Result.DefaultSelection<Prisma.$StockThresholdPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -243,6 +248,16 @@ export class PrismaClient<
     * ```
     */
   get stock(): Prisma.StockDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockThreshold`: Exposes CRUD operations for the **StockThreshold** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockThresholds
+    * const stockThresholds = await prisma.stockThreshold.findMany()
+    * ```
+    */
+  get stockThreshold(): Prisma.StockThresholdDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -689,7 +704,8 @@ export namespace Prisma {
     Customer: 'Customer',
     Shipment: 'Shipment',
     Supplier: 'Supplier',
-    Stock: 'Stock'
+    Stock: 'Stock',
+    StockThreshold: 'StockThreshold'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -708,7 +724,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "loginInfo" | "egg" | "deadChicken" | "customer" | "shipment" | "supplier" | "stock"
+      modelProps: "loginInfo" | "egg" | "deadChicken" | "customer" | "shipment" | "supplier" | "stock" | "stockThreshold"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1230,6 +1246,80 @@ export namespace Prisma {
           }
         }
       }
+      StockThreshold: {
+        payload: Prisma.$StockThresholdPayload<ExtArgs>
+        fields: Prisma.StockThresholdFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockThresholdFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockThresholdFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>
+          }
+          findFirst: {
+            args: Prisma.StockThresholdFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockThresholdFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>
+          }
+          findMany: {
+            args: Prisma.StockThresholdFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>[]
+          }
+          create: {
+            args: Prisma.StockThresholdCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>
+          }
+          createMany: {
+            args: Prisma.StockThresholdCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockThresholdCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>[]
+          }
+          delete: {
+            args: Prisma.StockThresholdDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>
+          }
+          update: {
+            args: Prisma.StockThresholdUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>
+          }
+          deleteMany: {
+            args: Prisma.StockThresholdDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockThresholdUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockThresholdUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>[]
+          }
+          upsert: {
+            args: Prisma.StockThresholdUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockThresholdPayload>
+          }
+          aggregate: {
+            args: Prisma.StockThresholdAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockThreshold>
+          }
+          groupBy: {
+            args: Prisma.StockThresholdGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockThresholdGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockThresholdCountArgs<ExtArgs>
+            result: $Utils.Optional<StockThresholdCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1321,6 +1411,7 @@ export namespace Prisma {
     shipment?: ShipmentOmit
     supplier?: SupplierOmit
     stock?: StockOmit
+    stockThreshold?: StockThresholdOmit
   }
 
   /* Types for Logging */
@@ -6938,6 +7029,7 @@ export namespace Prisma {
     phone_number?: boolean
     email?: boolean
     Stock?: boolean | Supplier$StockArgs<ExtArgs>
+    Threshold?: boolean | Supplier$ThresholdArgs<ExtArgs>
     _count?: boolean | SupplierCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["supplier"]>
 
@@ -6971,6 +7063,7 @@ export namespace Prisma {
   export type SupplierOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "item_name" | "address" | "phone_number" | "email", ExtArgs["result"]["supplier"]>
   export type SupplierInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Stock?: boolean | Supplier$StockArgs<ExtArgs>
+    Threshold?: boolean | Supplier$ThresholdArgs<ExtArgs>
     _count?: boolean | SupplierCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SupplierIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -6980,6 +7073,7 @@ export namespace Prisma {
     name: "Supplier"
     objects: {
       Stock: Prisma.$StockPayload<ExtArgs>[]
+      Threshold: Prisma.$StockThresholdPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -7383,6 +7477,7 @@ export namespace Prisma {
   export interface Prisma__SupplierClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     Stock<T extends Supplier$StockArgs<ExtArgs> = {}>(args?: Subset<T, Supplier$StockArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Threshold<T extends Supplier$ThresholdArgs<ExtArgs> = {}>(args?: Subset<T, Supplier$ThresholdArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7827,6 +7922,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StockScalarFieldEnum | StockScalarFieldEnum[]
+  }
+
+  /**
+   * Supplier.Threshold
+   */
+  export type Supplier$ThresholdArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    where?: StockThresholdWhereInput
   }
 
   /**
@@ -8923,6 +9037,1080 @@ export namespace Prisma {
 
 
   /**
+   * Model StockThreshold
+   */
+
+  export type AggregateStockThreshold = {
+    _count: StockThresholdCountAggregateOutputType | null
+    _avg: StockThresholdAvgAggregateOutputType | null
+    _sum: StockThresholdSumAggregateOutputType | null
+    _min: StockThresholdMinAggregateOutputType | null
+    _max: StockThresholdMaxAggregateOutputType | null
+  }
+
+  export type StockThresholdAvgAggregateOutputType = {
+    id: number | null
+    supplierId: number | null
+    alert_threshold: number | null
+  }
+
+  export type StockThresholdSumAggregateOutputType = {
+    id: number | null
+    supplierId: number | null
+    alert_threshold: number | null
+  }
+
+  export type StockThresholdMinAggregateOutputType = {
+    id: number | null
+    supplierId: number | null
+    alert_threshold: number | null
+  }
+
+  export type StockThresholdMaxAggregateOutputType = {
+    id: number | null
+    supplierId: number | null
+    alert_threshold: number | null
+  }
+
+  export type StockThresholdCountAggregateOutputType = {
+    id: number
+    supplierId: number
+    alert_threshold: number
+    _all: number
+  }
+
+
+  export type StockThresholdAvgAggregateInputType = {
+    id?: true
+    supplierId?: true
+    alert_threshold?: true
+  }
+
+  export type StockThresholdSumAggregateInputType = {
+    id?: true
+    supplierId?: true
+    alert_threshold?: true
+  }
+
+  export type StockThresholdMinAggregateInputType = {
+    id?: true
+    supplierId?: true
+    alert_threshold?: true
+  }
+
+  export type StockThresholdMaxAggregateInputType = {
+    id?: true
+    supplierId?: true
+    alert_threshold?: true
+  }
+
+  export type StockThresholdCountAggregateInputType = {
+    id?: true
+    supplierId?: true
+    alert_threshold?: true
+    _all?: true
+  }
+
+  export type StockThresholdAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockThreshold to aggregate.
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockThresholds to fetch.
+     */
+    orderBy?: StockThresholdOrderByWithRelationInput | StockThresholdOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockThresholdWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockThresholds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockThresholds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockThresholds
+    **/
+    _count?: true | StockThresholdCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockThresholdAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockThresholdSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockThresholdMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockThresholdMaxAggregateInputType
+  }
+
+  export type GetStockThresholdAggregateType<T extends StockThresholdAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockThreshold]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockThreshold[P]>
+      : GetScalarType<T[P], AggregateStockThreshold[P]>
+  }
+
+
+
+
+  export type StockThresholdGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockThresholdWhereInput
+    orderBy?: StockThresholdOrderByWithAggregationInput | StockThresholdOrderByWithAggregationInput[]
+    by: StockThresholdScalarFieldEnum[] | StockThresholdScalarFieldEnum
+    having?: StockThresholdScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockThresholdCountAggregateInputType | true
+    _avg?: StockThresholdAvgAggregateInputType
+    _sum?: StockThresholdSumAggregateInputType
+    _min?: StockThresholdMinAggregateInputType
+    _max?: StockThresholdMaxAggregateInputType
+  }
+
+  export type StockThresholdGroupByOutputType = {
+    id: number
+    supplierId: number
+    alert_threshold: number
+    _count: StockThresholdCountAggregateOutputType | null
+    _avg: StockThresholdAvgAggregateOutputType | null
+    _sum: StockThresholdSumAggregateOutputType | null
+    _min: StockThresholdMinAggregateOutputType | null
+    _max: StockThresholdMaxAggregateOutputType | null
+  }
+
+  type GetStockThresholdGroupByPayload<T extends StockThresholdGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockThresholdGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockThresholdGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockThresholdGroupByOutputType[P]>
+            : GetScalarType<T[P], StockThresholdGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockThresholdSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    supplierId?: boolean
+    alert_threshold?: boolean
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockThreshold"]>
+
+  export type StockThresholdSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    supplierId?: boolean
+    alert_threshold?: boolean
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockThreshold"]>
+
+  export type StockThresholdSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    supplierId?: boolean
+    alert_threshold?: boolean
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockThreshold"]>
+
+  export type StockThresholdSelectScalar = {
+    id?: boolean
+    supplierId?: boolean
+    alert_threshold?: boolean
+  }
+
+  export type StockThresholdOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "supplierId" | "alert_threshold", ExtArgs["result"]["stockThreshold"]>
+  export type StockThresholdInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }
+  export type StockThresholdIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }
+  export type StockThresholdIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }
+
+  export type $StockThresholdPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockThreshold"
+    objects: {
+      supplier: Prisma.$SupplierPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      supplierId: number
+      alert_threshold: number
+    }, ExtArgs["result"]["stockThreshold"]>
+    composites: {}
+  }
+
+  type StockThresholdGetPayload<S extends boolean | null | undefined | StockThresholdDefaultArgs> = $Result.GetResult<Prisma.$StockThresholdPayload, S>
+
+  type StockThresholdCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockThresholdFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockThresholdCountAggregateInputType | true
+    }
+
+  export interface StockThresholdDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockThreshold'], meta: { name: 'StockThreshold' } }
+    /**
+     * Find zero or one StockThreshold that matches the filter.
+     * @param {StockThresholdFindUniqueArgs} args - Arguments to find a StockThreshold
+     * @example
+     * // Get one StockThreshold
+     * const stockThreshold = await prisma.stockThreshold.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockThresholdFindUniqueArgs>(args: SelectSubset<T, StockThresholdFindUniqueArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockThreshold that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockThresholdFindUniqueOrThrowArgs} args - Arguments to find a StockThreshold
+     * @example
+     * // Get one StockThreshold
+     * const stockThreshold = await prisma.stockThreshold.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockThresholdFindUniqueOrThrowArgs>(args: SelectSubset<T, StockThresholdFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockThreshold that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdFindFirstArgs} args - Arguments to find a StockThreshold
+     * @example
+     * // Get one StockThreshold
+     * const stockThreshold = await prisma.stockThreshold.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockThresholdFindFirstArgs>(args?: SelectSubset<T, StockThresholdFindFirstArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockThreshold that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdFindFirstOrThrowArgs} args - Arguments to find a StockThreshold
+     * @example
+     * // Get one StockThreshold
+     * const stockThreshold = await prisma.stockThreshold.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockThresholdFindFirstOrThrowArgs>(args?: SelectSubset<T, StockThresholdFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockThresholds that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockThresholds
+     * const stockThresholds = await prisma.stockThreshold.findMany()
+     * 
+     * // Get first 10 StockThresholds
+     * const stockThresholds = await prisma.stockThreshold.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockThresholdWithIdOnly = await prisma.stockThreshold.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockThresholdFindManyArgs>(args?: SelectSubset<T, StockThresholdFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockThreshold.
+     * @param {StockThresholdCreateArgs} args - Arguments to create a StockThreshold.
+     * @example
+     * // Create one StockThreshold
+     * const StockThreshold = await prisma.stockThreshold.create({
+     *   data: {
+     *     // ... data to create a StockThreshold
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockThresholdCreateArgs>(args: SelectSubset<T, StockThresholdCreateArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockThresholds.
+     * @param {StockThresholdCreateManyArgs} args - Arguments to create many StockThresholds.
+     * @example
+     * // Create many StockThresholds
+     * const stockThreshold = await prisma.stockThreshold.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockThresholdCreateManyArgs>(args?: SelectSubset<T, StockThresholdCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockThresholds and returns the data saved in the database.
+     * @param {StockThresholdCreateManyAndReturnArgs} args - Arguments to create many StockThresholds.
+     * @example
+     * // Create many StockThresholds
+     * const stockThreshold = await prisma.stockThreshold.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockThresholds and only return the `id`
+     * const stockThresholdWithIdOnly = await prisma.stockThreshold.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockThresholdCreateManyAndReturnArgs>(args?: SelectSubset<T, StockThresholdCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockThreshold.
+     * @param {StockThresholdDeleteArgs} args - Arguments to delete one StockThreshold.
+     * @example
+     * // Delete one StockThreshold
+     * const StockThreshold = await prisma.stockThreshold.delete({
+     *   where: {
+     *     // ... filter to delete one StockThreshold
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockThresholdDeleteArgs>(args: SelectSubset<T, StockThresholdDeleteArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockThreshold.
+     * @param {StockThresholdUpdateArgs} args - Arguments to update one StockThreshold.
+     * @example
+     * // Update one StockThreshold
+     * const stockThreshold = await prisma.stockThreshold.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockThresholdUpdateArgs>(args: SelectSubset<T, StockThresholdUpdateArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockThresholds.
+     * @param {StockThresholdDeleteManyArgs} args - Arguments to filter StockThresholds to delete.
+     * @example
+     * // Delete a few StockThresholds
+     * const { count } = await prisma.stockThreshold.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockThresholdDeleteManyArgs>(args?: SelectSubset<T, StockThresholdDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockThresholds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockThresholds
+     * const stockThreshold = await prisma.stockThreshold.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockThresholdUpdateManyArgs>(args: SelectSubset<T, StockThresholdUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockThresholds and returns the data updated in the database.
+     * @param {StockThresholdUpdateManyAndReturnArgs} args - Arguments to update many StockThresholds.
+     * @example
+     * // Update many StockThresholds
+     * const stockThreshold = await prisma.stockThreshold.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockThresholds and only return the `id`
+     * const stockThresholdWithIdOnly = await prisma.stockThreshold.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockThresholdUpdateManyAndReturnArgs>(args: SelectSubset<T, StockThresholdUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockThreshold.
+     * @param {StockThresholdUpsertArgs} args - Arguments to update or create a StockThreshold.
+     * @example
+     * // Update or create a StockThreshold
+     * const stockThreshold = await prisma.stockThreshold.upsert({
+     *   create: {
+     *     // ... data to create a StockThreshold
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockThreshold we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockThresholdUpsertArgs>(args: SelectSubset<T, StockThresholdUpsertArgs<ExtArgs>>): Prisma__StockThresholdClient<$Result.GetResult<Prisma.$StockThresholdPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockThresholds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdCountArgs} args - Arguments to filter StockThresholds to count.
+     * @example
+     * // Count the number of StockThresholds
+     * const count = await prisma.stockThreshold.count({
+     *   where: {
+     *     // ... the filter for the StockThresholds we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockThresholdCountArgs>(
+      args?: Subset<T, StockThresholdCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockThresholdCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockThreshold.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockThresholdAggregateArgs>(args: Subset<T, StockThresholdAggregateArgs>): Prisma.PrismaPromise<GetStockThresholdAggregateType<T>>
+
+    /**
+     * Group by StockThreshold.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockThresholdGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockThresholdGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockThresholdGroupByArgs['orderBy'] }
+        : { orderBy?: StockThresholdGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockThresholdGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockThresholdGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockThreshold model
+   */
+  readonly fields: StockThresholdFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockThreshold.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockThresholdClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    supplier<T extends SupplierDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SupplierDefaultArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockThreshold model
+   */
+  interface StockThresholdFieldRefs {
+    readonly id: FieldRef<"StockThreshold", 'Int'>
+    readonly supplierId: FieldRef<"StockThreshold", 'Int'>
+    readonly alert_threshold: FieldRef<"StockThreshold", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockThreshold findUnique
+   */
+  export type StockThresholdFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * Filter, which StockThreshold to fetch.
+     */
+    where: StockThresholdWhereUniqueInput
+  }
+
+  /**
+   * StockThreshold findUniqueOrThrow
+   */
+  export type StockThresholdFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * Filter, which StockThreshold to fetch.
+     */
+    where: StockThresholdWhereUniqueInput
+  }
+
+  /**
+   * StockThreshold findFirst
+   */
+  export type StockThresholdFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * Filter, which StockThreshold to fetch.
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockThresholds to fetch.
+     */
+    orderBy?: StockThresholdOrderByWithRelationInput | StockThresholdOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockThresholds.
+     */
+    cursor?: StockThresholdWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockThresholds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockThresholds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockThresholds.
+     */
+    distinct?: StockThresholdScalarFieldEnum | StockThresholdScalarFieldEnum[]
+  }
+
+  /**
+   * StockThreshold findFirstOrThrow
+   */
+  export type StockThresholdFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * Filter, which StockThreshold to fetch.
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockThresholds to fetch.
+     */
+    orderBy?: StockThresholdOrderByWithRelationInput | StockThresholdOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockThresholds.
+     */
+    cursor?: StockThresholdWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockThresholds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockThresholds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockThresholds.
+     */
+    distinct?: StockThresholdScalarFieldEnum | StockThresholdScalarFieldEnum[]
+  }
+
+  /**
+   * StockThreshold findMany
+   */
+  export type StockThresholdFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * Filter, which StockThresholds to fetch.
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockThresholds to fetch.
+     */
+    orderBy?: StockThresholdOrderByWithRelationInput | StockThresholdOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockThresholds.
+     */
+    cursor?: StockThresholdWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockThresholds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockThresholds.
+     */
+    skip?: number
+    distinct?: StockThresholdScalarFieldEnum | StockThresholdScalarFieldEnum[]
+  }
+
+  /**
+   * StockThreshold create
+   */
+  export type StockThresholdCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StockThreshold.
+     */
+    data: XOR<StockThresholdCreateInput, StockThresholdUncheckedCreateInput>
+  }
+
+  /**
+   * StockThreshold createMany
+   */
+  export type StockThresholdCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockThresholds.
+     */
+    data: StockThresholdCreateManyInput | StockThresholdCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockThreshold createManyAndReturn
+   */
+  export type StockThresholdCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockThresholds.
+     */
+    data: StockThresholdCreateManyInput | StockThresholdCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockThreshold update
+   */
+  export type StockThresholdUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StockThreshold.
+     */
+    data: XOR<StockThresholdUpdateInput, StockThresholdUncheckedUpdateInput>
+    /**
+     * Choose, which StockThreshold to update.
+     */
+    where: StockThresholdWhereUniqueInput
+  }
+
+  /**
+   * StockThreshold updateMany
+   */
+  export type StockThresholdUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockThresholds.
+     */
+    data: XOR<StockThresholdUpdateManyMutationInput, StockThresholdUncheckedUpdateManyInput>
+    /**
+     * Filter which StockThresholds to update
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * Limit how many StockThresholds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockThreshold updateManyAndReturn
+   */
+  export type StockThresholdUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * The data used to update StockThresholds.
+     */
+    data: XOR<StockThresholdUpdateManyMutationInput, StockThresholdUncheckedUpdateManyInput>
+    /**
+     * Filter which StockThresholds to update
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * Limit how many StockThresholds to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockThreshold upsert
+   */
+  export type StockThresholdUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StockThreshold to update in case it exists.
+     */
+    where: StockThresholdWhereUniqueInput
+    /**
+     * In case the StockThreshold found by the `where` argument doesn't exist, create a new StockThreshold with this data.
+     */
+    create: XOR<StockThresholdCreateInput, StockThresholdUncheckedCreateInput>
+    /**
+     * In case the StockThreshold was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockThresholdUpdateInput, StockThresholdUncheckedUpdateInput>
+  }
+
+  /**
+   * StockThreshold delete
+   */
+  export type StockThresholdDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+    /**
+     * Filter which StockThreshold to delete.
+     */
+    where: StockThresholdWhereUniqueInput
+  }
+
+  /**
+   * StockThreshold deleteMany
+   */
+  export type StockThresholdDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockThresholds to delete
+     */
+    where?: StockThresholdWhereInput
+    /**
+     * Limit how many StockThresholds to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockThreshold without action
+   */
+  export type StockThresholdDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockThreshold
+     */
+    select?: StockThresholdSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockThreshold
+     */
+    omit?: StockThresholdOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockThresholdInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9006,6 +10194,15 @@ export namespace Prisma {
   };
 
   export type StockScalarFieldEnum = (typeof StockScalarFieldEnum)[keyof typeof StockScalarFieldEnum]
+
+
+  export const StockThresholdScalarFieldEnum: {
+    id: 'id',
+    supplierId: 'supplierId',
+    alert_threshold: 'alert_threshold'
+  };
+
+  export type StockThresholdScalarFieldEnum = (typeof StockThresholdScalarFieldEnum)[keyof typeof StockThresholdScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9363,6 +10560,7 @@ export namespace Prisma {
     phone_number?: StringNullableFilter<"Supplier"> | string | null
     email?: StringNullableFilter<"Supplier"> | string | null
     Stock?: StockListRelationFilter
+    Threshold?: XOR<StockThresholdNullableScalarRelationFilter, StockThresholdWhereInput> | null
   }
 
   export type SupplierOrderByWithRelationInput = {
@@ -9373,6 +10571,7 @@ export namespace Prisma {
     phone_number?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     Stock?: StockOrderByRelationAggregateInput
+    Threshold?: StockThresholdOrderByWithRelationInput
   }
 
   export type SupplierWhereUniqueInput = Prisma.AtLeast<{
@@ -9386,6 +10585,7 @@ export namespace Prisma {
     phone_number?: StringNullableFilter<"Supplier"> | string | null
     email?: StringNullableFilter<"Supplier"> | string | null
     Stock?: StockListRelationFilter
+    Threshold?: XOR<StockThresholdNullableScalarRelationFilter, StockThresholdWhereInput> | null
   }, "id" | "name">
 
   export type SupplierOrderByWithAggregationInput = {
@@ -9459,6 +10659,53 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Stock"> | number
     supplierId?: IntWithAggregatesFilter<"Stock"> | number
     count?: IntWithAggregatesFilter<"Stock"> | number
+  }
+
+  export type StockThresholdWhereInput = {
+    AND?: StockThresholdWhereInput | StockThresholdWhereInput[]
+    OR?: StockThresholdWhereInput[]
+    NOT?: StockThresholdWhereInput | StockThresholdWhereInput[]
+    id?: IntFilter<"StockThreshold"> | number
+    supplierId?: IntFilter<"StockThreshold"> | number
+    alert_threshold?: IntFilter<"StockThreshold"> | number
+    supplier?: XOR<SupplierScalarRelationFilter, SupplierWhereInput>
+  }
+
+  export type StockThresholdOrderByWithRelationInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
+    supplier?: SupplierOrderByWithRelationInput
+  }
+
+  export type StockThresholdWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    supplierId?: number
+    AND?: StockThresholdWhereInput | StockThresholdWhereInput[]
+    OR?: StockThresholdWhereInput[]
+    NOT?: StockThresholdWhereInput | StockThresholdWhereInput[]
+    alert_threshold?: IntFilter<"StockThreshold"> | number
+    supplier?: XOR<SupplierScalarRelationFilter, SupplierWhereInput>
+  }, "id" | "supplierId">
+
+  export type StockThresholdOrderByWithAggregationInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
+    _count?: StockThresholdCountOrderByAggregateInput
+    _avg?: StockThresholdAvgOrderByAggregateInput
+    _max?: StockThresholdMaxOrderByAggregateInput
+    _min?: StockThresholdMinOrderByAggregateInput
+    _sum?: StockThresholdSumOrderByAggregateInput
+  }
+
+  export type StockThresholdScalarWhereWithAggregatesInput = {
+    AND?: StockThresholdScalarWhereWithAggregatesInput | StockThresholdScalarWhereWithAggregatesInput[]
+    OR?: StockThresholdScalarWhereWithAggregatesInput[]
+    NOT?: StockThresholdScalarWhereWithAggregatesInput | StockThresholdScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"StockThreshold"> | number
+    supplierId?: IntWithAggregatesFilter<"StockThreshold"> | number
+    alert_threshold?: IntWithAggregatesFilter<"StockThreshold"> | number
   }
 
   export type LoginInfoCreateInput = {
@@ -9708,6 +10955,7 @@ export namespace Prisma {
     phone_number?: string | null
     email?: string | null
     Stock?: StockCreateNestedManyWithoutSupplierInput
+    Threshold?: StockThresholdCreateNestedOneWithoutSupplierInput
   }
 
   export type SupplierUncheckedCreateInput = {
@@ -9718,6 +10966,7 @@ export namespace Prisma {
     phone_number?: string | null
     email?: string | null
     Stock?: StockUncheckedCreateNestedManyWithoutSupplierInput
+    Threshold?: StockThresholdUncheckedCreateNestedOneWithoutSupplierInput
   }
 
   export type SupplierUpdateInput = {
@@ -9727,6 +10976,7 @@ export namespace Prisma {
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     Stock?: StockUpdateManyWithoutSupplierNestedInput
+    Threshold?: StockThresholdUpdateOneWithoutSupplierNestedInput
   }
 
   export type SupplierUncheckedUpdateInput = {
@@ -9737,6 +10987,7 @@ export namespace Prisma {
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     Stock?: StockUncheckedUpdateManyWithoutSupplierNestedInput
+    Threshold?: StockThresholdUncheckedUpdateOneWithoutSupplierNestedInput
   }
 
   export type SupplierCreateManyInput = {
@@ -9801,6 +11052,44 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     supplierId?: IntFieldUpdateOperationsInput | number
     count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type StockThresholdCreateInput = {
+    alert_threshold?: number
+    supplier: SupplierCreateNestedOneWithoutThresholdInput
+  }
+
+  export type StockThresholdUncheckedCreateInput = {
+    id?: number
+    supplierId: number
+    alert_threshold?: number
+  }
+
+  export type StockThresholdUpdateInput = {
+    alert_threshold?: IntFieldUpdateOperationsInput | number
+    supplier?: SupplierUpdateOneRequiredWithoutThresholdNestedInput
+  }
+
+  export type StockThresholdUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    supplierId?: IntFieldUpdateOperationsInput | number
+    alert_threshold?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type StockThresholdCreateManyInput = {
+    id?: number
+    supplierId: number
+    alert_threshold?: number
+  }
+
+  export type StockThresholdUpdateManyMutationInput = {
+    alert_threshold?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type StockThresholdUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    supplierId?: IntFieldUpdateOperationsInput | number
+    alert_threshold?: IntFieldUpdateOperationsInput | number
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -10107,6 +11396,11 @@ export namespace Prisma {
     none?: StockWhereInput
   }
 
+  export type StockThresholdNullableScalarRelationFilter = {
+    is?: StockThresholdWhereInput | null
+    isNot?: StockThresholdWhereInput | null
+  }
+
   export type StockOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -10179,6 +11473,36 @@ export namespace Prisma {
     id?: SortOrder
     supplierId?: SortOrder
     count?: SortOrder
+  }
+
+  export type StockThresholdCountOrderByAggregateInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
+  }
+
+  export type StockThresholdAvgOrderByAggregateInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
+  }
+
+  export type StockThresholdMaxOrderByAggregateInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
+  }
+
+  export type StockThresholdMinOrderByAggregateInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
+  }
+
+  export type StockThresholdSumOrderByAggregateInput = {
+    id?: SortOrder
+    supplierId?: SortOrder
+    alert_threshold?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -10264,11 +11588,23 @@ export namespace Prisma {
     connect?: StockWhereUniqueInput | StockWhereUniqueInput[]
   }
 
+  export type StockThresholdCreateNestedOneWithoutSupplierInput = {
+    create?: XOR<StockThresholdCreateWithoutSupplierInput, StockThresholdUncheckedCreateWithoutSupplierInput>
+    connectOrCreate?: StockThresholdCreateOrConnectWithoutSupplierInput
+    connect?: StockThresholdWhereUniqueInput
+  }
+
   export type StockUncheckedCreateNestedManyWithoutSupplierInput = {
     create?: XOR<StockCreateWithoutSupplierInput, StockUncheckedCreateWithoutSupplierInput> | StockCreateWithoutSupplierInput[] | StockUncheckedCreateWithoutSupplierInput[]
     connectOrCreate?: StockCreateOrConnectWithoutSupplierInput | StockCreateOrConnectWithoutSupplierInput[]
     createMany?: StockCreateManySupplierInputEnvelope
     connect?: StockWhereUniqueInput | StockWhereUniqueInput[]
+  }
+
+  export type StockThresholdUncheckedCreateNestedOneWithoutSupplierInput = {
+    create?: XOR<StockThresholdCreateWithoutSupplierInput, StockThresholdUncheckedCreateWithoutSupplierInput>
+    connectOrCreate?: StockThresholdCreateOrConnectWithoutSupplierInput
+    connect?: StockThresholdWhereUniqueInput
   }
 
   export type StockUpdateManyWithoutSupplierNestedInput = {
@@ -10285,6 +11621,16 @@ export namespace Prisma {
     deleteMany?: StockScalarWhereInput | StockScalarWhereInput[]
   }
 
+  export type StockThresholdUpdateOneWithoutSupplierNestedInput = {
+    create?: XOR<StockThresholdCreateWithoutSupplierInput, StockThresholdUncheckedCreateWithoutSupplierInput>
+    connectOrCreate?: StockThresholdCreateOrConnectWithoutSupplierInput
+    upsert?: StockThresholdUpsertWithoutSupplierInput
+    disconnect?: StockThresholdWhereInput | boolean
+    delete?: StockThresholdWhereInput | boolean
+    connect?: StockThresholdWhereUniqueInput
+    update?: XOR<XOR<StockThresholdUpdateToOneWithWhereWithoutSupplierInput, StockThresholdUpdateWithoutSupplierInput>, StockThresholdUncheckedUpdateWithoutSupplierInput>
+  }
+
   export type StockUncheckedUpdateManyWithoutSupplierNestedInput = {
     create?: XOR<StockCreateWithoutSupplierInput, StockUncheckedCreateWithoutSupplierInput> | StockCreateWithoutSupplierInput[] | StockUncheckedCreateWithoutSupplierInput[]
     connectOrCreate?: StockCreateOrConnectWithoutSupplierInput | StockCreateOrConnectWithoutSupplierInput[]
@@ -10299,6 +11645,16 @@ export namespace Prisma {
     deleteMany?: StockScalarWhereInput | StockScalarWhereInput[]
   }
 
+  export type StockThresholdUncheckedUpdateOneWithoutSupplierNestedInput = {
+    create?: XOR<StockThresholdCreateWithoutSupplierInput, StockThresholdUncheckedCreateWithoutSupplierInput>
+    connectOrCreate?: StockThresholdCreateOrConnectWithoutSupplierInput
+    upsert?: StockThresholdUpsertWithoutSupplierInput
+    disconnect?: StockThresholdWhereInput | boolean
+    delete?: StockThresholdWhereInput | boolean
+    connect?: StockThresholdWhereUniqueInput
+    update?: XOR<XOR<StockThresholdUpdateToOneWithWhereWithoutSupplierInput, StockThresholdUpdateWithoutSupplierInput>, StockThresholdUncheckedUpdateWithoutSupplierInput>
+  }
+
   export type SupplierCreateNestedOneWithoutStockInput = {
     create?: XOR<SupplierCreateWithoutStockInput, SupplierUncheckedCreateWithoutStockInput>
     connectOrCreate?: SupplierCreateOrConnectWithoutStockInput
@@ -10311,6 +11667,20 @@ export namespace Prisma {
     upsert?: SupplierUpsertWithoutStockInput
     connect?: SupplierWhereUniqueInput
     update?: XOR<XOR<SupplierUpdateToOneWithWhereWithoutStockInput, SupplierUpdateWithoutStockInput>, SupplierUncheckedUpdateWithoutStockInput>
+  }
+
+  export type SupplierCreateNestedOneWithoutThresholdInput = {
+    create?: XOR<SupplierCreateWithoutThresholdInput, SupplierUncheckedCreateWithoutThresholdInput>
+    connectOrCreate?: SupplierCreateOrConnectWithoutThresholdInput
+    connect?: SupplierWhereUniqueInput
+  }
+
+  export type SupplierUpdateOneRequiredWithoutThresholdNestedInput = {
+    create?: XOR<SupplierCreateWithoutThresholdInput, SupplierUncheckedCreateWithoutThresholdInput>
+    connectOrCreate?: SupplierCreateOrConnectWithoutThresholdInput
+    upsert?: SupplierUpsertWithoutThresholdInput
+    connect?: SupplierWhereUniqueInput
+    update?: XOR<XOR<SupplierUpdateToOneWithWhereWithoutThresholdInput, SupplierUpdateWithoutThresholdInput>, SupplierUncheckedUpdateWithoutThresholdInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -10561,6 +11931,20 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StockThresholdCreateWithoutSupplierInput = {
+    alert_threshold?: number
+  }
+
+  export type StockThresholdUncheckedCreateWithoutSupplierInput = {
+    id?: number
+    alert_threshold?: number
+  }
+
+  export type StockThresholdCreateOrConnectWithoutSupplierInput = {
+    where: StockThresholdWhereUniqueInput
+    create: XOR<StockThresholdCreateWithoutSupplierInput, StockThresholdUncheckedCreateWithoutSupplierInput>
+  }
+
   export type StockUpsertWithWhereUniqueWithoutSupplierInput = {
     where: StockWhereUniqueInput
     update: XOR<StockUpdateWithoutSupplierInput, StockUncheckedUpdateWithoutSupplierInput>
@@ -10586,12 +11970,33 @@ export namespace Prisma {
     count?: IntFilter<"Stock"> | number
   }
 
+  export type StockThresholdUpsertWithoutSupplierInput = {
+    update: XOR<StockThresholdUpdateWithoutSupplierInput, StockThresholdUncheckedUpdateWithoutSupplierInput>
+    create: XOR<StockThresholdCreateWithoutSupplierInput, StockThresholdUncheckedCreateWithoutSupplierInput>
+    where?: StockThresholdWhereInput
+  }
+
+  export type StockThresholdUpdateToOneWithWhereWithoutSupplierInput = {
+    where?: StockThresholdWhereInput
+    data: XOR<StockThresholdUpdateWithoutSupplierInput, StockThresholdUncheckedUpdateWithoutSupplierInput>
+  }
+
+  export type StockThresholdUpdateWithoutSupplierInput = {
+    alert_threshold?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type StockThresholdUncheckedUpdateWithoutSupplierInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    alert_threshold?: IntFieldUpdateOperationsInput | number
+  }
+
   export type SupplierCreateWithoutStockInput = {
     name: string
     item_name?: string
     address?: string | null
     phone_number?: string | null
     email?: string | null
+    Threshold?: StockThresholdCreateNestedOneWithoutSupplierInput
   }
 
   export type SupplierUncheckedCreateWithoutStockInput = {
@@ -10601,6 +12006,7 @@ export namespace Prisma {
     address?: string | null
     phone_number?: string | null
     email?: string | null
+    Threshold?: StockThresholdUncheckedCreateNestedOneWithoutSupplierInput
   }
 
   export type SupplierCreateOrConnectWithoutStockInput = {
@@ -10625,6 +12031,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    Threshold?: StockThresholdUpdateOneWithoutSupplierNestedInput
   }
 
   export type SupplierUncheckedUpdateWithoutStockInput = {
@@ -10634,6 +12041,61 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    Threshold?: StockThresholdUncheckedUpdateOneWithoutSupplierNestedInput
+  }
+
+  export type SupplierCreateWithoutThresholdInput = {
+    name: string
+    item_name?: string
+    address?: string | null
+    phone_number?: string | null
+    email?: string | null
+    Stock?: StockCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierUncheckedCreateWithoutThresholdInput = {
+    id?: number
+    name: string
+    item_name?: string
+    address?: string | null
+    phone_number?: string | null
+    email?: string | null
+    Stock?: StockUncheckedCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierCreateOrConnectWithoutThresholdInput = {
+    where: SupplierWhereUniqueInput
+    create: XOR<SupplierCreateWithoutThresholdInput, SupplierUncheckedCreateWithoutThresholdInput>
+  }
+
+  export type SupplierUpsertWithoutThresholdInput = {
+    update: XOR<SupplierUpdateWithoutThresholdInput, SupplierUncheckedUpdateWithoutThresholdInput>
+    create: XOR<SupplierCreateWithoutThresholdInput, SupplierUncheckedCreateWithoutThresholdInput>
+    where?: SupplierWhereInput
+  }
+
+  export type SupplierUpdateToOneWithWhereWithoutThresholdInput = {
+    where?: SupplierWhereInput
+    data: XOR<SupplierUpdateWithoutThresholdInput, SupplierUncheckedUpdateWithoutThresholdInput>
+  }
+
+  export type SupplierUpdateWithoutThresholdInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    item_name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    Stock?: StockUpdateManyWithoutSupplierNestedInput
+  }
+
+  export type SupplierUncheckedUpdateWithoutThresholdInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    item_name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    Stock?: StockUncheckedUpdateManyWithoutSupplierNestedInput
   }
 
   export type ShipmentCreateManyCustomerInput = {

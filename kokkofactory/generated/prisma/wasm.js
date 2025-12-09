@@ -171,6 +171,12 @@ exports.Prisma.StockScalarFieldEnum = {
   count: 'count'
 };
 
+exports.Prisma.StockThresholdScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  alert_threshold: 'alert_threshold'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -194,7 +200,8 @@ exports.Prisma.ModelName = {
   Customer: 'Customer',
   Shipment: 'Shipment',
   Supplier: 'Supplier',
-  Stock: 'Stock'
+  Stock: 'Stock',
+  StockThreshold: 'StockThreshold'
 };
 
 /**

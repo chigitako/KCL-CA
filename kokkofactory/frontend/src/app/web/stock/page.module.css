@@ -96,3 +96,32 @@
   color: #a0a0a0;
   font-size: 1.2em;
 }
+
+.updateButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  
+  background-color: #FFC107;
+  color: #333333;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(255, 193, 7, 0.4);
+  transition: all 0.2s ease-in-out; 
+
+  margin: 4px 0; 
+  display: inline-block;
+}
+
+
+.updateButton:hover {
+  background-color: #FFA000;
+  box-shadow: 0 6px 10px rgba(255, 160, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+.updateButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(255, 160, 0, 0.4);
+}

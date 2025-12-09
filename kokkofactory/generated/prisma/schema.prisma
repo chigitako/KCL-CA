@@ -61,14 +61,16 @@ model Shipment {
 
 // 仕入れ先情報
 model Supplier {
-  id           Int     @id @default(autoincrement())
-  name         String  @unique // 仕入れ先
-  item_name    String  @default("未登録") //備品名
+  id           Int             @id @default(autoincrement())
+  name         String          @unique // 仕入れ先
+  item_name    String          @default("未登録") //備品名
   address      String? // 住所
   phone_number String? // 電話番号
   email        String? // メールアドレス
   // 在庫とのリレーション
   Stock        Stock[]
+  //アラート基準値とのリレーション
+  Threshold    StockThreshold?
 }
 
 // 仕入れ在庫
@@ -77,4 +79,12 @@ model Stock {
   supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   supplierId Int // 仕入れ先No
   count      Int // 残り個数
+}
+
+model StockThreshold {
+  id         Int      @id @default(autoincrement())
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId Int      @unique // Supplier IDを外部キー兼ユニークキーに
+
+  alert_threshold Int @default(100)
 }
