@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import LoadingScreen from "@components/LoadingScreen";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
+import { red } from "@mui/material/colors";
 
 // 在庫情報の型定義
 interface InventoryItem {
@@ -13,15 +14,16 @@ interface InventoryItem {
   phoneNumber: string;
   email: string;
   remainingCount: number;
+  alertThreshold: number;
 }
 
 // フォームの入力値の型定義
 interface NewStockForm {
   supplierName: string;
-  count: string; // 入力値は文字列として扱う
+  count: string;
 }
 
-// 既存の /api/egg からの応答型（レコードの配列）
+
 interface EggRecord {
     id: number;
     coop_number: number;
@@ -29,12 +31,9 @@ interface EggRecord {
     date: string; // Prismaからの応答は通常ISO文字列
 }
 
-interface EggDataList extends Array<EggRecord> {} // 既存GETの応答全体
+interface EggDataList extends Array<EggRecord> {} 
 
 
-// --------------------------------------------------
-// 1. API通信関数
-// --------------------------------------------------
 
 const fetchInventory = async (): Promise<InventoryItem[]> => {
   const res = await fetch("/api/stock");
@@ -95,10 +94,29 @@ const updateStock = async (supplierName: string, newCount: number) => {
   return res.json();
 };
 
+const updateAlertThreshold = async (supplierName: string, newThreshold: number) => {
+  const payload = {
+    supplierName: supplierName,
+    newThreshold: newThreshold,
+  };
 
-// --------------------------------------------------
-// 2. メインコンポーネント
-// --------------------------------------------------
+  const res = await fetch("/api/stock/threshold", {
+    method: "PATCH", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(
+      `アラート基準値の更新に失敗しました: ${errorBody.error || res.statusText}`
+    );
+  }
+
+  return res.json();
+};
 
 export default function StockPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -145,6 +163,42 @@ export default function StockPage() {
         setError(err.message);
       } else {
         setError("在庫更新中に不明なエラーが発生しました。");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAlertUpdate = async (item: InventoryItem) => {
+    // ユーザーに新しいアラート基準値を尋ねる
+    const newThresholdStr = prompt(
+      `${item.supplierName}（現在基準値: ${item.alertThreshold}）の新しいアラート基準値を入力してください。`
+    );
+
+    if (newThresholdStr === null) {
+      return;
+    }
+
+    const newThreshold = parseInt(newThresholdStr, 10);
+
+    // 入力が無効な場合
+    if (isNaN(newThreshold) || newThreshold < 0) {
+      alert("無効な入力です。基準値にはゼロ以上の数字を入力してください。");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      await updateAlertThreshold(item.supplierName, newThreshold);
+      alert(`${item.supplierName} のアラート基準値を ${newThreshold.toLocaleString()} に更新しました！`);
+      // 更新成功後、在庫一覧を再読み込み
+      await loadInventory();
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("アラート基準値の更新中に不明なエラーが発生しました。");
       }
     } finally {
       setLoading(false);
@@ -276,6 +330,7 @@ export default function StockPage() {
                 <th>仕入れ先名</th>
                 <th>品目名</th>
                 <th>在庫数</th>
+                <th>アラート基準値</th>
                 <th>住所</th>
                 <th>連絡先</th>
                 <th></th>
@@ -288,15 +343,29 @@ export default function StockPage() {
                 </tr>
               ) : (
                 filteredInventory.map((item, index) => (
-                  <tr key={index} className={styles.tableRow}>
+                  <tr key={index} className={styles.tableRow}
+                   style={
+                    item.remainingCount <= item.alertThreshold
+                      ? { backgroundColor: "#FFF9C4" }
+                      : {}
+                    }
+                  >
                     <td>{item.supplierName}</td>
                     <td>{item.ItemName}</td>
                     <td>{item.remainingCount.toLocaleString()}</td>
+                    <td>{item.alertThreshold.toLocaleString()}</td>
                     <td>{item.address}</td>
                     <td>
                       {item.phoneNumber} / {item.email}
                     </td>
                     <td>
+                      <button
+                      className={styles.updateButton}
+                      onClick={() => handleAlertUpdate(item)}
+                      style={{ marginRight: '8px' }}
+                    >
+                      🔔 基準値更新
+                    </button>
                       <button
                         className={styles.updateButton}
                         onClick={() => handleUpdate(item)}

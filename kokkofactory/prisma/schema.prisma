@@ -69,6 +69,8 @@ model Supplier {
   email        String?       // メールアドレス
   // 在庫とのリレーション
   Stock Stock[]
+  //アラート基準値とのリレーション
+  Threshold StockThreshold?
 }
 
 // 仕入れ在庫
@@ -77,4 +79,12 @@ model Stock {
   supplier     Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   supplierId   Int      // 仕入れ先No
   count        Int      // 残り個数
+}
+
+model StockThreshold {
+  id              Int      @id @default(autoincrement())
+  supplier        Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId      Int      @unique // Supplier IDを外部キー兼ユニークキーに
+  
+  alert_threshold Int      @default(100) 
 }

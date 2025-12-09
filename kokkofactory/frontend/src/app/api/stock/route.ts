@@ -8,7 +8,7 @@ export async function GET() {
   try {
     // 全ての仕入れ在庫情報を取得し、仕入れ先情報を含める
     const allPurchaseStocks = await prisma.stock.findMany({
-      include: { supplier: true },
+      include: { supplier: { include: { Threshold: true } } },
     });
 
     const inventoryList = allPurchaseStocks.map((stock) => ({
@@ -18,6 +18,7 @@ export async function GET() {
       phoneNumber: stock.supplier.phone_number,
       email: stock.supplier.email,
       remainingCount: stock.count,
+      alertThreshold: stock.supplier.Threshold?.alert_threshold ?? 100,
     }));
 
     return NextResponse.json(inventoryList, { status: 200 });
@@ -99,7 +100,6 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
-    // 必須：更新対象の仕入れ先名と、新しい在庫数
     const { supplierName, newCount } = body;
 
     if (!supplierName || newCount === undefined || typeof newCount !== 'number') {
