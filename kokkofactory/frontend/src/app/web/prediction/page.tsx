@@ -1,9 +1,8 @@
 "use client";
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './page.module.css'; // CSSファイルをインポート
+import styles from './page.module.css'; 
 import LeftPullTab from "@components/LeftPullTab"; 
-// import { useShipment } from "@components/ShipmentContext"; // 出荷データは使用しない
 
 // Chart.js 関連インポート
 import {
@@ -12,35 +11,35 @@ import {
     LinearScale,
     PointElement,
     LineElement,
-    Title, // PieやArcElementは今回は使わないが、元のChartJS.registerは残す
+    Title,
+    Tooltip,
+    Legend,
 } from 'chart.js';
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
 
-// Chart.js を登録 (元のGraphPageに合わせる)
 ChartJS.register(
     CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
-    // ArcElement, // 円グラフは今回は使わない
     Title,
+    Tooltip,
+    Legend
 );
 
 
 // ----------------------------------------------------
-// ★予測グラフ用のデータ構造とダミーデータ (予測モデルの計算用)
+// ★予測グラフ用のデータ構造とヘルパー関数 (再掲)
 // ----------------------------------------------------
 type GroupBy = "day" | "week" | "month"; 
 
 interface PredictionDataPoint {
-    date: string; // YYYY-MM-DD
+    date: string; 
     predictedCount: number; 
     actualCount: number;
-    cumulativePotential: number; // 予測モデルのキーとなる値
+    cumulativePotential: number;
 }
-
-// ヘルパー関数は元の GraphPage のロジックを流用 (ただし mode: "year" は削除)
 const makeKey = (date: Date, mode: GroupBy): string => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -76,8 +75,6 @@ const formatKeyLabel = (key: string, mode: GroupBy): string => {
     }
     return '';
 };
-
-// ダミーデータ生成ロジック
 const generateDummyData = (days: number): PredictionDataPoint[] => {
     const data: PredictionDataPoint[] = [];
     const today = new Date('2025-12-10'); 
@@ -106,28 +103,24 @@ const DUMMY_PREDICTION_DATA = generateDummyData(60);
 
 
 // ----------------------------------------------------
-// ★コンポーネント定義 (GraphPageの構造を移植)
+// ★コンポーネント定義
 // ----------------------------------------------------
 
 export default function EggPredictionGraph() {
-    const router = useRouter(); 
-    // const { shipments } = useShipment(); // 出荷データは使わない
-    
-    const [rangeStart, setRangeStart] = useState<string>("");
-    const [rangeEnd, setRangeEnd] = useState<string>("");
-    const [rangeEnabled, setRangeEnabled] = useState(false);
-    
-    // 集計期間を GraphPage の "day" | "month" | "year" から、"day" | "week" | "month" に変更
+    const [rangeStart, setRangeStart] = useState<string>('');
+    const [rangeEnd, setRangeEnd] = useState<string>('');
     const [groupBy, setGroupBy] = useState<GroupBy>("day"); 
-
-    // Chart.jsのエラー対策のため、参照を維持
+    const [rangeEnabled, setRangeEnabled] = useState(false);
     const chartRef = useRef<ChartJS<"line", number[], string>>(null);
-    
-    // GraphPageのselectedKeyに相当するが、ここでは使わないため削除 (便宜上selectedKey: null のまま残す)
-    const [selectedKey, setSelectedKey] = useState<string | null>(null);
+    const router = useRouter(); 
 
+    // ★ 描画マウント状態の管理を追加
+    const [isMounted, setIsMounted] = useState(false);
 
-    // --- ライフサイクルとハンドラ ---
+    useEffect(() => {
+        // コンポーネントがマウントされたらtrueにし、Chart.jsの初期化を許可する
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         if (!rangeEnabled) {
@@ -136,34 +129,12 @@ export default function EggPredictionGraph() {
         }
     }, [rangeEnabled]);
 
-    const handleBack = () => {
-        router.push('/web/shipment');
+
+    const handleBack = () => {
+        router.push('/web/shipment'); 
     };
-    
-    // 指定期間チェックボックスのトグル
-    const handleRangeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const checked = e.target.checked;
-        setRangeEnabled(checked);
-        if (checked) {
-            setGroupBy('day'); 
-        }
-    };
-    
-    // 期間選択ボタンの切り替え処理
-    const handleGroupByChange = (mode: GroupBy) => {
-        setGroupBy(mode);
-        setRangeEnabled(false);
-    };
-    
-    // 戻るボタンのクリックハンドラ
-    const handleBackClick = () => {
-        router.push('/web/shipment'); 
-    };
-
-
-    // --- データ処理 ---
-
-    // 1. 期間指定で絞り込む
+    
+    // 1. 期間指定で絞り込む
     const filteredDataByRange = useMemo(() => {
         if (!rangeEnabled || !rangeStart || !rangeEnd) return DUMMY_PREDICTION_DATA;
         const start = new Date(rangeStart);
@@ -186,7 +157,6 @@ export default function EggPredictionGraph() {
 
             const current = aggregatedMap.get(key) || { pred: 0, act: 0, pot: 0, count: 0 };
 
-            // すべて累積値として保存（後でカウントで割って平均を出す）
             aggregatedMap.set(key, {
                 pred: current.pred + d.predictedCount,
                 act: current.act + d.actualCount,
@@ -207,10 +177,9 @@ export default function EggPredictionGraph() {
             return Math.round(item[dataKey] / item.count); 
         };
 
-        // 出荷グラフの datasets のロジックを産卵予測データに置き換え
         const datasets = [
             {
-                label: '🥚 予測産卵数 (平均)',
+                label: '🥚 予測産卵数',
                 data: sortedKeys.map(k => getAverage(k, 'pred')),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -219,7 +188,7 @@ export default function EggPredictionGraph() {
                 pointRadius: 4,
             },
             {
-                label: '📊 実績産卵数 (平均)',
+                label: '📊 実績産卵数',
                 data: sortedKeys.map(k => getAverage(k, 'act')),
                 borderColor: 'rgb(54, 162, 235)',
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
@@ -229,7 +198,7 @@ export default function EggPredictionGraph() {
                 pointRadius: 4,
             },
             {
-                label: '🌡️ 快適ポテンシャル (平均)',
+                label: '🌡️ 累積快適ポテンシャル',
                 data: sortedKeys.map(k => getAverage(k, 'pot')),
                 borderColor: 'rgb(75, 192, 192)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -244,11 +213,9 @@ export default function EggPredictionGraph() {
     }, [filteredDataByRange, groupBy]);
 
 
-    // --- Chart Options --- (スケール調整を含む)
-
     const options = useMemo(() => ({
         responsive: true,
-        maintainAspectRatio: false, // 高さ制御のため false
+        maintainAspectRatio: false,
         plugins: {
             legend: { position: 'top' as const },
             title: { 
@@ -310,25 +277,36 @@ export default function EggPredictionGraph() {
     }), [groupBy]);
 
 
+    // 期間選択ボタンの切り替え処理
+    const handleGroupByChange = (mode: GroupBy) => {
+        setGroupBy(mode);
+        setRangeEnabled(false);
+    };
+    
+    // 指定期間チェックボックスのトグル
+    const handleRangeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = e.target.checked;
+        setRangeEnabled(checked);
+        if (checked) {
+            setGroupBy('day'); 
+        }
+    };
+
+    // 戻るボタンのクリックハンドラ
+    const handleBackClick = () => {
+        router.push('/web/shipment'); 
+    };
+
     return (
-    <LeftPullTab> 
+    <LeftPullTab> {/* ★ LeftPullTabでラップ */}
         <div className={styles.container}>
 
-            {/* ★ 戻るボタンとヘッダーを横並びにするコンテナ */}
-            <div className={styles.headerRow}>
-                <button 
-                    onClick={handleBackClick} 
-                    className={styles.backButton} 
-                >
-                    ←
-                </button>
-                <h1 className={styles.header}>🥚 産卵数予測ダッシュボード</h1>
+            <div className={styles.headerContainer}>
+                <h1 className={styles.header}>産卵数予測</h1>
             </div>
 
             <p className={styles.infoBox}>
-                このグラフは、過去7日間の気温データから計算された累積快適ポテンシャルに基づき、
-                次期（日）の産卵数を予測するモデルを可視化しています。<br />
-                **【🌡️ 累積快適ポテンシャル (pt) の説明】**：鶏がストレスなく産卵にエネルギーを使えた度合いを示す指標です。至適温度（約15℃～30℃）から外れると値が低下し、快適な時間が多いほど値が累積します。この変化が数日後の産卵数に影響すると仮定して予測に利用します。
+                このグラフは、過去7日間の気温データから計算された累積快適ポテンシャルに基づき、次期（日）の産卵数を予測するモデルを可視化
             </p>
             
             <div className={styles.mainContent}> 
@@ -386,8 +364,8 @@ export default function EggPredictionGraph() {
                 <div className={styles.chartAndInfoContainer}>
                     {/* メイングラフエリア (左側、広め) */}
                     <div className={styles.chartWrapper}>
-                        {filteredDataByRange.length === 0 ? (
-                            <p>表示するデータがありません。</p>
+                        {filteredDataByRange.length === 0 || !isMounted ? (
+                            <p>データを読み込んでいます...</p> // ★ マウント中はローディング表示
                         ) : (
                             <div className={styles.chartContainer}>
                                 <Line
@@ -401,15 +379,20 @@ export default function EggPredictionGraph() {
 
                     {/* モデル情報テーブルエリア (右側、狭め) */}
                     <div className={styles.modelInfoContainer}>
-                        <h2 className={styles.modelInfoHeader}>モデルの基礎情報 (調整が必要な係数)</h2>
+                        <h2 className={styles.modelInfoHeader}>モデルの基礎情報</h2>
                         <table className={styles.modelInfoTable}>
-                            <tbody>
+                            <tbody>
                                 <tr><td>基準温度 (T_base)</td><td>15 °C</td></tr>
                                 <tr><td>上限温度 (T_upper)</td><td>30 °C</td></tr>
                                 <tr><td>感度係数 (A)</td><td>0.5</td></tr>
                                 <tr><td>ベース産卵数 (B)</td><td>500 個</td></tr>
                             </tbody>
                         </table>
+                        <p>
+                          予測産卵数 = B + A × (累積快適ポテンシャル - 1100)<br />
+                            ※ 累積快適ポテンシャル1100ptを基準に増減を予測しています。
+                        </p>
+           
                     </div>
                 </div>
 
@@ -417,4 +400,5 @@ export default function EggPredictionGraph() {
         </div>
     </LeftPullTab>
     );
+
 }

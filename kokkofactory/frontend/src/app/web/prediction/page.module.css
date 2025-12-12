@@ -1,0 +1,216 @@
+/* page.module.css (産卵予測ダッシュボード用 - 最終統合版) */
+
+/* 全体のコンテナ設定 */
+.container {
+    /* デザイントークン (黄色を基調に再定義) */
+    --color-primary: #FFD700; /* ★ ゴールド/黄色 */
+    --color-secondary: #E6B800; /* ゴールド系境界線 */
+    --color-background: #FFFBE6; /* 薄いクリーム色 */
+    --color-text: #333333;
+    --color-pink: #d00070; /* ピンク */
+    
+    padding: 15px;
+    background-color: var(--color-background); 
+    min-height: 100%; /* LeftPullTabの子として高さを継承 */
+    overflow: hidden; /* 外側にスクロールを出さない */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Arial', sans-serif;
+}
+
+
+.header {
+    margin: 0; 
+    color: var(--color-text);
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 8px;
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
+.infoBox {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #FFFFF0; 
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    color: var(--color-text);
+    font-size: 13px;
+    flex-shrink: 0; 
+}
+
+/* グラフとコントロールを収めるメインエリア */
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+    overflow: hidden; 
+    min-height: 0;
+}
+
+
+/* --- コントロールパネル --- (ボタンのスタイルを参考に調整) */
+.controlPanel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 6px 10px; /* ← 高さが膨らまないように固定 */
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    flex-shrink: 0;
+}
+
+.tabGroup {
+    /* 出荷グラフのスタイルを適用 */
+    display: flex;
+    gap: 5px; /* 0.5rem 相当 */
+    border: 1px solid var(--color-secondary); 
+    border-radius: 6px; /* 0.5rem 相当 */
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.tab {
+    /* 出荷グラフのスタイルを適用 */
+    padding: 6px 12px;
+    border: none;
+    background: #fff; 
+    color: #777; 
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.tab:hover:not(.active) {
+    background: #f5f5f5; 
+}
+
+.tab.active {
+    background: var(--color-primary); /* 黄色 */
+    color: var(--color-text); 
+    font-weight: bold;
+    border: 2px solid var(--color-primary); /* 境界線をアクティブボタンに重ねる */
+    margin: -1px; /* 境界線がtabGroupと重なるように調整 */
+}
+
+.tab:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    gap: 15px;
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.dateRange {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.dateInput {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    width: 120px; 
+    box-sizing: border-box;
+}
+
+.dateInput:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.3);
+}
+
+
+/* --- グラフとモデル情報 (横並び) --- */
+
+.chartAndInfoContainer {
+    display: flex;
+    flex-direction: row; 
+    flex-grow: 1;
+    gap: 15px;
+    overflow-y: hidden;
+    min-height: 0;
+    padding-bottom: 15px;
+}
+
+.chartWrapper {
+     height: 55vh;
+    background-color: white;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 3; /* グラフに広いスペース */
+    min-height: 0; 
+    min-width: 0; 
+    position: relative; 
+}
+
+/* Chart.js の描画エリアを親にフィットさせるためのラッパー */
+.chartContainer {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.modelInfoContainer {
+    background-color: white;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    flex-grow: 1; 
+    min-width: 250px; 
+    display: flex;
+    flex-direction: column;
+}
+
+.modelInfoHeader {
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.modelInfoTable {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 13px;
+    max-width: none; 
+    flex-shrink: 0;
+}
+
+.modelInfoTable td {
+    padding: 8px 10px;
+    border: 1px solid #eee;
+}
+
+.modelInfoTable tr:nth-child(odd) {
+    background-color: #fcfcfc;
+}
+
+.modelInfoTable tr td:first-child {
+    font-weight: 600;
+    color: var(--color-text);
+}
