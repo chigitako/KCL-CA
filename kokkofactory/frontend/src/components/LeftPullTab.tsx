@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import "./LeftPullTab.css";
 import { usePathname } from "next/navigation";
+import LogoutButton from "./LogoutButton";
 
 const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -56,6 +57,7 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
         <NavButton href="/web/customers">取引先名簿</NavButton>
         <NavButton href="/web/stock">在庫</NavButton>
         <NavButton href="/web/marketing">マーケティング</NavButton>
+        <LogoutButton className="buttonStyle" />
       </div>
 
       {/* ページ本体 */}
