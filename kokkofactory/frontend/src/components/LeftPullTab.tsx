@@ -48,6 +48,7 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
         <NavButton href="/web/shipment">出荷履歴</NavButton>
         <NavButton href="/web/customers">取引先名簿</NavButton>
         <NavButton href="/web/stock">在庫</NavButton>
+        <NavButton href="/web/prediction">予測</NavButton>
       </div>
 
       {/* ページ本体 */}
