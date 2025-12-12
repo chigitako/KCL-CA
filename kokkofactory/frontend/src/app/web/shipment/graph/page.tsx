@@ -265,6 +265,13 @@ export default function GraphPage() {
     );
   };
 
+  const shipmentsForSelectedKey = useMemo(() => {
+        if (!selectedKey) return [];
+        return filteredShipments.filter(s => 
+            makeKey(new Date(s.shipmentDate), groupBy as "day" | "month" | "year") === selectedKey
+        );
+    }, [selectedKey, filteredShipments, groupBy]);
+
   return (
     <LeftPullTab>
       <div className ={styles.container}>
@@ -305,20 +312,6 @@ export default function GraphPage() {
                 </span>
               )}
 
-            </div>
-
-            {/* フィルターUI */}
-            <div>
-              {allOptions.map((v) => (
-                <label key={v} style={{ marginRight: "10" }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedVendors.includes(v)}
-                    onChange={() => toggleVendor(v)}
-                  />
-                  {v}
-                </label>
-              ))}
             </div>
 
 
@@ -372,30 +365,40 @@ export default function GraphPage() {
           </div>
         </div>
         <div className={styles.list}>
-          <h2 style={{textAlign:"center"}}>出荷情報一覧</h2>
-          {shipments.length === 0 ? (
-            <p>出荷情報がまだ Context にありません！</p>
-          ) : (
-            <table className={styles.shipmentTable}>
-            <thead>
-              <tr className={styles.tableHeader}>
-                <th>取引先</th>
-                <th>出荷個数</th>
-                <th>出荷日</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shipments.map((s, i) => (
-                <tr key={i} className={styles.tableRow}>
-                  <td>{s.vendor}</td>
-                  <td>{s.shippedCount}</td>
-                  <td>{new Date(s.shipmentDate).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          )}
-        </div>
+          <h2 className={styles.listHeader}>
+                        {selectedKey 
+                            ? `${formatKeyLabel(selectedKey, groupBy as "day" | "month" | "year")} の出荷詳細 (${shipmentsForSelectedKey.length}件)`
+                            : "グラフのデータポイントをクリックしてください"}
+                    </h2>
+                    
+                    {shipmentsForSelectedKey.length === 0 && selectedKey ? (
+                        <p>この期間には出荷情報がありません。</p>
+                    ) : shipmentsForSelectedKey.length === 0 && !selectedKey ? (
+                        <p>出荷情報がまだ Context にありません！</p>
+                    ) : (
+                        <div className={styles.tableScrollWrapper}>
+                            <table className={styles.shipmentTable}>
+                            <thead>
+                                <tr className={styles.tableHeader}>
+                                    <th>取引先</th>
+                                    <th>出荷個数</th>
+                                    <th>出荷日</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* ★ フィルターされたデータのみを表示 */}
+                                {shipmentsForSelectedKey.map((s, i) => (
+                                    <tr key={i} className={styles.tableRow}>
+                                        <td>{s.vendor}</td>
+                                        <td>{s.shippedCount}</td>
+                                        <td>{new Date(s.shipmentDate).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
       </div>
       <button className={styles.backButton} onClick={handleBack}>
         ←
