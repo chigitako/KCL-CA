@@ -60,30 +60,34 @@
     /*padding: 2px 8px; /* ← 高さが膨らまないように固定 */
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    flex-shrink: 0;
+    /*flex-shrink: 0;*/
 }
 
 .tabGroup {
     /* 出荷グラフのスタイルを適用 */
     display: flex;
-    gap: 5px; /* 0.5rem 相当 */
+    /*gap: 5px; /* 0.5rem 相当 */
     border: 1px solid var(--color-secondary); 
     border-radius: 6px; /* 0.5rem 相当 */
     overflow: hidden;
-    flex-shrink: 0;
+    /*flex-shrink: 0;*/
 }
 
 .tab {
     /* 出荷グラフのスタイルを適用 */
-    padding: 6px 12px;
+    /*padding: 6px 12px;*/
     border: none;
     background: #fff; 
     color: #777; 
     cursor: pointer;
     font-size: 13px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    /*transition: all 0.2s ease;*/
+    text-align: center;
+   
 }
+
+
 
 .tab:hover:not(.active) {
     background: #f5f5f5; 
@@ -94,7 +98,7 @@
     color: var(--color-text); 
     font-weight: bold;
     border: 2px solid var(--color-primary); /* 境界線をアクティブボタンに重ねる */
-    margin: -1px; /* 境界線がtabGroupと重なるように調整 */
+    /*margin: -1px; /* 境界線がtabGroupと重なるように調整 */
 }
 
 .tab:disabled {
@@ -106,7 +110,7 @@
     display: flex;
     flex-direction: row; 
     align-items: center;
-    gap: 15px;
+    /*gap: 15px;*/
 }
 
 .label {
