@@ -1,27 +1,21 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '../../../../../generated/prisma/client'
-let prisma: PrismaClient;
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  orderBy, 
+  serverTimestamp 
+} from 'firebase/firestore';
+import { db } from '@/firebase';
 
-// @ts-ignore
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  // @ts-ignore
-  if (!global.prisma) {
-    // @ts-ignore
-    global.prisma = new PrismaClient();
-  }
-  // @ts-ignore
-  prisma = global.prisma;
-}
-
-
+// --- POST: 卵の採取記録を保存 ---
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     const { coop_number, count } = data;
 
-    // 必須フィールドのチェックと数値変換
+    // 必須フィールドのチェック
     if (coop_number === undefined || count === undefined) {
       return NextResponse.json(
         { message: '鶏舎番号 (coop_number) と個数 (count) は必須です。' },
@@ -29,53 +23,56 @@ export async function POST(request: Request) {
       );
     }
 
-    // 文字列として受け取った値を安全に数値に変換
+    // 数値への変換
     const coopNumberInt = Number(coop_number);
     const countInt = Number(count);
 
     // バリデーション
-    if (isNaN(coopNumberInt) || isNaN(countInt) || coopNumberInt < 1 || coopNumberInt > 9 || countInt <= 0) {
+    if (isNaN(coopNumberInt) || isNaN(countInt) || coopNumberInt < 1 || coopNumberInt > 9 || countInt < 0) {
       return NextResponse.json(
-        { message: '鶏舎番号は1-9の整数、個数は正の整数である必要があります。' },
+        { message: '鶏舎番号は1-9の整数、個数は0以上の整数である必要があります。' },
         { status: 400 }
       );
     }
 
-    // データベースに新しいEggレコードを作成
-    const newEggData = await prisma.egg.create({
-      data: {
-        coop_number: coopNumberInt,
-        count: countInt,
-      },
+    // Firestoreの "eggs" コレクションに保存
+    const docRef = await addDoc(collection(db, 'eggs'), {
+      coop_number: coopNumberInt,
+      count: countInt,
+      date: serverTimestamp(), // Prismaの @default(now()) と同じ役割だよ✨
     });
 
     return NextResponse.json(
-      { message: '卵の数を正常に記録しました！', data: newEggData },
+      { message: '卵の数を正常に記録しました！', id: docRef.id },
       { status: 201 }
     );
   } catch (error) {
-    console.error('Prisma Eggデータ保存エラー:', error);
+    console.error('Firestore Eggデータ保存エラー:', error);
     return NextResponse.json(
-      { message: 'サーバーエラーが発生しました。データベースの接続を確認してください。' },
+      { message: 'サーバーエラーが発生しました。Firestoreの接続を確認してください。' },
       { status: 500 }
     );
   }
 }
 
+// --- GET: 卵の記録一覧を取得 ---
 export async function GET() {
   try {
-    // Eggテーブルから全てのレコードを取得
-    const eggList = await prisma.egg.findMany({
-      // 一覧表示は新しいデータが上にあると便利なので、dateの降順でソートするね
-      orderBy: {
-        date: 'desc', 
-      },
-    });
+    const eggsRef = collection(db, 'eggs');
+    // 日付（date）の降順（新しい順）で並べ替えて取得
+    const q = query(eggsRef, orderBy('date', 'desc'));
+    const querySnapshot = await getDocs(q);
 
-    // 取得したデータを200 OKとともに返す
+    const eggList = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      // Timestamp型をJavaScriptの日付に変換するよ🌸
+      date: doc.data().date?.toDate ? doc.data().date.toDate() : doc.data().date
+    }));
+
     return NextResponse.json(eggList, { status: 200 });
   } catch (error) {
-    console.error('Prisma Eggデータ取得エラー:', error);
+    console.error('Firestore Eggデータ取得エラー:', error);
     return NextResponse.json(
       { message: 'サーバーエラーが発生しました。一覧データの取得に失敗しました。' },
       { status: 500 }
