@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 // 取引先データの型を定義
 interface Customer {
-  id: number;
+  id: string;
   name: string;
   address?: string | null;
   phone_number?: string | null;
@@ -88,7 +88,7 @@ export default function NewShipmentPage() {
         shipped_count: parseInt(formData.shipped_count),
       };
 
-      const response = await fetch('/api/shipments', {
+      const response = await fetch('/api/shipment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,42 +2,48 @@
 
 import { useState } from "react";
 import LeftPullTab from "@components/LeftPullTab";
-import { useRouter } from "next/navigation"; // 戻るボタンのためにrouterをインポート
-import styles from "./page.module.css"; // 専用のCSSファイルをインポート
+import { useRouter } from "next/navigation";
+import styles from "./page.module.css";
 
 export default function StockForm() {
-  // 変更点: 電話番号とメールアドレスを削除し、連絡先(contactInfo)を追加
-  const [supplierName, setSupplierName] = useState<string>(""); // 仕入れ先名
-  const [itemName, setItemName] = useState<string>(""); // 品目名
-  const [stockCount, setStockCount] = useState<string>(""); // 在庫数
-  const [address, setAddress] = useState<string>(""); // 住所
-  const [contactInfo, setContactInfo] = useState<string>(""); // 連絡先 (電話番号/メールアドレスなど)
+  // 🌸 状態管理（State）を最新の入力項目に合わせて定義
+  const [supplierName, setSupplierName] = useState<string>(""); 
+  const [itemName, setItemName] = useState<string>(""); 
+  const [stockCount, setStockCount] = useState<string>(""); 
+  const [alertThreshold, setAlertThreshold] = useState<string>("100"); // デフォルト値100
+  const [address, setAddress] = useState<string>(""); 
+  const [phoneNumber, setPhoneNumber] = useState<string>(""); // 🌸 電話番号を独立
+  const [email, setEmail] = useState<string>(""); // 🌸 メールアドレスを独立
+
   const [message, setMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
 
   const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
     setIsSuccess(null);
 
     const parsedCount = parseInt(stockCount, 10);
+    const parsedThreshold = parseInt(alertThreshold, 10);
 
-    // 変更点: バリデーションをcontactInfoに修正
+    // 🌸 全ての必須フィールドに値が入っているかチェック
     if (
       !supplierName ||
       !itemName ||
       isNaN(parsedCount) ||
-      parsedCount <= 0 ||
+      parsedCount < 0 ||
       !address ||
-      !contactInfo
+      isNaN(parsedThreshold)
     ) {
-      setMessage("全てのフィールドに正しい値を入力してください。");
+      setMessage("入力内容を確認してね！おぱんちゅうさぎが泣いちゃうよ😢");
       setIsSuccess(false);
       return;
     }
 
     try {
+      // 🌸 API側に送るデータを準備
       const response = await fetch("/api/stock", {
         method: "POST",
         headers: {
@@ -45,32 +51,33 @@ export default function StockForm() {
         },
         body: JSON.stringify({
           supplierName,
-          itemName,
+          ItemName: itemName, // 🌸 API側の変数名に合わせて送るよ
           count: parsedCount,
-          stockCount: parsedCount,
           address,
-          contactInfo,
+          phoneNumber, // 🌸 分けて送信
+          email,       // 🌸 分けて送信
+          alertThreshold: parsedThreshold,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "在庫の登録に失敗しました。");
+        throw new Error(errorData.error || "登録に失敗しちゃったみたい💦");
       }
 
-      setMessage("在庫が正常に登録されました。✨");
-      setIsSuccess(true); // フォームをリセット
+      setMessage("在庫と基準値がバッチリ登録されたよ！✨");
+      setIsSuccess(true);
+      
+      // 🌸 登録が終わったらフォームを綺麗にお掃除
       setSupplierName("");
       setItemName("");
       setStockCount("");
+      setAlertThreshold("100");
       setAddress("");
-      setContactInfo("");
+      setPhoneNumber("");
+      setEmail("");
     } catch (err) {
-      if (err instanceof Error) {
-        setMessage(err.message);
-      } else {
-        setMessage("予期せぬエラーが発生しました。");
-      }
+      setMessage(err instanceof Error ? err.message : "予期せぬエラーが発生しました。");
       setIsSuccess(false);
     }
   };
@@ -82,82 +89,86 @@ export default function StockForm() {
   return (
     <LeftPullTab>
       <div className={styles.container}>
-        <h1 className={styles.title}>新規在庫登録 📝</h1>{" "}
+        <h1 className={styles.title}>新規在庫登録 📝</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* 1. 仕入れ先名 */}{" "}
+          {/* 1. 仕入れ先名 */}
           <input
             type="text"
-            id="supplierName"
             value={supplierName}
             onChange={(e) => setSupplierName(e.target.value)}
             className={styles.input}
             placeholder="仕入れ先名"
             required
           />
-          {/* 2. 品目名 */}{" "}
+          {/* 2. 品目名 */}
           <input
             type="text"
-            id="itemName"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
             className={styles.input}
-            placeholder="品目名"
+            placeholder="品目名 (トウモロコシなど)"
             required
           />
-          {/* 3. 在庫数 */}{" "}
+          {/* 3. 在庫数 */}
           <input
             type="number"
-            id="stockCount"
             value={stockCount}
             onChange={(e) => setStockCount(e.target.value)}
             className={styles.input}
             placeholder="在庫数"
             required
-            min="1"
+            min="0"
           />
-          {/* 4. 住所 */}{" "}
+          {/* 4. アラート基準値 */}
+          <input
+            type="number"
+            value={alertThreshold}
+            onChange={(e) => setAlertThreshold(e.target.value)}
+            className={styles.input}
+            placeholder="アラート基準値 (この数以下で通知)"
+            required
+            min="0"
+          />
+          {/* 5. 住所 */}
           <input
             type="text"
-            id="address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className={styles.input}
             placeholder="住所"
             required
           />
-          {/* 5. 連絡先 (統合) */}{" "}
+          {/* 6. 電話番号 (独立) */}
           <input
-            type="text" // 電話番号とメールアドレスを統合するため、type="text"に戻す
-            id="contactInfo"
-            value={contactInfo}
-            onChange={(e) => setContactInfo(e.target.value)}
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             className={styles.input}
-            placeholder="連絡先 (電話番号、メールアドレスなど)"
-            required
-          />{" "}
+            placeholder="電話番号"
+          />
+          {/* 7. メールアドレス (独立) */}
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            placeholder="メールアドレス"
+          />
+
           <div className={styles.buttonContainer}>
-            {" "}
-            <button
-              type="button"
-              onClick={handleGoBack}
-              className={styles.backButton}
-            >
-              一覧に戻る{" "}
-            </button>{" "}
+            <button type="button" onClick={handleGoBack} className={styles.backButton}>
+              一覧に戻る
+            </button>
             <button type="submit" className={styles.submitButton}>
-              登録{" "}
-            </button>{" "}
-          </div>{" "}
-        </form>{" "}
-        {message && (
-          <div
-            className={`${styles.message} ${
-              isSuccess ? styles.success : styles.error
-            }`}
-          >
-            {message}{" "}
+              登録
+            </button>
           </div>
-        )}{" "}
+        </form>
+        {message && (
+          <div className={`${styles.message} ${isSuccess ? styles.success : styles.error}`}>
+            {message}
+          </div>
+        )}
       </div>
     </LeftPullTab>
   );
