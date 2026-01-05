@@ -9,7 +9,8 @@ import {
   increment,
   collectionGroup,
   serverTimestamp,
-  query
+  query,
+  deleteDoc
 } from 'firebase/firestore';
 import { db } from '@/firebase';
 
@@ -136,5 +137,30 @@ export async function PATCH(request: Request) {
   } catch (error) {
     console.error('Firestore 在庫修正エラー:', error);
     return NextResponse.json({ error: '更新に失敗しました。' }, { status: 500 });
+  }
+}
+// --- DELETE: 在庫の削除 ---
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+    const { supplierName, ItemName } = body;
+
+    if (!supplierName || !ItemName) {
+      return NextResponse.json({ error: '削除に必要な情報が足りないよ！' }, { status: 400 });
+    }
+
+    // 在庫ドキュメントを削除
+    const stockRef = doc(db, 'suppliers', supplierName, 'inventory', ItemName);
+    const { deleteDoc } = await import('firebase/firestore'); // deleteDocをインポート
+    await deleteDoc(stockRef);
+
+    // 任意：基準値（settings）も一緒に消したい場合はここに追加
+    const thresholdRef = doc(db, 'suppliers', supplierName, 'settings', ItemName);
+    await deleteDoc(thresholdRef);
+
+    return NextResponse.json({ message: '削除に成功したよ！✨' }, { status: 200 });
+  } catch (error) {
+    console.error('Firestore 削除エラー:', error);
+    return NextResponse.json({ error: '削除に失敗しちゃった…' }, { status: 500 });
   }
 }
