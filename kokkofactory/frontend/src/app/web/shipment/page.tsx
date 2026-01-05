@@ -33,28 +33,27 @@ export default function WebPage() {
   }
 
   useEffect(() => {
-    if (shipments.length === 0) {
-      const fetchShipments = async () => {
-        try {
-          // バックエンドのAPIにアクセス
-          // すべてのデータを取得するため、IDは指定しない
-          const response = await fetch('/api/shipment');
-          if (!response.ok) {
-            throw new Error('APIからデータの取得に失敗しました。');
-          }
-          const data: ShipmentDetails[] = await response.json();
-          setShipments(data);
-        } catch (err) {
-          setError(err instanceof Error ? err.message : 'データの取得中にエラーが発生しました。');
-        } finally {
-          setLoading(false);
+    const fetchShipments = async () => {
+      if (shipments.length === 0) setLoading(true); 
+      
+      try {
+        const response = await fetch('/api/shipment');
+        if (!response.ok) {
+          throw new Error('APIからデータの取得に失敗しました。');
         }
-      };
-      fetchShipments();
-    } else {
-      setLoading(false);
-    }
-  }, [shipments, setShipments]);
+        const data: ShipmentDetails[] = await response.json();
+        
+        setShipments(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'データの取得中にエラーが発生しました。');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShipments();
+    
+  }, [setShipments]);
 
   if (loading) return <LoadingScreen message="データ読み込み中・・・" />;
   if (error) return <div>エラー: {error}</div>;

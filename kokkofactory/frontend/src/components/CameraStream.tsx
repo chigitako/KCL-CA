@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image'; // Next.jsを使っているなら <Image>タグが推奨されます
 
+
 const CAMERA_BASE_URL = "http://172.20.10.11:8080/06EC4905-18B6-4AEB-BA3A-AB1373F3384A.jpg?rand=";
 
 interface CameraStreamProps {
@@ -15,7 +16,7 @@ export default function CameraStream({ className, alt }: CameraStreamProps) {
     const [cameraSrc, setCameraSrc] = useState<string | null>(null);
 
     useEffect(() => {
-        const updateInterval = 100; 
+        const updateInterval = 100;
 
         const intervalId = setInterval(() => {
             const newSrc = CAMERA_BASE_URL + Date.now();
@@ -29,12 +30,12 @@ export default function CameraStream({ className, alt }: CameraStreamProps) {
 
     return (
         <img
-            src={finalSrc} 
+            src={finalSrc}
             alt={alt}
             className={className}
-            onError={(e) => { 
-                e.currentTarget.onerror = null; 
-                e.currentTarget.src = "/images/chicken.jpg"; 
+            onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/images/chicken.jpg";
             }}
         />
     );

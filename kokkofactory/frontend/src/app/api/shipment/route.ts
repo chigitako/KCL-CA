@@ -1,81 +1,79 @@
-import { PrismaClient } from '../../../../../generated/prisma/client'
 import { NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import { 
+  collection, 
+  collectionGroup, 
+  getDocs, 
+  getDoc, 
+  doc, 
+  setDoc, 
+  addDoc, 
+  serverTimestamp, 
+  query, 
+  orderBy 
+} from 'firebase/firestore';
+import { db } from '@/firebase';
 
 // GETリクエスト（データ取得）の処理
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const id = url.searchParams.get('id');
+  const id = url.searchParams.get('id'); // 単一取得の場合は id を使用
+  const customerName = url.searchParams.get('customerName'); // 取引先名で絞る場合
 
-  if (id) {
-    // 特定のIDのデータを取得
-    try {
-      const shipment = await prisma.shipment.findUnique({
-        where: { id: Number(id) },
-        include: { customer: true },
-      });
+  try {
+    if (id && customerName) {
+      // 1. 特定の取引先の特定の出荷情報を取得
+      const shipmentRef = doc(db, 'customers', customerName, 'shipments', id);
+      const shipmentSnap = await getDoc(shipmentRef);
+      const customerSnap = await getDoc(doc(db, 'customers', customerName));
 
-      if (!shipment) {
+      if (!shipmentSnap.exists() || !customerSnap.exists()) {
         return NextResponse.json({ error: '指定された出荷情報が見つかりません。' }, { status: 404 });
       }
 
-      const shipmentDetails = {
-        vendor: shipment.customer.name,
-        address: shipment.customer.address,
-        phoneNumber: shipment.customer.phone_number,
-        email: shipment.customer.email,
-        shipmentDate: shipment.shipment_date,
-        shippedCount: shipment.shipped_count,
-      };
+      const shipmentData = shipmentSnap.data();
+      const customerData = customerSnap.data();
 
-      return NextResponse.json(shipmentDetails, { status: 200 });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json({ error: 'データの取得に失敗しました。' }, { status: 500 });
-    }
-  } else {
-    // 全てのデータを取得
-    try {
-      const allShipments = await prisma.shipment.findMany({
-        include: { customer: true },
+      return NextResponse.json({
+        vendor: customerData.name,
+        address: customerData.address,
+        phoneNumber: customerData.phone_number,
+        email: customerData.email,
+        shipmentDate: shipmentData.shipment_date?.toDate(),
+        shippedCount: shipmentData.shipped_count,
       });
 
-    interface Customer {
-        name: string;
-        address: string | null;
-        phone_number: string | null;
-        email: string | null;
-    }
+    } else {
+      // 2. 全ての出荷情報を取得（collectionGroup を使用）
+      // 注意：Firebaseコンソールで「インデックス」の作成が必要になる場合があるよ🌸
+      const allShipmentsQuery = query(collectionGroup(db, 'shipments'), orderBy('shipment_date', 'desc'));
+      const querySnapshot = await getDocs(allShipmentsQuery);
 
-    interface Shipment {
-        customer: Customer;
-        shipment_date: Date;
-        shipped_count: number;
-    }
+      const shipmentsWithDetails = await Promise.all(querySnapshot.docs.map(async (shipDoc) => {
+        const shipmentData = shipDoc.data();
+        // 親（取引先）の情報を取得
+        const customerRef = shipDoc.ref.parent.parent; 
+        let customerData: any = {};
+        if (customerRef) {
+          const cSnap = await getDoc(customerRef);
+          customerData = cSnap.data() || {};
+        }
 
-    interface ShipmentDetails {
-        vendor: string;
-        address: string | null;
-        phoneNumber: string | null;
-        email: string | null;
-        shipmentDate: Date;
-        shippedCount: number;
-    }
-
-      const shipmentsWithDetails: ShipmentDetails[] = allShipments.map((shipment: Shipment) => ({
-        vendor: shipment.customer.name,
-        address: shipment.customer.address,
-        phoneNumber: shipment.customer.phone_number,
-        email: shipment.customer.email,
-        shipmentDate: shipment.shipment_date,
-        shippedCount: shipment.shipped_count,
+        return {
+          id: shipDoc.id,
+          vendor: customerData.name || '不明な取引先',
+          address: customerData.address,
+          phoneNumber: customerData.phone_number,
+          email: customerData.email,
+          shipmentDate: shipmentData.shipment_date?.toDate(),
+          shippedCount: shipmentData.shipped_count,
+        };
       }));
+
       return NextResponse.json(shipmentsWithDetails, { status: 200 });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json({ error: 'データの取得に失敗しました。' }, { status: 500 });
     }
+  } catch (error) {
+    console.error('Firestore Shipment取得エラー:', error);
+    return NextResponse.json({ error: 'データの取得に失敗しました。' }, { status: 500 });
   }
 }
 
@@ -83,41 +81,36 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { customerName, phone_number, email, address, shipment_date, shipped_count, remaining_count } = body;
+    const { customerName, phone_number, email, address, shipment_date, shipped_count } = body;
 
-    if (!customerName || !shipped_count || !remaining_count) {
+    if (!customerName || !shipped_count) {
       return NextResponse.json({ error: 'Required fields are missing.' }, { status: 400 });
     }
 
-    let customer = await prisma.customer.findUnique({
-      where: { name: customerName },
-    });
+    // 取引先の参照（名前をIDとして使用）
+    const customerRef = doc(db, 'customers', customerName);
+    const customerSnap = await getDoc(customerRef);
 
-    if (!customer) {
-      customer = await prisma.customer.create({
-        data: {
-          name: customerName,
-          phone_number: phone_number || null,
-          email: email || null,
-          address: address || null,
-        },
+    // 取引先がなければ作成する（Prismaのupsert的な動き）
+    if (!customerSnap.exists()) {
+      await setDoc(customerRef, {
+        name: customerName,
+        phone_number: phone_number || null,
+        email: email || null,
+        address: address || null,
+        createdAt: serverTimestamp(),
       });
     }
 
-    const newShipment = await prisma.shipment.create({
-      data: {
-        customerId: customer.id,
-        shipped_count,
-        shipment_date: shipment_date ? new Date(shipment_date) : new Date(),
-      },
+    // 出荷情報をサブコレクションに追加 
+    const newShipmentRef = await addDoc(collection(customerRef, 'shipments'), {
+      shipped_count: Number(shipped_count),
+      shipment_date: shipment_date ? new Date(shipment_date) : serverTimestamp(),
     });
 
-    return NextResponse.json(newShipment, { status: 201 });
+    return NextResponse.json({ id: newShipmentRef.id, message: 'Created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating new shipment:', error);
-    return NextResponse.json(
-      { error: 'Failed to create new shipment.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create new shipment.' }, { status: 500 });
   }
 }
