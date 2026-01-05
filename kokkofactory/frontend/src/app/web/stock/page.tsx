@@ -178,6 +178,39 @@ export default function StockPage() {
     );
   });
 
+  //削除
+  const deleteStock = async (supplierName: string, itemName: string) => {
+  const res = await fetch("/api/stock", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ supplierName, ItemName: itemName }),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(`削除に失敗しました: ${errorBody.error || res.statusText}`);
+  }
+  return res.json();
+};
+const handleDelete = async (item: InventoryItem) => {
+  const confirmDelete = confirm(
+    `【確認】\n${item.supplierName} の ${item.ItemName} を削除してもいいですか？\nこの操作は取り消せません。`
+  );
+
+  if (!confirmDelete) return;
+
+  setLoading(true);
+  try {
+    await deleteStock(item.supplierName, item.ItemName);
+    alert("削除が完了したよ！");
+    await loadInventory(); // リストを再読み込み
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "削除に失敗しました。");
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <LeftPullTab>
       <div className={styles.container}>
@@ -212,7 +245,7 @@ export default function StockPage() {
             </thead>
             <tbody>
               {filteredInventory.length === 0 ? (
-                <tr><td colSpan={7}>在庫データがないよ😢</td></tr>
+                <tr><td colSpan={7}>在庫データがないよ</td></tr>
               ) : (
                 filteredInventory.map((item, index) => (
                   <tr key={index} className={styles.tableRow} style={item.remainingCount <= item.alertThreshold ? { backgroundColor: "#FFF9C4" } : {}}>
@@ -225,6 +258,7 @@ export default function StockPage() {
                     <td>
                       <button className={styles.updateButton} onClick={() => handleAlertUpdate(item)} style={{ marginRight: '8px' }}>🔔 基準値</button>
                       <button className={styles.updateButton} onClick={() => handleUpdate(item)}>🖊️ 更新</button>
+                      <button className={styles.updateButton} onClick={() => handleDelete(item)} style={{ marginLeft: '8px' }}>🗑️ 削除</button>
                     </td>
                   </tr>
                 ))
