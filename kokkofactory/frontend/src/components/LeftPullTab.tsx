@@ -2,13 +2,14 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import "./LeftPullTab.css";
+import styles from './LeftPullTab.module.css';
 import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 
 const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
 
   // ボタンコンポーネントを共通化し、アクティブクラスを適用するヘルパー関数
   const NavButton = ({
@@ -24,7 +25,7 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
     return (
       <Link href={href}>
         {/* 一致する場合のみ 'activeButton' クラスを追加します */}
-        <button className={`buttonStyle ${isActive ? "activeButton" : ""}`}>
+        <button className={`${styles.buttonStyle} ${isActive ? styles.activeButton : ""}`}>
           {children}
         </button>
       </Link>
@@ -34,18 +35,27 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {/* 左のプルタブ */}
-      <div className="leftPullTab" onClick={() => setOpen(!open)}>
+      <div 
+        className={styles.leftPullTab} 
+        onClick={() => setOpen(!open)}
+      >
         {open ? "閉じる" : "開く"}
       </div>
 
+      {open && (
+        <div
+          className={styles.overlay}
+          onClick={() => setOpen(false)}
+        />
+      )}
       {/* スライドメニュー */}
-      <div className={`slideMenu ${open ? "open" : ""}`}>
+      <div className={`${styles.slideMenu} ${open ? styles.open : ""}`}>
         <h2>
           <Link href="/web">
             <img
               src="/images/kokkologo.png"
               alt="こっこふぁくとりーロゴ"
-              className={"logo"}
+              className={styles.logo}
             />
           </Link>
         </h2>
@@ -58,11 +68,11 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
         <NavButton href="/web/stock">在庫</NavButton>
         <NavButton href="/web/prediction">予測</NavButton>
         <NavButton href="/web/marketing">マーケティング</NavButton>
-        <LogoutButton className="buttonStyle" />
+        {/*<LogoutButton className="buttonStyle" />*/}
       </div>
 
       {/* ページ本体 */}
-      <div className={`main ${open ? "shifted" : ""}`}>{children}</div>
+      <div className={`${styles.main} ${open ? styles.shifted : ""}`}>{children}</div>
     </>
   );
 };

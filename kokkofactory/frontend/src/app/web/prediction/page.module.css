@@ -54,7 +54,7 @@
 /* --- コントロールパネル --- (ボタンのスタイルを参考に調整) */
 .controlPanel {
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     align-items: center;
     background-color: white;
     /*padding: 2px 8px; /* ← 高さが膨らまないように固定 */
@@ -76,6 +76,7 @@
 .tab {
     /* 出荷グラフのスタイルを適用 */
     /*padding: 6px 12px;*/
+    /*flex: 1;*/
     border: none;
     background: #fff; 
     color: #777; 
@@ -84,7 +85,6 @@
     font-weight: 500;
     /*transition: all 0.2s ease;*/
     text-align: center;
-   
 }
 
 
@@ -108,7 +108,7 @@
 
 .inputGroup {
     display: flex;
-    flex-direction: row; 
+    /*flex-direction: row; */
     align-items: center;
     /*gap: 15px;*/
 }
