@@ -1,60 +1,47 @@
 import { NextResponse } from 'next/server';
 import { 
   doc, 
-  getDoc, 
   setDoc, 
   updateDoc 
 } from 'firebase/firestore';
 import { db } from '@/firebase';
 
-// --- PATCH: アラート基準値（しきい値）の更新 ---
+// --- PATCH: 品目名ごとのアラート基準値更新 ---
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
-    // 必須：更新対象の仕入れ先名と、新しいアラート基準値
-    const { supplierName, newThreshold } = body;
+    // 🌸 フロントエンドから届く名前を確認
+    const { supplierName, ItemName, newThreshold } = body;
 
-    if (!supplierName || newThreshold === undefined || typeof newThreshold !== 'number' || newThreshold < 0) {
-      return NextResponse.json(
-        { error: 'Required fields are missing or invalid: supplierName, newThreshold (non-negative number).' }, 
-        { status: 400 }
-      );
+    if (!supplierName || !ItemName || newThreshold === undefined) {
+      return NextResponse.json({ error: '項目が足りないよ！' }, { status: 400 });
     }
 
-    // 1. 仕入れ先の存在確認
-    const supplierRef = doc(db, 'suppliers', supplierName);
-    const supplierSnap = await getDoc(supplierRef);
+    // 🌸 画像4枚目のパスにピッタリ合わせたよ！
+    // suppliers / {仕入れ先名} / settings / {品目名}
+    const targetRef = doc(db, 'suppliers', supplierName, 'settings', ItemName);
 
-    if (!supplierSnap.exists()) {
-      return NextResponse.json({ error: '指定された仕入れ先は存在しません。' }, { status: 404 });
-    }
-    
-    // 2. Threshold ドキュメントを UPSERT (作成または更新)
-    // 構造: suppliers/{supplierName}/settings/threshold
-    const thresholdRef = doc(db, 'suppliers', supplierName, 'settings', 'threshold');
-    const thresholdSnap = await getDoc(thresholdRef);
-
-    if (!thresholdSnap.exists()) {
-      // まだ設定がない場合は新規作成（setDoc）
-      await setDoc(thresholdRef, {
+    try {
+      // まずは更新を試みる
+      await updateDoc(targetRef, {
         alert_threshold: newThreshold,
         updatedAt: new Date()
       });
-    } else {
-      // 既にある場合は更新（updateDoc）
-      await updateDoc(thresholdRef, {
+    } catch (e) {
+      // ドキュメントがない場合は新規作成
+      await setDoc(targetRef, {
         alert_threshold: newThreshold,
         updatedAt: new Date()
-      });
+      }, { merge: true });
     }
 
     return NextResponse.json(
-      { message: 'アラート基準値を更新しました！', supplierName, alert_threshold: newThreshold }, 
+      { message: `${ItemName} の基準値を ${newThreshold} に更新したよ！✨` }, 
       { status: 200 }
     );
 
   } catch (error: any) {
-    console.error('Firestore Threshold更新エラー:', error);
-    return NextResponse.json({ error: 'アラート基準値の更新に失敗しました。' }, { status: 500 });
+    console.error('Firestore更新エラー:', error);
+    return NextResponse.json({ error: '更新に失敗しちゃった💦' }, { status: 500 });
   }
 }
