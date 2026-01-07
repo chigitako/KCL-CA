@@ -1,16 +1,38 @@
 // src/components/LeftPullTab.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from './LeftPullTab.module.css';
 import { usePathname } from "next/navigation";
-import LogoutButton from "./LogoutButton";
+//import LogoutButton from "./LogoutButton";
 
 const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // ⌨ ショートカットキー設定
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // input / textarea / contenteditable 中は無効
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+      // Ctrl + B / Cmd + B
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault(); // ブラウザの太字ショートカット防止
+        setOpen(prev => !prev);
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+  
   // ボタンコンポーネントを共通化し、アクティブクラスを適用するヘルパー関数
   const NavButton = ({
     href,
