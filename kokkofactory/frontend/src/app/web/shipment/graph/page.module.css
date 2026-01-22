@@ -2,9 +2,9 @@
 
 /* デザイントークン - 画像の配色を抽出 */
 .container {
-    --color-primary: #FFCC00;     /* 黄色 (アクティブ、強調) */
-    --color-secondary: #FF9933;   /* オレンジ系 (背景アクセント/テーブル) */
-    --color-background: #FFFBF5;  /* 薄いベージュ/クリーム色 (背景全体) */
+    --color-primary: #FFD700;    /* 黄色 (アクティブ、強調) */
+    --color-secondary: #E6B800;   /* オレンジ系 (背景アクセント/テーブル) */
+    --color-background: #FFFBE6;  /* 薄いベージュ/クリーム色 (背景全体) */
     --color-text: #333333;        /* ダークテキスト */
     --color-pink: #d00070;        /* 戻るボタンのアクセント */
 
