@@ -19,7 +19,7 @@
 }
 
 
-.header { 
+.title { 
     color: var(--color-text);
     margin-bottom: 10px;
     border-bottom: 3px solid var(--color-primary);

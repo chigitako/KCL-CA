@@ -61,6 +61,8 @@ export default function WebPage() {
   return (
     <LeftPullTab>
       <div className ={styles.container}>
+        <h1 className={styles.title}>出荷履歴</h1>
+        <p className={styles.infoBox}>登録された出荷履歴を表示します。新規登録の場合は「新規出荷情報」を、出荷履歴推移を閲覧する場合は「グラフを表示」を押してください。</p>
         <div className={styles.header}>
           <button className={styles.createGraph} onClick={handleShowGraph}>
             グラフを表示

@@ -1,9 +1,40 @@
 /* ページ全体のスタイル */
 .container {
-  padding: 20px;
+  --color-primary: #FDD835; /* ★ ゴールド/黄色 */
+  --color-secondary: #E6B800; /* ゴールド系境界線 */
+  --color-background: #FFFDE7; /* 薄いクリーム色 */
+  --color-text: #5D4037;
+
+  padding: 10px;
+  background-color: var(--color-background); 
   max-width: 100%;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial',Helvetica, sans-serif;
 }
+.title {
+  color: var(--color-text);
+  margin-bottom: 10px;
+  border-bottom: 3px solid #FDD835;
+  padding-bottom: 8px; 
+  font-size: 24px;
+  font-weight: 800;
+  flex-shrink: 0; /* 高さ計算のために固定 */
+}
+
+.infoBox {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #FFFFF0; 
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    color: var(--color-text);
+    font-size: 13px;
+    flex-shrink: 0; 
+}
+
 /* ヘッダー部分のスタイル */
 .header {
   display: flex;
@@ -24,8 +55,10 @@
 }
 
 .shipmentTable {
+  color: var(--color-text);
   width: 100%;
   border-collapse: collapse;
+  background-color: #ffffff;
 }
 
 .tableHeader {
