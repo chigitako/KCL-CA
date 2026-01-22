@@ -14,8 +14,8 @@
   color: #5D4037;
   margin-bottom: 10px;
   border-bottom: 3px solid #FDD835;
-  padding-bottom: 5px; 
-  font-size: 18px;
+  padding-bottom: 8px; 
+  font-size: 24px;
   font-weight: 800;
   flex-shrink: 0; /* 高さ計算のために固定 */
 }
@@ -85,7 +85,7 @@
 .infoPanel h2 {
   color: #8D6E63; 
   font-size: 14px; /* KPIと詳細のヘッダーを小さく統一 */
-  border-bottom: 1px solid #FFECB3;
+  border-bottom: 1px solid #E6B800;;
   padding-bottom: 4px; 
   margin-bottom: 8px; 
   font-weight: 600;

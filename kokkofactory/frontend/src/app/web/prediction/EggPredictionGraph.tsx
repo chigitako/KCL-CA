@@ -198,7 +198,7 @@ export default function EggPredictionGraph() {
                     <div className={styles.graphSection}>
                         {/* ▼ 期間選択UI */}
                         <div className={styles.controlPanel}>
-                            <h3 className={styles.controlTitle}>表示設定</h3>
+                            <h3 className={styles.controlTitle}>💻 表示設定</h3>
                             {/* 日/週/月 の切り替えボタン */}
                             <div className={styles.tabGroup}>
                                 {["day", "week", "month"].map((mode) => (
@@ -245,7 +245,7 @@ export default function EggPredictionGraph() {
                         </div>
                         {/* メイングラフエリア (左側、広め) */}
                         <div className={styles.chartWrapper}>
-                            <h3 className={styles.controlTitle}>期間別 産卵数予測とポテンシャルの推移</h3>
+                            <h3 className={styles.controlTitle}>📊 期間別 産卵数予測とポテンシャルの推移</h3>
                             <div className={styles.chartContainer}>
                                 <EggChart
                                     labels={labels}
@@ -258,7 +258,7 @@ export default function EggPredictionGraph() {
                     </div>  
                     {/* モデル情報テーブルエリア (右側、狭め) */}
                     <div className={styles.modelInfoContainer}>
-                        <h3 className={styles.controlTitle}>モデルの基礎情報</h3>
+                        <h3 className={styles.controlTitle}>📝 モデルの基礎情報</h3>
                         <table className={styles.modelInfoTable}>
                             <tbody>
                                 <tr><td>基準温度 (T_base)</td><td>15 °C</td></tr>
