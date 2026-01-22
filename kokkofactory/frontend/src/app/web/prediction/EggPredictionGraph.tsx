@@ -114,9 +114,7 @@ export default function EggPredictionGraph() {
         plugins: {
             legend: { position: 'top' as const },
             title: { 
-                display: true, 
-                text: `期間別 産卵数予測とポテンシャルの推移`,
-                font: { size: 16 } 
+                display: false, 
             },
             tooltip: {
                 callbacks: {
@@ -200,6 +198,7 @@ export default function EggPredictionGraph() {
                     <div className={styles.graphSection}>
                         {/* ▼ 期間選択UI */}
                         <div className={styles.controlPanel}>
+                            <h3 className={styles.controlTitle}>表示設定</h3>
                             {/* 日/週/月 の切り替えボタン */}
                             <div className={styles.tabGroup}>
                                 {["day", "week", "month"].map((mode) => (
@@ -246,17 +245,20 @@ export default function EggPredictionGraph() {
                         </div>
                         {/* メイングラフエリア (左側、広め) */}
                         <div className={styles.chartWrapper}>
-                            <EggChart
-                                labels={labels}
-                                datasets={datasets}
-                                options={options}
-                                isMounted={isMounted}
-                            />
+                            <h3 className={styles.controlTitle}>期間別 産卵数予測とポテンシャルの推移</h3>
+                            <div className={styles.chartContainer}>
+                                <EggChart
+                                    labels={labels}
+                                    datasets={datasets}
+                                    options={options}
+                                    isMounted={isMounted}
+                                />
+                            </div>
                         </div>
                     </div>  
                     {/* モデル情報テーブルエリア (右側、狭め) */}
                     <div className={styles.modelInfoContainer}>
-                        <h2 className={styles.modelInfoHeader}>モデルの基礎情報</h2>
+                        <h3 className={styles.controlTitle}>モデルの基礎情報</h3>
                         <table className={styles.modelInfoTable}>
                             <tbody>
                                 <tr><td>基準温度 (T_base)</td><td>15 °C</td></tr>
