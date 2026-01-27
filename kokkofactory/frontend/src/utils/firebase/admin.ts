@@ -1,4 +1,15 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import * as admin from 'firebase-admin';
+
+if (!admin.apps.length) {
+  const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH!);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+export const auth = admin.auth();
+
+/*import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export const createClient = async () => {
@@ -34,3 +45,4 @@ export const createClient = async () => {
     },
   );
 };
+*/
