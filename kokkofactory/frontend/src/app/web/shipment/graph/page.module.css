@@ -1,22 +1,4 @@
-/* page.module.css (出荷グラフデザイン統合版) */
-
-/* デザイントークン - 画像の配色を抽出 */
-.container {
-    --color-primary: #FFD700;    /* 黄色 (アクティブ、強調) */
-    --color-secondary: #E6B800;   /* オレンジ系 (背景アクセント/テーブル) */
-    --color-background: #FFFBE6;  /* 薄いベージュ/クリーム色 (背景全体) */
-    --color-text: #333333;        /* ダークテキスト */
-    --color-pink: #d00070;        /* 戻るボタンのアクセント */
-
-    padding: 0; /* LeftPullTabの子として、内部のパディングで制御 */
-    max-width: 100%;
-    min-height: 100%; 
-    overflow: hidden;
-    display: flex;
-    flex-direction: row; /* ★ グラフ(.graph)とリスト(.list)を横並びにする */
-    background-color: var(--color-background);
-    font-family: 'Arial', sans-serif;
-}
+/* frontend/src/app/web/shipment/graph/page.module.css */
 
 /* グラフエリア (左側) */
 .graph {

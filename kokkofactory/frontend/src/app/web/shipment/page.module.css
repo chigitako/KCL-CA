@@ -1,53 +1,5 @@
 /* frontend/src/app/web/shipment/page.module.css */
 
-/* ページ全体のスタイル */
-.container {
-  --color-primary: #FDD835; /* ★ ゴールド/黄色 */
-  --color-secondary: #E6B800; /* ゴールド系境界線 */
-  --color-background: #FFFDE7; /* 薄いクリーム色 */
-  --color-text: #5D4037;
-
-  padding: 10px;
-  background-color: #ffffff; 
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Arial',Helvetica, sans-serif;
-}
-
-.title {
-  color: var(--color-text);
-  margin-bottom: 10px;
-  padding-bottom: 8px; 
-  font-size: 24px;
-  font-weight: 800;
-  position: relative; 
-}
-.title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 3px; /* 線の太さ */
-  background: linear-gradient(90deg, #ffeb33, #ff9900); /* 黄色→オレンジのグラデ */
-  border-radius: 2px; /* 丸みを少しつける場合 */
-}
-
-.infoBox {
-    text-align: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #FFFFF0; 
-    border: 1px solid var(--color-primary);
-    border-radius: 4px;
-    color: var(--color-text);
-    font-size: 13px;
-    flex-shrink: 0; 
-}
-
-/* ヘッダー部分のスタイル */
 .buttonContainer {
   display: flex;
   margin: 10px;

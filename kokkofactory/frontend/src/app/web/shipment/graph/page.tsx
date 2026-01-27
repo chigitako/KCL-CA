@@ -2,7 +2,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import LeftPullTab from "@components/LeftPullTab";
 import { useRouter } from 'next/navigation';
-import styles from './page.module.css'; // CSSファイルをインポート
+import commonStyles from '@components/styles/common.module.css';
+import styles from './page.module.css'; 
 import { useShipment } from "@components/ShipmentContext";
 import { useRef } from "react";
 
@@ -274,7 +275,9 @@ export default function GraphPage() {
 
   return (
     <LeftPullTab>
-      <div className ={styles.container}>
+      <div className ={commonStyles.container}>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/出荷履歴/グラフ</h1>
+        <p className={commonStyles.infoBox}>出荷履歴の記録をグラフで表示します。</p>
         <div className={styles.graph}>
           <div className={styles.linegraph}>
             <h1 style={{ margin: "1rem" }}>🍳出荷数グラフ</h1>
