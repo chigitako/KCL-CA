@@ -1,36 +1,36 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/utils/firebase/server'
 export async function login(formData: FormData) {
-  const supabase = await createClient()
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+  const auth = createClient()
+  const idToken = formData.get('idToken') as string; //クライアントから送られたIDトークン
+  try {
+    const decodedToken = await auth.verifyIdToken(idToken);
+    // 必要に応じて decodedToken.uid などでユーザー情報を処理
+    revalidatePath('/', 'layout')
+    redirect('/web')
+  } catch (error) {
+    redirect(`/login?error=${encodeURIComponent((error as Error).message)}`)
   }
-  const { error } = await supabase.auth.signInWithPassword(data)
-  if (error) {
-    //[要確認]エラー時ログインページにリダイレクト 
-    redirect(`/login?error=${encodeURIComponent(error.message)}`)
-    //redirect('/error')
-  }
-  revalidatePath('/', 'layout')
-  redirect('/web')
 }
+
 export async function signup(formData: FormData) {
-  const supabase = await createClient()
+  const auth = await createClient()
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   }
-  const { error } = await supabase.auth.signUp(data)
-  if (error) {
+  try {
+    await auth.createUser({
+      email: data.email,
+      password: data.password,
+    });
+    revalidatePath('/', 'layout')
+    redirect('/web')
+  } catch (error) {
     redirect('/error')
   }
-  revalidatePath('/', 'layout')
-  redirect('/web')
 }

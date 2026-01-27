@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image'; // Next.jsを使っているなら <Image>タグが推奨されます
 
 
-const CAMERA_BASE_URL = "http://172.20.10.11:8080/06EC4905-18B6-4AEB-BA3A-AB1373F3384A.jpg?rand=";
+const CAMERA_BASE_URL = "http://122.133.105.80:8080/06EC4905-18B6-4AEB-BA3A-AB1373F3384A.jpg?rand=";
 
 interface CameraStreamProps {
     className: string; // styles.cameraImage を受け取る
