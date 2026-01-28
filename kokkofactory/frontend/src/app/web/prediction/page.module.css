@@ -1,45 +1,5 @@
 /* app/web/prediction/page.module.css (産卵予測ダッシュボード用 - 最終統合版) */
 
-/* 全体のコンテナ設定 */
-.container {
-    /* デザイントークン (黄色を基調に再定義) */
-    --color-primary: #FDD835; /* ★ ゴールド/黄色 */
-    --color-secondary: #E6B800; /* ゴールド系境界線 */
-    --color-background: #FFFDE7; /* 薄いクリーム色 */
-    --color-text: #5D4037;
-    
-    padding: 10px;
-    background-color: var(--color-background); 
-    min-height: 100%; /* LeftPullTabの子として高さを継承 */
-    overflow: hidden; /* 外側にスクロールを出さない */
-    display: flex;
-    flex-direction: column;
-    font-family: 'Arial',Helvetica, sans-serif;
-}
-
-.title { 
-    color: var(--color-text);
-    margin-bottom: 10px;
-    border-bottom: 3px solid var(--color-primary);
-    padding-bottom: 8px;
-    font-size: 24px;
-    font-weight: 800;
-    flex-shrink: 0;
-}
-
-.infoBox {
-    text-align: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #FFFFF0; 
-    border: 1px solid var(--color-primary);
-    border-radius: 4px;
-    color: var(--color-text);
-    font-size: 13px;
-    flex-shrink: 0; 
-}
-
 /* メインエリア */
 .mainContent {
     display: flex;
