@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import LoadingScreen from "@components/LoadingScreen";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
+import commonStyles from '@components/styles/common.module.css';
 
 // 在庫情報の型定義
 interface InventoryItem {
@@ -213,7 +214,9 @@ const handleDelete = async (item: InventoryItem) => {
 
   return (
     <LeftPullTab>
-      <div className={styles.container}>
+      <div className={commonStyles.container}>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/在庫</h1>
+        <p className={commonStyles.infoBox}>登録された在庫情報を表示します。在庫の新規作成は「新規作成 📝」ボタンを押してください。黄色の背景は在庫数が基準値を下回っていることを示します。</p>
         <div className={styles.header}>
           <a href="/web/stock/new" className={styles.newButton}>新規作成 📝</a>
         </div>

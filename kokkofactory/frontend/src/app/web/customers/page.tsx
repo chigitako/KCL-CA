@@ -110,7 +110,7 @@ export default function CustomerListPage() {
   return (
     <LeftPullTab>
       <div className={commonStyles.container}>
-        <h1 className={commonStyles.title}>こっこふぁくとりー/取引先一覧</h1>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/取引先名簿</h1>
         <p className={commonStyles.infoBox}>登録された取引先を表示します。新規登録の場合は「新規作成」を押してください。</p>
         <div className={styles.header}>
           <a href="/web/customers/new" className={styles.newButton}>
