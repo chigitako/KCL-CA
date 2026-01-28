@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import LeftPullTab from "@components/LeftPullTab";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css"; // CSSファイルをインポート
+import commonStyles from '@components/styles/common.module.css';
 import { MOCK_DATA } from "./marketingMockData"; // 💡 外部データファイルからインポート
 
 // Chart.js 関連インポート
@@ -253,7 +254,9 @@ export default function MarketingDashboard() {
   // --- レンダリング ---
   return (
     <LeftPullTab>
-      <div className={styles.container}>
+      <div className={commonStyles.container}>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/経営サポート</h1>
+        <p className={commonStyles.infoBox}>販売チャネル別の出荷数・売上推移を分析できます。グラフの表示方法やフィルターを調整して、詳細なデータを確認してください。</p>
         {/* 1. 🔴 テーブルエリア (表 - 上部/幅いっぱい) */}
         <div className={styles.list}>
           {/* KPIサマリー */}
