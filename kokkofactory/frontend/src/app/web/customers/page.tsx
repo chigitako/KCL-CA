@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
 import LoadingScreen from "@components/LoadingScreen";
+import commonStyles from '@components/styles/common.module.css';
 
 interface Customer {
   id: number;
@@ -108,7 +109,9 @@ export default function CustomerListPage() {
 
   return (
     <LeftPullTab>
-      <div className={styles.container}>
+      <div className={commonStyles.container}>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/取引先一覧</h1>
+        <p className={commonStyles.infoBox}>登録された取引先を表示します。新規登録の場合は「新規作成」を押してください。</p>
         <div className={styles.header}>
           <a href="/web/customers/new" className={styles.newButton}>
             新規作成
