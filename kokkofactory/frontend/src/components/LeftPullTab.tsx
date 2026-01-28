@@ -89,7 +89,7 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
         <NavButton href="/web/customers">取引先名簿</NavButton>
         <NavButton href="/web/stock">在庫</NavButton>
         <NavButton href="/web/prediction">予測</NavButton>
-        <NavButton href="/web/marketing">マーケティング</NavButton>
+        <NavButton href="/web/marketing">経営サポート</NavButton>
         <LogoutButton className={styles.buttonStyle} />
       </div>
 
