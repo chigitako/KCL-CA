@@ -1,4 +1,6 @@
 // EggChart.tsx
+//グラフ表示コンポーネント
+
 "use client";
 
 import {

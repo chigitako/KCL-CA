@@ -1,51 +1,62 @@
 /* frontend/src/app/web/shipment/graph/page.module.css */
 
-/* グラフエリア (左側) */
-.graph {
-    width: 65%; /* グラフに広い領域 */
-    padding: 15px;
-    padding-left: 5px; /* 左側のパディングを調整 */
+/* メインエリア */
+.mainContent {
     display: flex;
     flex-direction: column;
+    flex-grow: 0; 
+    overflow: hidden; 
     min-height: 0;
-    overflow: hidden; /* グラフエリア内でのスクロールを制御 */
 }
-.linegraph {
-    padding: 15px;
-    background-color: white;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    flex-grow: 1; /* 残りの高さを占める */
-    min-height: 0;
-    position: relative; /* Chart.jsの描画に必要 */
-}
-.linegraph h1 {
-    font-size: 20px;
-    margin: 0 0 15px 0;
-    color: var(--color-text);
-}
-
-
-/* --- コントロールパネル/タブ --- */
-.tabGroup {
+/* グラフセクション */
+.linegraphSection {
     display: flex;
-    gap: 0; /* ギャップを削除し、一体化させる */
-    margin: 10px 0;
-    border: 1px solid var(--color-secondary);
+    flex-direction: column;
+    min-width: 50%;
+}
+/* --- コントロールパネル --- (ボタンのスタイルを参考に調整) */
+.controlPanel {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px; 
+    background-color: white;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.controlTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #8D6E63;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #E6B800; 
+}
+
+.buttonGroup {
+    display: flex;
+    margin-left: 10px;
+    gap: 0; 
+    border: 1px solid #E6B800; 
     border-radius: 4px;
     overflow: hidden;
     flex-shrink: 0;
 }
 
 .tab {
+    /* 出荷グラフのスタイルを適用 */
     padding: 6px 15px;
-    border: none; /* 境界線は親のtabGroupが担当 */
+    flex: 1;
+    border: none;
     background: #fff; 
-    color: var(--color-text); 
+    color: #5D4037;
     cursor: pointer;
-    font-weight: 500;
     font-size: 14px;
+    font-weight: 500;
     transition: all 0.2s ease;
+    text-align: center;
 }
 
 .tab:hover {
@@ -53,15 +64,28 @@
 }
 
 .tab.active {
-    background: var(--color-primary); /* 黄色 */
-    color: var(--color-text); 
+    background: #FDD835;
+    color: #5D4037;
     font-weight: bold;
 }
 
 /* 期間指定チェックボックスと入力欄 */
 .inputGroup {
-    margin: 10px 0;
+    display: flex;
+    gap: 10px;
     font-size: 14px;
+    margin: 5px 0 10px 10px;
+}
+
+.label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: #5D4037;
+    font-size: 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .dateRange {
     margin-left: 10px;
@@ -73,14 +97,22 @@
     font-size: 13px;
 }
 
+.graphArea{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 400px;
+    margin-top: 10px;
+}
 
 /* 右側エリア: リストと円グラフ (.listに相当) */
 .list {
-    width: 35%; /* リストに狭い領域 */
+    width: 100%;
     padding: 15px;
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    min-height: 100%; /* 親の高さに合わせる */
+    max-height: 50%; /* 親の高さに合わせる */
     overflow-y: auto; /* ★ リストが溢れた場合、このエリア内でのみスクロール */
     box-sizing: border-box;
 }

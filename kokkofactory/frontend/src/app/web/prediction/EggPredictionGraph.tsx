@@ -1,7 +1,7 @@
 //EggPredictionGraph.tsx
 //メイン処理
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LeftPullTab from "@components/LeftPullTab"; 
 import styles from './page.module.css'; 
@@ -181,10 +181,6 @@ export default function EggPredictionGraph() {
         if (checked) {
             setGroupBy('day');
         }
-    };
-    // 戻るボタンのクリックハンドラ
-    const handleBackClick = () => {
-        router.push('/web/shipment'); 
     };
     
     return (

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect } from 'react';
 import LeftPullTab from "@components/LeftPullTab";
-import { useRouter } from 'next/navigation';
 import commonStyles from '@components/styles/common.module.css';
 import styles from './page.module.css'; 
 import { useShipment } from "@components/ShipmentContext";
@@ -35,13 +34,8 @@ ChartJS.register(
 );
 
 export default function GraphPage() {
-  const router = useRouter(); 
   const { shipments } = useShipment();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-
-  const handleBack = () => {
-    router.push('/web/shipment');
-  };
 
   const chartRef = useRef<ChartJS<"line", number[], string>>(null);
 
@@ -259,13 +253,6 @@ export default function GraphPage() {
     },
   };
 
-
-  const toggleVendor = (vendor: string) => {
-    setSelectedVendors((prev) =>
-      prev.includes(vendor) ? prev.filter((v) => v !== vendor) : [...prev, vendor]
-    );
-  };
-
   const shipmentsForSelectedKey = useMemo(() => {
         if (!selectedKey) return [];
         return filteredShipments.filter(s => 
@@ -278,77 +265,117 @@ export default function GraphPage() {
       <div className ={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/出荷履歴/グラフ</h1>
         <p className={commonStyles.infoBox}>出荷履歴の記録をグラフで表示します。</p>
-        <div className={styles.graph}>
-          <div className={styles.linegraph}>
-            <h1 style={{ margin: "1rem" }}>🍳出荷数グラフ</h1>
-
-            {/* ▼ 日/月/年の切り替えUI */}
-            <div className={styles.tabGroup}>
-              {["day", "month", "year"].map((mode) => (
-                <button
-                  key={mode}
-                  className={`${styles.tab} ${groupBy === mode ? styles.active : ""}`}
-                  onClick={() => setGroupBy(mode as any)}
-                >
-                  {mode === "day" ? "日別" : mode === "month" ? "月別" : "年別"}
-                </button>
-              ))}
+        <div className={styles.mainContent}>
+          <div className={styles.linegraphSection}>
+            <div className={styles.controlPanel}>
+              <h3 className={styles.controlTitle}>💻 表示設定</h3>
+              {/* ▼ 日/月/年の切り替えUI */}
+              <div className={styles.buttonGroup}>
+                {["day", "month", "year"].map((mode) => (
+                  <button
+                    key={mode}
+                    className={`${styles.tab} ${groupBy === mode ? styles.active : ""}`}
+                    onClick={() => setGroupBy(mode as any)}
+                  >
+                    {mode === "day" ? "日別" : mode === "month" ? "月別" : "年別"}
+                  </button>
+                ))}
+              </div>
+              {/* 指定期間のチェックボックスと入力欄 */}
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>
+                  <input
+                    type="checkbox"
+                    checked={rangeEnabled}
+                    onChange={(e) => setRangeEnabled(e.target.checked)}
+                  />
+                  期間指定
+                </label>
+                {rangeEnabled && (
+                  <div className={styles.dateRange}>
+                    <input 
+                      type="date" 
+                      value={rangeStart} 
+                      onChange={(e) => setRangeStart(e.target.value)} 
+                      className={styles.dateInput} 
+                      placeholder="開始日"
+                    />
+                    <span>〜</span>
+                    <input 
+                      type="date" 
+                      value={rangeEnd} 
+                      onChange={(e) => setRangeEnd(e.target.value)} 
+                      className={styles.dateInput}
+                      placeholder="終了日"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-
-            <div style={{ margin: "1rem 0" }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={rangeEnabled}
-                  onChange={(e) => setRangeEnabled(e.target.checked)}
+            <div className={styles.graphArea}>
+              {shipments.length === 0 ? (
+                <p>まだ出荷データがありません！</p>
+              ) : (
+                <Line 
+                  ref={chartRef}
+                  data={{ labels, datasets }} 
+                  options={options}
+                  onClick={(e) => {
+                    if (!chartRef.current) return;
+                    const points = chartRef.current.getElementsAtEventForMode(
+                      e.nativeEvent,
+                      "nearest",
+                      { intersect: true },
+                      true
+                    );
+                    if (points.length > 0) {
+                      const idx = points[0].index;
+                      const key = sortedKeys[idx]; // 内部キーを保存
+                      setSelectedKey(key);
+                    }
+                  }}
                 />
-                期間指定
-              </label>
-
-
-              {rangeEnabled && (
-                <span style={{ marginLeft: "1rem" }}>
-                  開始日:
-                  <input type="date" value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} />
-                  終了日:
-                  <input type="date" value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} />
-                </span>
               )}
-
             </div>
-
-
-            {shipments.length === 0 ? (
-              <p>まだ出荷データがありません！</p>
+          </div>
+          <div className={styles.list}>
+            <h2 className={styles.listHeader}>
+              {selectedKey 
+                ? `${formatKeyLabel(selectedKey, groupBy as "day" | "month" | "year")} の出荷詳細 (${shipmentsForSelectedKey.length}件)`
+                : ""
+              }
+            </h2>
+            {shipmentsForSelectedKey.length === 0 && selectedKey ? (
+              <p>この期間には出荷情報がありません。</p>
+            ) : shipmentsForSelectedKey.length === 0 && !selectedKey ? (
+              <p></p>
             ) : (
-              <Line 
-                ref={chartRef}
-                data={{ labels, datasets }} 
-                options={options}
-                onClick={(e) => {
-                  if (!chartRef.current) return;
-                  const points = chartRef.current.getElementsAtEventForMode(
-                    e.nativeEvent,
-                    "nearest",
-                    { intersect: true },
-                    true
-                  );
-                  if (points.length > 0) {
-                    const idx = points[0].index;
-                    const key = sortedKeys[idx]; // 内部キーを保存
-                    setSelectedKey(key);
-                  }
-                }}
-              />
+              <div className={styles.tableScrollWrapper}>
+                <table className={styles.shipmentTable}>
+                  <thead>
+                    <tr className={styles.tableHeader}>
+                      <th>取引先</th>
+                      <th>出荷個数</th>
+                      <th>出荷日</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* ★ フィルターされたデータのみを表示 */}
+                    {shipmentsForSelectedKey.map((s, i) => (
+                      <tr key={i} className={styles.tableRow}>
+                        <td>{s.vendor}</td>
+                        <td>{s.shippedCount}</td>
+                        <td>{new Date(s.shipmentDate).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
-
-
           <div className={styles.engraphContainer}>
-            <h1 style={{ margin: "1rem" }}>🍳取引先円グラフ</h1>
-             
             {shipments.length === 0 ? (
-              <p>まだ出荷データがありません！</p>
+              <p></p>
             ) : (
               <div className={styles.engraphWrapper}>
                 <div className={styles.totalEngrapf}>
@@ -367,45 +394,7 @@ export default function GraphPage() {
             )}
           </div>
         </div>
-        <div className={styles.list}>
-          <h2 className={styles.listHeader}>
-                        {selectedKey 
-                            ? `${formatKeyLabel(selectedKey, groupBy as "day" | "month" | "year")} の出荷詳細 (${shipmentsForSelectedKey.length}件)`
-                            : "グラフのデータポイントをクリックしてください"}
-                    </h2>
-                    
-                    {shipmentsForSelectedKey.length === 0 && selectedKey ? (
-                        <p>この期間には出荷情報がありません。</p>
-                    ) : shipmentsForSelectedKey.length === 0 && !selectedKey ? (
-                        <p>出荷情報がまだ Context にありません！</p>
-                    ) : (
-                        <div className={styles.tableScrollWrapper}>
-                            <table className={styles.shipmentTable}>
-                            <thead>
-                                <tr className={styles.tableHeader}>
-                                    <th>取引先</th>
-                                    <th>出荷個数</th>
-                                    <th>出荷日</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* ★ フィルターされたデータのみを表示 */}
-                                {shipmentsForSelectedKey.map((s, i) => (
-                                    <tr key={i} className={styles.tableRow}>
-                                        <td>{s.vendor}</td>
-                                        <td>{s.shippedCount}</td>
-                                        <td>{new Date(s.shipmentDate).toLocaleDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
-      </div>
-      <button className={styles.backButton} onClick={handleBack}>
-        ←
-      </button>
+        </div>
     </LeftPullTab>
       
   );
