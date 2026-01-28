@@ -1,25 +1,5 @@
 /* app/dashboard/page.module.css (4分割レイアウト修正版) */
 
-/* ------------------ コンテナの基本設定 ------------------ */
-.container {
-  padding: 10px;
-  background-color: #FFFDE7;
-  height: 100%; /* 画面高さを完全に利用 */
-  box-sizing: border-box; 
-  display: flex;
-  flex-direction: column; /* 縦に並べる（タイトル、そしてメイングリッド） */
-}
-
-.title {
-  color: #5D4037;
-  margin-bottom: 10px;
-  border-bottom: 3px solid #FDD835;
-  padding-bottom: 8px; 
-  font-size: 24px;
-  font-weight: 800;
-  flex-shrink: 0; /* 高さ計算のために固定 */
-}
-
 /* ------------------ メインコンテンツ (4分割グリッド) ------------------ */
 .mainContentGrid { 
   display: grid;
