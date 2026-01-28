@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import LoadingScreen from "@components/LoadingScreen";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
+import commonStyles from '@components/styles/common.module.css';
 
 // --------------------------------------------------
 // 1. 型定義
@@ -237,8 +238,8 @@ export default function DashboardPage() {
 
     return (
         <LeftPullTab>
-            <div className={styles.container}>
-                <h1 className={styles.title}>こっこふぁくとりー ダッシュボード</h1>
+            <div className={commonStyles.container}>
+                <h1 className={commonStyles.title}>こっこふぁくとりー/ダッシュボード</h1>
 
                 {/* 1. メインコンテンツ (4分割グリッド) */}
                 <div className={styles.mainContentGrid}>

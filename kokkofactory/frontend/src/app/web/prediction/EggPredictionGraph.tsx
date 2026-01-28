@@ -1,7 +1,7 @@
 //EggPredictionGraph.tsx
 //メイン処理
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LeftPullTab from "@components/LeftPullTab"; 
 import styles from './page.module.css'; 
@@ -13,6 +13,7 @@ import {
   formatKeyLabel,
 } from "./predictionUtils";
 import { DUMMY_PREDICTION_DATA } from "./dummyData";
+import commonStyles from '@components/styles/common.module.css';
 
 
 
@@ -182,23 +183,17 @@ export default function EggPredictionGraph() {
             setGroupBy('day');
         }
     };
-    // 戻るボタンのクリックハンドラ
-    const handleBackClick = () => {
-        router.push('/web/shipment'); 
-    };
     
     return (
         <LeftPullTab> {/* ★ LeftPullTabでラップ */}
-            <div className={styles.container}>
-                <div className={styles.headerContainer}>
-                    <h1 className={styles.header}>産卵数予測</h1>
-                </div>
-                <p className={styles.infoBox}>このグラフは、過去7日間の気温データから計算された累積快適ポテンシャルに基づき、次期（日）の産卵数を予測するモデルを可視化</p>
+            <div className={commonStyles.container}>
+                <h1 className={commonStyles.title}>産卵数予測</h1>
+                <p className={commonStyles.infoBox}>このグラフは、過去7日間の気温データから計算された累積快適ポテンシャルに基づき、次期（日）の産卵数を予測するモデルを可視化</p>
                 <div className={styles.mainContent}> 
                     <div className={styles.graphSection}>
                         {/* ▼ 期間選択UI */}
                         <div className={styles.controlPanel}>
-                            <h3 className={styles.controlTitle}>表示設定</h3>
+                            <h3 className={styles.controlTitle}>💻 表示設定</h3>
                             {/* 日/週/月 の切り替えボタン */}
                             <div className={styles.tabGroup}>
                                 {["day", "week", "month"].map((mode) => (
@@ -245,7 +240,7 @@ export default function EggPredictionGraph() {
                         </div>
                         {/* メイングラフエリア (左側、広め) */}
                         <div className={styles.chartWrapper}>
-                            <h3 className={styles.controlTitle}>期間別 産卵数予測とポテンシャルの推移</h3>
+                            <h3 className={styles.controlTitle}>📊 期間別 産卵数予測とポテンシャルの推移</h3>
                             <div className={styles.chartContainer}>
                                 <EggChart
                                     labels={labels}
@@ -258,7 +253,7 @@ export default function EggPredictionGraph() {
                     </div>  
                     {/* モデル情報テーブルエリア (右側、狭め) */}
                     <div className={styles.modelInfoContainer}>
-                        <h3 className={styles.controlTitle}>モデルの基礎情報</h3>
+                        <h3 className={styles.controlTitle}>📝 モデルの基礎情報</h3>
                         <table className={styles.modelInfoTable}>
                             <tbody>
                                 <tr><td>基準温度 (T_base)</td><td>15 °C</td></tr>

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import LeftPullTab from "@components/LeftPullTab";
 import CameraStream from "@components/CameraStream"; 
 import styles from "./page.module.css";
+import commonStyles from '@components/styles/common.module.css';
 
 // 取得するセンサーデータの型を明確に定義
 interface SensorData {
@@ -66,7 +67,9 @@ export default function WebPage() {
 
     return (
         <LeftPullTab>
-            <div className={styles.container}>
+            <div className={commonStyles.container}>
+                <h1 className={commonStyles.title}>こっこふぁくとりー/環境モニタリング</h1>
+                <p className={commonStyles.infoBox}>鶏舎の環境情報をリアルタイムに表示します。</p>
                 {/* 鶏舎番号セレクター (変更なし) */}
                 <div className={styles.selector}>
                     <label className={styles.label}>鶏舎番号</label>

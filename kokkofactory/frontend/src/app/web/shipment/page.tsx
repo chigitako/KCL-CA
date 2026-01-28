@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LeftPullTab from "@components/LeftPullTab";
-import styles from './page.module.css'; // CSSファイルをインポート
+import commonStyles from '@components/styles/common.module.css';
+import styles from './page.module.css'; 
 import { useShipment } from '@components/ShipmentContext';
 import LoadingScreen from "@components/LoadingScreen";
 
@@ -60,14 +61,20 @@ export default function WebPage() {
 
   return (
     <LeftPullTab>
-      <div className ={styles.container}>
-        <div className={styles.header}>
-          <button className={styles.createGraph} onClick={handleShowGraph}>
-            グラフを表示
-          </button>
-          <button className={styles.createGraph} onClick={handleNew}>
-            新規出荷情報
-          </button>
+      <div className ={commonStyles.container}>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/出荷履歴</h1>
+        <p className={commonStyles.infoBox}>登録された出荷履歴を表示します。新規登録の場合は「新規出荷情報」を、出荷履歴推移を閲覧する場合は「グラフを表示」を押してください。</p>
+        <div className={styles.buttonContainer}>
+          <div className={styles.buttonarea}>
+            <button className={styles.button} onClick={handleShowGraph}>
+              グラフを表示
+            </button>
+          </div>
+          <div className={styles.buttonarea}>
+            <button className={styles.button} onClick={handleNew}>
+              新規出荷情報
+            </button>
+          </div>
         </div>
         
         {shipments.length === 0 ? (

@@ -1,7 +1,3 @@
-.container{
-    height:100vh;
-}
-
 .main{
     
     display: flex;         /* 横並びになる */

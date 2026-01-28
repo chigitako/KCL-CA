@@ -4,6 +4,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import styles from './page.module.css'; // CSSファイルをインポート
 import LoadingScreen from "@components/LoadingScreen"; //ローディング画面をインポート
 import LeftPullTab from "@components/LeftPullTab";//プルタブインポート
+import commonStyles from '@components/styles/common.module.css';
 
 // 鶏舎の選択肢 (1から9)
 const coopOptions = Array.from({ length: 9 }, (_, i) => i + 1);
@@ -382,8 +383,9 @@ export default function ChickenFarmDataPage() {
 
   return (
     <LeftPullTab>
-      <div className={styles.container}>
-
+      <div className={commonStyles.container}>
+        <h1 className={commonStyles.title}>こっこふぁくとりー/産卵記録</h1>
+        <p className={commonStyles.infoBox}>本日の卵の個数、死んだ鶏の羽数を記録します。</p>
         {/* メッセージ表示エリア */}
         {message && (
             <div className={`p-3 my-2 border-l-4 rounded-md ${messageClasses}`}>
