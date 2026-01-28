@@ -29,7 +29,6 @@
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-
 .slideMenu {
   position: fixed;
   top: 0;
@@ -39,7 +38,7 @@
   overflow-y: scroll;
   overscroll-behavior-y: contain;
 
-  background: linear-gradient(180deg, #FFF9C4 0%, #FFECB3 100%);
+  background-color: #fff8e1;
   box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
   transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   padding: 25px 20px;
@@ -64,44 +63,6 @@
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-
-.buttonStyle {
-  background-color: #FFEB3B;
-  color: #795548;
-  border: none;
-  padding: 12px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 15px;
-  width: 100%;
-  text-align: left;
-  font-size: 1em;
-  font-weight: 600;
-  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.buttonStyle:hover {
-  background-color: #FFC107;
-  transform: translateY(-2px);
-  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-
-.activeButton {
-  background-color: #FF8A65;
-  color: white;
-  font-weight: bold;
-  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 138, 101, 0.6);
-  transform: none;
-}
-
-.activeButton:hover {
-  background-color: #FF8A65;
-  transform: none;
-  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 138, 101, 0.6);
-}
-
 .main {
   transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   padding: 20px;
@@ -119,8 +80,54 @@
   display: none; /* ← まず隠す */
 }
 
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 20px 10px 50px; /* 左に丸分のスペース確保 */
+  border-radius: 100px;
+  background-color: #ffffff; 
+  border: 3px solid transparent; /* 枠の太さ */
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  position: relative;
+  font-weight: bold;
+  font-size: 15px;
+  color: #5D4037;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
 
+/* 左の黄色丸 */
+.button::after {
+  content: "";
+  position: absolute;
+  left: 3px;       /* 左端からの位置 */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fffc33, #ff9900);
+  /* 円形グラデーション: 中心に黄色、外側にオレンジ */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;      /* 文字より前面に */
+}
 
+.button:hover {
+  background-image: linear-gradient(90deg, #ffeb33, #ff9900), /* 内側を黄色っぽく */
+                    linear-gradient(90deg, #ffeb33, #ff9900); /* ボーダーはそのまま */
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* 押したとき */
+.button:active {
+  transform: translateY(2px); /* 少し下に押す */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* 影を小さく */
+}
 
 
 @media (max-aspect-ratio: 4/3) {
