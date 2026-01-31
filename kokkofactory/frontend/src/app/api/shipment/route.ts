@@ -1,116 +1,217 @@
-import { NextResponse } from 'next/server';
-import { 
-  collection, 
-  collectionGroup, 
-  getDocs, 
-  getDoc, 
-  doc, 
-  setDoc, 
-  addDoc, 
-  serverTimestamp, 
-  query, 
-  orderBy 
-} from 'firebase/firestore';
-import { db } from '@/firebase';
+import { NextResponse } from "next/server";
+import { adminDb, adminTimestamp } from "@/utils/firebase/server";
 
-// GETリクエスト（データ取得）の処理
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const id = url.searchParams.get('id'); // 単一取得の場合は id を使用
-  const customerName = url.searchParams.get('customerName'); // 取引先名で絞る場合
 
+// ====================
+// GET: 在庫一覧取得
+// ====================
+export async function GET() {
   try {
-    if (id && customerName) {
-      // 1. 特定の取引先の特定の出荷情報を取得
-      const shipmentRef = doc(db, 'customers', customerName, 'shipments', id);
-      const shipmentSnap = await getDoc(shipmentRef);
-      const customerSnap = await getDoc(doc(db, 'customers', customerName));
+    const snapshot = await adminDb.collectionGroup("inventory").get();
 
-      if (!shipmentSnap.exists() || !customerSnap.exists()) {
-        return NextResponse.json({ error: '指定された出荷情報が見つかりません。' }, { status: 404 });
-      }
+    const inventoryList = await Promise.all(
+      snapshot.docs.map(async (stockDoc) => {
+        const stockData = stockDoc.data();
+        const itemName = stockDoc.id;
 
-      const shipmentData = shipmentSnap.data();
-      const customerData = customerSnap.data();
+        const supplierRef = stockDoc.ref.parent.parent;
+        let supplierData: any = {};
 
-      return NextResponse.json({
-        vendor: customerData.name,
-        address: customerData.address,
-        phoneNumber: customerData.phone_number,
-        email: customerData.email,
-        shipmentDate: shipmentData.shipment_date?.toDate(),
-        shippedCount: shipmentData.shipped_count,
-      });
+        if (supplierRef) {
+          const sSnap = await supplierRef.get();
+          supplierData = sSnap.data() || {};
+        }
 
-    } else {
-      // 2. 全ての出荷情報を取得（collectionGroup を使用）
-      // 注意：Firebaseコンソールで「インデックス」の作成が必要になる場合があるよ🌸
-      const allShipmentsQuery = query(collectionGroup(db, 'shipments'), orderBy('shipment_date', 'desc'));
-      const querySnapshot = await getDocs(allShipmentsQuery);
+        // threshold
+        let alertThreshold = 100;
+        if (supplierRef) {
+          const thresholdSnap = await adminDb
+            .collection("suppliers")
+            .doc(supplierRef.id)
+            .collection("settings")
+            .doc(itemName)
+            .get();
 
-      const shipmentsWithDetails = await Promise.all(querySnapshot.docs.map(async (shipDoc) => {
-        const shipmentData = shipDoc.data();
-        // 親（取引先）の情報を取得
-        const customerRef = shipDoc.ref.parent.parent; 
-        let customerData: any = {};
-        if (customerRef) {
-          const cSnap = await getDoc(customerRef);
-          customerData = cSnap.data() || {};
+          if (thresholdSnap.exists) {
+            alertThreshold = thresholdSnap.data()!.alert_threshold;
+          }
         }
 
         return {
-          id: shipDoc.id,
-          vendor: customerData.name || '不明な取引先',
-          address: customerData.address,
-          phoneNumber: customerData.phone_number,
-          email: customerData.email,
-          shipmentDate: shipmentData.shipment_date?.toDate(),
-          shippedCount: shipmentData.shipped_count,
+          supplierName: supplierData.name || "不明な仕入れ先",
+          ItemName: itemName,
+          address: supplierData.address || "未登録",
+          phoneNumber: supplierData.phone_number || "未登録",
+          email: supplierData.email || "未登録",
+          remainingCount: stockData.count || 0,
+          alertThreshold,
         };
-      }));
+      })
+    );
 
-      return NextResponse.json(shipmentsWithDetails, { status: 200 });
-    }
+    return NextResponse.json(inventoryList, { status: 200 });
   } catch (error) {
-    console.error('Firestore Shipment取得エラー:', error);
-    return NextResponse.json({ error: 'データの取得に失敗しました。' }, { status: 500 });
+    console.error("Firestore 在庫取得エラー:", error);
+    return NextResponse.json(
+      { error: "在庫情報の取得に失敗しました。" },
+      { status: 500 }
+    );
   }
 }
 
-// POSTリクエスト（データ作成）の処理
+// ====================
+// POST: 在庫追加・更新
+// ====================
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { customerName, phone_number, email, address, shipment_date, shipped_count } = body;
+    const {
+      supplierName,
+      ItemName,
+      count,
+      address,
+      phoneNumber,
+      email,
+      alertThreshold,
+    } = body;
 
-    if (!customerName || !shipped_count) {
-      return NextResponse.json({ error: 'Required fields are missing.' }, { status: 400 });
+    if (!supplierName || !ItemName || count === undefined) {
+      return NextResponse.json(
+        { error: "仕入れ先名、品目名、在庫数は必須だよ！" },
+        { status: 400 }
+      );
     }
 
-    // 取引先の参照（名前をIDとして使用）
-    const customerRef = doc(db, 'customers', customerName);
-    const customerSnap = await getDoc(customerRef);
+    const supplierRef = adminDb.collection("suppliers").doc(supplierName);
 
-    // 取引先がなければ作成する（Prismaのupsert的な動き）
-    if (!customerSnap.exists()) {
-      await setDoc(customerRef, {
-        name: customerName,
-        phone_number: phone_number || null,
-        email: email || null,
-        address: address || null,
-        createdAt: serverTimestamp(),
+    // 仕入れ先 upsert
+    await supplierRef.set(
+      {
+        name: supplierName,
+        address: address || "未登録",
+        phone_number: phoneNumber || "未登録",
+        email: email || "未登録",
+      },
+      { merge: true }
+    );
+
+    const stockRef = supplierRef.collection("inventory").doc(ItemName);
+    const stockSnap = await stockRef.get();
+
+    if (!stockSnap.exists) {
+      await stockRef.set({
+        item_name: ItemName,
+        count: Number(count),
+      });
+    } else {
+      const current = stockSnap.data()!.count || 0;
+      await stockRef.update({
+        count: current + Number(count),
       });
     }
 
-    // 出荷情報をサブコレクションに追加 
-    const newShipmentRef = await addDoc(collection(customerRef, 'shipments'), {
-      shipped_count: Number(shipped_count),
-      shipment_date: shipment_date ? new Date(shipment_date) : serverTimestamp(),
-    });
+    // threshold 保存
+    if (alertThreshold !== undefined) {
+      await supplierRef
+        .collection("settings")
+        .doc(ItemName)
+        .set(
+          {
+            alert_threshold: Number(alertThreshold),
+            updatedAt: adminTimestamp.now(),
+          },
+          { merge: true }
+        );
+    }
 
-    return NextResponse.json({ id: newShipmentRef.id, message: 'Created successfully' }, { status: 201 });
+    return NextResponse.json(
+      { message: `${ItemName} の在庫を更新したよ！✨` },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('Error creating new shipment:', error);
-    return NextResponse.json({ error: 'Failed to create new shipment.' }, { status: 500 });
+    console.error("Firestore 保存エラー:", error);
+    return NextResponse.json(
+      { error: "保存に失敗しちゃった…" },
+      { status: 500 }
+    );
+  }
+}
+
+// ====================
+// PATCH: 在庫数直接修正
+// ====================
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { supplierName, ItemName, newCount } = body;
+
+    if (!supplierName || !ItemName || newCount === undefined) {
+      return NextResponse.json(
+        { error: "情報が足りないよ！" },
+        { status: 400 }
+      );
+    }
+
+    await adminDb
+      .collection("suppliers")
+      .doc(supplierName)
+      .collection("inventory")
+      .doc(ItemName)
+      .update({
+        count: Number(newCount),
+      });
+
+    return NextResponse.json(
+      { message: "在庫数を更新したよ！✨" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Firestore 在庫修正エラー:", error);
+    return NextResponse.json(
+      { error: "更新に失敗しました。" },
+      { status: 500 }
+    );
+  }
+}
+
+// ====================
+// DELETE: 在庫削除
+// ====================
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+    const { supplierName, ItemName } = body;
+
+    if (!supplierName || !ItemName) {
+      return NextResponse.json(
+        { error: "削除に必要な情報が足りないよ！" },
+        { status: 400 }
+      );
+    }
+
+    await adminDb
+      .collection("suppliers")
+      .doc(supplierName)
+      .collection("inventory")
+      .doc(ItemName)
+      .delete();
+
+    await adminDb
+      .collection("suppliers")
+      .doc(supplierName)
+      .collection("settings")
+      .doc(ItemName)
+      .delete();
+
+    return NextResponse.json(
+      { message: "削除に成功したよ！✨" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Firestore 削除エラー:", error);
+    return NextResponse.json(
+      { error: "削除に失敗しちゃった…" },
+      { status: 500 }
+    );
   }
 }
