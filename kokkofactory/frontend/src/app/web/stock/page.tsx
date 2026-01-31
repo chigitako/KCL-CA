@@ -276,8 +276,8 @@ const handleDelete = async (item: InventoryItem) => {
             <table className={styles.stockTable}>
               <thead className={styles.tableHeader}>
                 <tr>
-                  <th>仕入れ先名</th>
-                  <th>品目名</th>
+                  <th>仕入れ先</th>
+                  <th>品目</th>
                   <th>在庫数</th>
                   <th>アラート基準値</th>
                   <th>住所</th>
