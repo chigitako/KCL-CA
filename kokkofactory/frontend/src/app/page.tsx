@@ -71,7 +71,6 @@ export default function WebPage() {
             </button>
           </div>
         </form>
-        <p>モバイルページを見るときは URL に "/mobile" を追加してください</p>
       </div>
 
       <footer className={styles.footer}>
