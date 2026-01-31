@@ -1,13 +1,8 @@
-import { NextResponse } from 'next/server';
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  query, 
-  orderBy, 
-  serverTimestamp 
-} from 'firebase/firestore';
-import { db } from '@/firebase';
+import { NextResponse } from "next/server";
+import { adminDb } from "@/utils/firebase/server";
+import { adminTimestamp } from "@/utils/firebase/server";
+
+
 
 // --- POST: 卵の採取記録を保存 ---
 export async function POST(request: Request) {
@@ -36,10 +31,10 @@ export async function POST(request: Request) {
     }
 
     // Firestoreの "eggs" コレクションに保存
-    const docRef = await addDoc(collection(db, 'eggs'), {
+    const docRef = await adminDb.collection("eggs").add({
       coop_number: coopNumberInt,
       count: countInt,
-      date: serverTimestamp(), // Prismaの @default(now()) と同じ役割だよ✨
+      date: adminTimestamp.now(),
     });
 
     return NextResponse.json(
@@ -58,12 +53,14 @@ export async function POST(request: Request) {
 // --- GET: 卵の記録一覧を取得 ---
 export async function GET() {
   try {
-    const eggsRef = collection(db, 'eggs');
-    // 日付（date）の降順（新しい順）で並べ替えて取得
-    const q = query(eggsRef, orderBy('date', 'desc'));
-    const querySnapshot = await getDocs(q);
 
-    const eggList = querySnapshot.docs.map(doc => ({
+    const snapshot = await adminDb
+      .collection("eggs")
+      .orderBy("date", "desc")
+      .get();
+
+
+    const eggList = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
       // Timestamp型をJavaScriptの日付に変換するよ🌸

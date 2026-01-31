@@ -1,16 +1,6 @@
-import { NextResponse } from 'next/server';
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  doc, 
-  updateDoc, 
-  query, 
-  orderBy, 
-  serverTimestamp, 
-  getDoc 
-} from 'firebase/firestore';
-import { db } from '@/firebase';
+// frontend/src/app/api/deathchicken/route.ts
+import { NextResponse } from "next/server";
+import { adminDb, adminTimestamp } from "@/utils/firebase/server";
 
 // --- POST: 死亡記録の作成 ---
 export async function POST(request: Request) {
@@ -42,11 +32,11 @@ export async function POST(request: Request) {
     }
 
     // Firestoreの "dead_chickens" コレクションに保存
-    const docRef = await addDoc(collection(db, 'dead_chickens'), {
+    const docRef = await adminDb.collection("dead_chickens").add({
       coop_number: coopNumberInt,
       count: countInt,
-      cause_of_death: cause_of_death,
-      date: serverTimestamp(), // Prismaの @default(now()) 相当✨
+      cause_of_death,
+      date: adminTimestamp.now(),
     });
 
     return NextResponse.json(
@@ -65,12 +55,12 @@ export async function POST(request: Request) {
 // --- GET: 死亡記録の一覧取得 ---
 export async function GET() {
   try {
-    const deadChickensRef = collection(db, 'dead_chickens');
-    // 日付の降順（新しい順）で取得
-    const q = query(deadChickensRef, orderBy('date', 'desc'));
-    const querySnapshot = await getDocs(q);
+    const snapshot = await adminDb
+      .collection("dead_chickens")
+      .orderBy("date", "desc")
+      .get();
 
-    const deadChickens = querySnapshot.docs.map(doc => ({
+    const deadChickens = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
       // Timestamp型をJSONで送れるように日付に変換しておくと親切だよ🌸
@@ -112,21 +102,24 @@ export async function PUT(
         ) {
             return NextResponse.json({ message: '入力値が不正です。' }, { status: 400 });
         }
-
-        const deadChickenRef = doc(db, 'dead_chickens', id);
         
         // 存在確認
-        const docSnap = await getDoc(deadChickenRef);
-        if (!docSnap.exists()) {
-            return NextResponse.json({ message: '指定された記録が見つかりません。' }, { status: 404 });
+        const deadChickenRef = adminDb.collection("dead_chickens").doc(id);
+        const docSnap = await deadChickenRef.get();
+
+        if (!docSnap.exists) {
+          return NextResponse.json(
+            { message: "指定された記録が見つかりません。" },
+            { status: 404 }
+          );
         }
 
         // データの更新
-        await updateDoc(deadChickenRef, {
+        await deadChickenRef.update({
             coop_number: coopNumberInt,
             count: countInt,
             cause_of_death: cause_of_death,
-            updatedAt: serverTimestamp() // 更新時間も入れておくと便利！✨
+            updatedAt: adminTimestamp.now() // 更新時間も入れておくと便利！✨
         });
 
         return NextResponse.json(
