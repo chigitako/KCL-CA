@@ -95,7 +95,7 @@ export default function WebPage() {
               {shipments.map((shipment, index) => (
                 <tr key={index} className={styles.tableRow}>
                   <td>{shipment.vendor}</td>
-                  <td>{new Date(shipment.shipmentDate).toLocaleDateString()}</td>
+                  <td>{shipment.shipmentDate ? new Date(shipment.shipmentDate).toLocaleDateString() : ''}</td>
                   <td>{shipment.shippedCount}</td>
                   <td>{shipment.address || '情報なし'}</td>
                   <td>{shipment.phoneNumber || '情報なし'}</td>
