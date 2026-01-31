@@ -40,13 +40,22 @@ export default function CustomerListPage() {
   }, []);
 
   const fetchCustomers = async () => {
-    const query = new URLSearchParams(searchTerm).toString();
+    setLoading(true);
     try {
-      setLoading(true);
+      // スマホなら name を全部の検索項目にコピー
+      const queryObj = isMobile
+        ? {
+            name: searchTerm.name,
+            address: searchTerm.name,
+            phone_number: searchTerm.name,
+            email: searchTerm.name,
+          }
+        : searchTerm;
+
+      const query = new URLSearchParams(queryObj).toString();
       const response = await fetch(`/api/customers?${query}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+      if (!response.ok) throw new Error("Network response was not ok");
+
       const data: Customer[] = await response.json();
       setCustomers(data);
     } catch (err) {
