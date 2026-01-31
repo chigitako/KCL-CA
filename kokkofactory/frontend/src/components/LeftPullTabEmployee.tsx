@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import "./LeftPullTab.css";
+import "./LeftPullTab.module.css";
 import { useLang } from "./LangContext";
 
 const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
