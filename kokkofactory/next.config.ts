@@ -2,11 +2,12 @@ import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 💡 ここから追加：ESLintのエラーを無視してビルドするよ！
-  /eslint: {
+  // 💡 ESLintのエラーを無視してビルド
+  eslint: {
     ignoreDuringBuilds: true,
-  },/
-  // 💡 ここから追加：TypeScriptの型エラーを無視してビルドするよ！
+  },
+
+  // 💡 TypeScriptの型エラーを無視してビルド
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -16,21 +17,19 @@ const nextConfig: NextConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
-        "@": path.resolve(process.cwd(), "src"), // __dirnameでエラーが出る場合はprocess.cwd()が安定するよ！
+        "@": path.resolve(process.cwd(), "src"),
       },
     };
 
-    if (!isServer) {
-      // クライアント専用設定はここに書いてにょ✨
-    }
-
     return config;
   },
+
   // ⭐ Turbopack を無効化
-  /experimental: {
+  experimental: {
     turbo: false,
   },
-  appDir: "src/app",/
+
+  appDir: "src/app",
 };
 
 export default nextConfig;
